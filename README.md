@@ -19,7 +19,7 @@ This software is unfortunately not completely ready to use yet. It will generate
 4. Run the python program from the command line like so:
 
    ```bash
-   ./OpenEFT.py /path/to/your/file.png
+   ./eft.py /path/to/your/file.png
    ```
 
 5. Follow the instructions the program provides and respond to the prompts with your info.
