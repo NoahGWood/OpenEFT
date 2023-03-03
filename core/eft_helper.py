@@ -149,7 +149,7 @@ class Type2(Record):
         lname = input("Last Name: ")
         self.ak = input("Aliases (comma separated): ")
         stateCurrent = input("Current State 2-Letter Code (e.g. AZ, NY): ")
-        stateBorn = input("Current State 2-Letter Code (e.g. AZ, NY): ")
+        stateBorn = input("Start Born 2-Letter Code (e.g. AZ, NY): ")
         ssn = input("Social Security Number (no dashes): ")
         addr = input("Address: ")
         self.dob = input("Date of birth (YYYmmdd): ")
