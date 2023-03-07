@@ -33,7 +33,7 @@ If you're not up for compiling and installing software to DIY, I have created a 
 
 If you've never had your fingerprints taken, you definitely need to know how to do it. The first ten prints should be "rolled" on as the video demonstrates, then you need to take two "slap" impressions of the four fingers on each hand and two flat impressions of the thumbs.
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/47YLGj_yLVA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+[![Everything Is AWESOME](http://img.youtube.com/vi/47YLGj_yLVA/0.jpg)](//www.youtube.com/watch?v=47YLGj_yLVA "Fingerprinting Technique")
 
 #### Bad Fingerprints
 
@@ -63,7 +63,7 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 
 #### Operating Systems
 
-* Linux Only
+* Linux Only (maybe, I have no idea tbh.)
 
 #### External Libraries
 
