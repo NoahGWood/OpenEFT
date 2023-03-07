@@ -8,8 +8,12 @@ def main(fname=None):
 		fname = input("Input File: ")
 		if len(fname) < 1:
 			fname = "test.png"
+		out = input("Output File: ")
+		if len(out) < 1:
+			out = "test"
+		out += ".eft"
 	# Create the core processor
-	c = Core(ifile=fname)
+	c = Core(ifile=fname, out=out)
 	# Create EFT object
 	c.GenEFT()
 

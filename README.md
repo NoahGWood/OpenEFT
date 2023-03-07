@@ -5,9 +5,6 @@ So, if you're here, you probably need to file a Form 1 and would like to file el
 
 If you're not very technical, I'm in the process of creating a simple website you can go to get your EFT file made for $10. In the meantime, however, here's the open-source software you need to do the conversion manually.
 
-## TODO:
-This software is unfortunately not completely ready to use yet. It will generate a valid EFT file, however it does not yet encode the pixel density needed for the WSQ (hopefully soon!), and I can't guarantee the FBI will accept these EFT files. If you have a .EFT file you can share to help the project, please send a copy of the file to noah@noahwood.org
-
 ## How To Use
 
 1. Print off FD-258 card (Use the provided template in the repo for best results)
@@ -54,24 +51,6 @@ If you mess up on a fingerprint, you can use a white address label within the bl
    pip install -r requirements.txt
    ```
 
-3. Save and extract NIST biometric library
-
-   ```bash
-   wget https://nigos.nist.gov/nist/nbis/nbis_v5_0_0.zip
-   unzip nbis_v5_0_0.zip "Rel_5.0.0/*" -d nbis
-   ```
-
-4. Install NBIS
-
-   ```bash
-   mkdir nbis/build
-   cd nbis/Rel_5.0.0
-   ./setup.sh $PWD/../build
-   make config
-   make it
-   make install
-   ```
-
 5. Run the program!
 
    ```bash
@@ -82,13 +61,11 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 
 #### Operating Systems
 
-* Linux Mint & Ubuntu (Definitely works)
-* Windows? (*Should* work, maybe..... probably doesn't...)
-* Mac? (No clue, but let me know if you got it to work)
+* Linux Only
 
 #### External Libraries
 
-* [NIST Biometric Image Software](https://nigos.nist.gov/nist/nbis/nbis_v5_0_0.zip)
+* [OpenJPEG](https://github.com/uclouvain/openjpeg)
 
 #### Python Modules
 
@@ -96,4 +73,3 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 * [Imutils](https://github.com/PyImageSearch/imutils)
 * [Pillow](https://python-pillow.org/)
 * [NumPy](https:://numpy.org)
-* [Python-WSQ](https://github.com/idemia/python-wsq)

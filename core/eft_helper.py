@@ -1,9 +1,16 @@
 from datetime import datetime
+from hashlib import sha256
+
 FS_CHAR = 0x1C # Record
 GS_CHAR = 0x1D # Field
 RS_CHAR = 0x1E # Subfield 
 US_CHAR = 0x1F # Item
 
+# EZ defaults
+VERSION = "0500"
+ORI = "WVATF0900" # ATF
+DAI = "WVIAFIS0Z" # FBI/CJIS
+TOT = "FAUF" # Type of transactions
 
 def join(iterable, sep=":"):
     return ':'.join([str(x) for x in iterable])
@@ -77,14 +84,14 @@ class Record:
 class Type1(Record):
     def __init__(self):
         super().__init__()
-        self.ver = "0200"
+        self.ver = VERSION
         self.cnt = []
         self.cnt_total = 1  # Pointer to self.cnt
-        self.tot = "FAUF"
-        self.pry = 6  # Priority (1-10, default: 6)
-        self.dai = "WVIAFIS0Z"  # Destination, CJIS
-        self.ori = "WVATF0900"  # Source, ATF
-        self.tcn = self.ori + '-' + self.full_time + "-EFTC-"
+        self.tot = TOT
+        self.pry = 5  # Priority (1-10, default: 5, response in 2 hours)
+        self.dai = DAI  # Destination, CJIS
+        self.ori = ORI  # Source, ATF
+        self.tcn = self.ori + self.full_time.replace(':','-') + "-EFTC-"
         self.nsr = "00.00"  # Only for type 4, we use type 14
         self.ntr = "00.00"  # Only for type 4
         self.record_string = ""
@@ -97,11 +104,15 @@ class Type1(Record):
         self.len = tmp
 
     def get_count_string(self):
-        x = "1"+chr(US_CHAR)+str(len(self.cnt))
+        x = "1"+chr(US_CHAR)+str(len(self.cnt)+1)
         if len(self.cnt) > 0:
-            x = x + chr(RS_CHAR) + '_'.join([str(x.__cnt__())
-                                             for x in self.cnt]).replace('_', chr(RS_CHAR))
+            x = x + chr(RS_CHAR) + ','.join([str(x.__cnt__())
+                                             for x in self.cnt]).replace(',', chr(RS_CHAR))
         return x
+
+    def set_tcn(self,i):
+        # Grab name from type 2 record
+        self.tcn = self.tcn + self.cnt[i].name
 
     def add_record(self, record):
         self.cnt.append(record)
@@ -142,6 +153,7 @@ class Type2(Record):
         self.ice = ""
         self.acn = ""
         self.amp = ""
+        self.ssn=""
 
     def get_user_input(self):
         fname = input("First Name: ")
@@ -164,6 +176,8 @@ class Type2(Record):
             self.rsn = "Firearms"
         self.sex = input("Sex (M=Male, F=Female): ")
         self.amp = input("Missing Fingers (csv, 1-10): ") # Need to fix this
+        self.stateID = input("State ID: ")
+        self.ssn = input("Social Security Number: ")
 
 
     def _get_dict(self):
@@ -171,6 +185,8 @@ class Type2(Record):
             "2.001": self.len,
             "2.002": self.idc,
             "2.005": "N",
+            "2.015": self.stateID,
+            "2.017": self.ssn,
             "2.018": self.name,
             "2.019": self.ak,
             "2.020": self.pob,
@@ -182,6 +198,7 @@ class Type2(Record):
             "2.038": self.dfp,
             "2.067": self.ice,
             "2.071": self.acn,
+            "2.073": ORI,
             "2.084": self.amp,
             "2.8031": self.residence,
             "2.8033": self.birth,
@@ -191,71 +208,40 @@ class Type2(Record):
 
 
 class Type14(Record):
-    def __init__(self, idc=0):
+    def __init__(self, f, idc=0):
         super().__init__("14", idc)
-        self.isc = "1"  # Default for fingrpint card
+        self.isc = "1"  # Default for fingerprint card
         self.scu = "1"  # Pixels per inch = 1, pixels per cm = 2
         self.imp = "1"  # Impression type, default=1 (rolled)
-        self.src = ""  # Source agency
+        self.src = "WVATF0900"  # Source agency, ATF
         self.fcd = ""  # Fingerprint capture date
-        self.hll = ""  # Horizontal line length
-        self.vll = ""  # Vertical line length
-        self.slc = ""  # Scale units
-        self.thps = ""  # Transmitted horizontal pixel scale
-        self.tvps = ""  # Transmitted verical pixel scale
-        self.cga = "WSQ20"  # Compression algorithm (default WSQ20)
-        self.bpx = "8"  # Bits per pixel
-        self.ppd = ""  # Print position descriptors
-        self.file = ""
-        self.score = ""
-        self.fgp = "0"  # 1-15 and 19
-        # four finger slap = 13 and 14
-        # Individual thumb = 11 and 12
+        self.hll = f.hll  # Horizontal line length
+        self.vll = f.vll  # Vertical line length
+        self.slc = f.slc  # Scale units
+        self.thps = f.hps  # Transmitted horizontal pixel scale
+        self.tvps = f.vps  # Transmitted verical pixel scale
+        self.cga = f.cga  # Compression algorithm (default WSQ20)
+        self.bpx = f.bpx  # Bits per pixel
+        #self.ppd = ""  # Print position descriptors, Not mandatory
+        self.file = f.converted
+        #self.score = "" # Not mandatory
+        self.fgp = f.fgp # Finger position
         self.dat=""
+        self.hash=""
 
     def build(self):
-        self.get_finger_position()
         self.dat = self.read_data()
+        try:
+            self.hash = sha256(self.dat).hexdigest()
+            print(self.hash)
+        except Exception as e:
+            print("ERROR WHILE HASHING!: {}".format(e))
 
     def read_data(self):
         x = b''
         with open(self.file, 'rb') as f:
             x = f.read()
         return x
-
-    def get_finger_position(self):
-        f = self.file.split('/')[-1]
-        if 'R_' in f:
-            # Right
-            if "THUMB2" in f:
-                return "11"
-            elif "THUMB" in f:
-                return "1"
-            elif "INDEX" in f:
-                return "2"
-            elif "MIDDLE" in f:
-                return "3"
-            elif "RING" in f:
-                return "4"
-            elif "LITTLE" in f:
-                return "5"
-        elif 'L_' in f:
-            # left
-            if "THUMB2" in f:
-                return "12"
-            elif "THUMB" in f:
-                return "6"
-            elif "INDEX" in f:
-                return "7"
-            elif "MIDDLE" in f:
-                return "8"
-            elif "RING" in f:
-                return "9"
-            elif "LITTLE" in f:
-                return "10"
-        else:
-            return "0"
-
 
     def _get_dict(self):
         return {
@@ -272,9 +258,10 @@ class Type14(Record):
             "14.011": self.cga,
             "14.012": self.bpx,
             "14.013": self.fgp,
-            "14.014": self.ppd,
-#            "14.022": self.fgp + RS_CHAR + self.score # Disable until verify
+            #"14.014": self.ppd, # Not mandatory
+            #"14.022": self.score # Not mandatory
             "14.200": self.isc,
+            "14.996": self.hash,
             "14.999": self.dat
         }
 
