@@ -1,9 +1,11 @@
 # OpenEFT
 OpenEFT is an open-source project created because the ATF are incompetent at best and maliciously trying to thwart civil rights at worst.
 
+<img src="blurred.png" style="zoom:10%;" />
+
 So, if you're here, you probably need to file a Form 1 and would like to file electronically so that it doesn't take 8 months for the ATF to lose your paper fingerprint card, only to find the fingerprinting companies have jacked their prices up to extortionate amounts.
 
-If you're not very technical, I'm in the process of creating a simple website you can go to get your EFT file made for $10. In the meantime, however, here's the open-source software you need to do the conversion manually.
+If you're not up for compiling and installing software to DIY, I have created a generation service that you can use at [OpenEFT.org](https://www.openeft.org/eft)
 
 ## How To Use
 
@@ -11,7 +13,7 @@ If you're not very technical, I'm in the process of creating a simple website yo
 
 2. Add fingerprints to form (you don't need to fill out the boxes)
 
-3. Take a high-resolution 1:1 scan or picture of the completed FD-258 card.
+3. Take a high-resolution **1:1** scan or picture of the completed FD-258 card.
 
 4. Run the python program from the command line like so:
 
