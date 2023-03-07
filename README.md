@@ -1,7 +1,11 @@
 # OpenEFT
 OpenEFT is an open-source project created because the ATF are incompetent at best and maliciously trying to thwart civil rights at worst.
 
-<img src="blurred.png" style="zoom:10%;" />
+Like the project? Consider sponsoring me so I can continue to develop these free tools!
+
+![GitHub Sponsor](https://img.shields.io/github/sponsors/NoahGWood?label=Sponsor&logo=GitHub)
+
+<img src="blurred.png" width="250" />
 
 So, if you're here, you probably need to file a Form 1 and would like to file electronically so that it doesn't take 8 months for the ATF to lose your paper fingerprint card, only to find the fingerprinting companies have jacked their prices up to extortionate amounts.
 
