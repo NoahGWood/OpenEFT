@@ -71,7 +71,7 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 
 #### Python Modules
 
-* https://github.com/opencv/opencv-python
+* [OpenCV-Python](https://github.com/opencv/opencv-python)
 * [Imutils](https://github.com/PyImageSearch/imutils)
 * [Pillow](https://python-pillow.org/)
 * [NumPy](https:://numpy.org)
