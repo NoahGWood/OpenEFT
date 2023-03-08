@@ -110,9 +110,9 @@ class Type1(Record):
                                              for x in self.cnt]).replace(',', chr(RS_CHAR))
         return x
 
-    def set_tcn(self,i):
+    def set_tcn(self, name):
         # Grab name from type 2 record
-        self.tcn = self.tcn + self.cnt[i].name
+        self.tcn = self.tcn + name
 
     def add_record(self, record):
         self.cnt.append(record)
@@ -156,18 +156,19 @@ class Type2(Record):
         self.ssn=""
 
     def get_user_input(self):
-        fname = input("First Name: ")
-        mname = input("Middle Name: ")
-        lname = input("Last Name: ")
+        self.fname = input("First Name: ")
+        self.mname = input("Middle Name: ")
+        self.lname = input("Last Name: ")
+        self.name = "{}, {} {}.".format(self.lname, self.fname, self.mname[0])
         self.ak = input("Aliases (comma separated): ")
-        stateCurrent = input("Current State 2-Letter Code (e.g. AZ, NY): ")
-        stateBorn = input("Start Born 2-Letter Code (e.g. AZ, NY): ")
-        ssn = input("Social Security Number (no dashes): ")
-        addr = input("Address: ")
+        self.stateCurrent = input("Current State 2-Letter Code (e.g. AZ, NY): ")
+        self.stateBorn = input("Start Born 2-Letter Code (e.g. AZ, NY): ")
+        self.ssn = input("Social Security Number (no dashes): ")
+        self.addr = input("Address: ")
         self.dob = input("Date of birth (YYYmmdd): ")
         self.race = input("Race (A=Asian, B=Black, I=American Indian, W=White or Latino): ")
-        eye = input("Eye Color (BLK,BLU,BRO,GRY,GRN,HAZ,MAR,MUL,PINK): ")
-        hair = input(
+        self.eye = input("Eye Color (BLK,BLU,BRO,GRY,GRN,HAZ,MAR,MUL,PINK): ")
+        self.hair = input(
             "Hair Color: (BAL,BLK,BLN,BLU,BRO,GRY,GRN,ONG,PNK,PLE,RED,SDY,WHI)")
         self.height = input("Height (inches): ")
         self.weight = input("Weight (lbs): ")
@@ -177,8 +178,6 @@ class Type2(Record):
         self.sex = input("Sex (M=Male, F=Female): ")
         self.amp = input("Missing Fingers (csv, 1-10): ") # Need to fix this
         self.stateID = input("State ID: ")
-        self.ssn = input("Social Security Number: ")
-
 
     def _get_dict(self):
         return {

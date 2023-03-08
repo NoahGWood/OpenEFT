@@ -105,7 +105,8 @@ class Core:
             # Get user data
             t2.get_user_input()
             t1.add_record(t2)
-            t1.set_tcn(0)
+            n = "{}-{}-{}-".format(t2.fname, t2.mname, t2.lname) + str(uuid.uuid1())[0:10]
+            t1.set_tcn(n)
             # Create Type14 records
             i=3 # create idc char, starts at 3 (type1, type2, type14...)
             for each in fingerprints:
