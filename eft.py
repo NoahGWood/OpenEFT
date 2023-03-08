@@ -13,7 +13,7 @@ def main(fname=None):
 			out = "test"
 		out += ".eft"
 	# Create the core processor
-	c = Core(ifile=fname, out=out)
+	c = Core(ifile=fname, out=out, debug=True)
 	# Create EFT object
 	c.GenEFT()
 
