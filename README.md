@@ -3,7 +3,7 @@ OpenEFT is an open-source project created because the ATF are incompetent at bes
 
 Like the project? Consider sponsoring me so I can continue to develop these free tools!
 
-![GitHub Sponsor](https://img.shields.io/github/sponsors/NoahGWood?label=Sponsor&logo=GitHub)
+[![GitHub Sponsor](https://img.shields.io/github/sponsors/NoahGWood?label=Sponsor&logo=GitHub)](https://github.com/sponsors/NoahGWood)
 
 <img src="blurred.png" width="250" />
 
