@@ -32,7 +32,7 @@ OCR_LOCATIONS = [
     OCRLocation("L_LITTLE", (15453,10717,3658,3580), 10),
 #    OCRLocation("R_THUMB2", (9653,14317,1866,4634), 11),
 #    OCRLocation("L_THUMB2", (7753,14317,1866,4634), 12),
-    OCRLocation("2_THUMBS", (7753,14317,3795,4634), 12), # Consolidate into 1 record
+    OCRLocation("2_THUMBS", (7753,14317,3795,4634), 15), # Consolidate into 1 record
     OCRLocation("R_FOUR", (11583,14317,7559,4634), 13),
     OCRLocation("L_FOUR", (90,14417,7559,4634), 14),
 ]
