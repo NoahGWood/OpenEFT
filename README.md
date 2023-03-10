@@ -56,6 +56,11 @@ If you mess up on a fingerprint, you can use a white address label within the bl
    ```bash
    pip install -r requirements.txt
    ```
+3. Install libopenjp2:
+
+   ```bash
+   sudo apt install libopenjp2-tools
+   ``` 
 
 5. Run the program!
 
