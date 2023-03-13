@@ -65,7 +65,7 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 5. Run the program!
 
    ```bash
-   ./OpenEFT.py /path/to/your/tenprint/scan.png
+   ./eft.py /path/to/your/tenprint/scan.png
    ```
 
 ### Requirements
