@@ -1,6 +1,5 @@
 import os
 import uuid
-import wsq
 import cv2
 import tempfile
 from sys import stdout
