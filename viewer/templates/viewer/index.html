@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block Title %}OpenEFT | Home{% endblock %}
+{% block content %}
+<br />
+<div class="content" id="main-content">
+    <div class="card bg-dark">
+        <div class="card-header">
+            {% if fname %}
+            <h1>{{fname}}</h1>
+            {% endif %}<br/>
+            <form id="open" action="/view" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label>Open EFT File</label>
+                <input type="file" id="eft" name="eft" onchange="document.getElementById('open').submit();" accept=".eft">
+            </form>
+        </div>
+        <div class="card-body bg-dark">
+            {% if data %}
+            <div class="list-group">
+                {% for key, value in data.items %}
+                <div class="list-group-item bg-secondary">
+                    <div class="row">
+                    <div class="col-3">{{ key|get_item }}:</div>
+                    <div class="col">{{ value }}</div>
+                    <div class="col"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

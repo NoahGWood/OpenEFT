@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'conversion',
     'about',
+    'viewer',
 ]
 
 MIDDLEWARE = [
