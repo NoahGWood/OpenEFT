@@ -13,23 +13,23 @@ def order_points(pts):
 	rect[3] = pts[np.argmax(diff)]
 	return rect
 
-def four_point_transform(image, pts):
-	rect = order_points(pts)
-	(tl, tr, br, bl) = rect
-	widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
-	widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
-	maxWidth = max(int(widthA), int(widthB))
-	heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
-	heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
-	maxHeight = max(int(heightA), int(heightB))
-	dst = np.array([
-		[0, 0],
+def four_point_transform(image, rect):
+    (tl, tr, br, bl) = rect
+    print(tl, tr, br, bl)
+    widthA = np.sqrt(((br[0] - bl[0]) ** 2) + ((br[1] - bl[1]) ** 2))
+    widthB = np.sqrt(((tr[0] - tl[0]) ** 2) + ((tr[1] - tl[1]) ** 2))
+    maxWidth = max(int(widthA), int(widthB))
+    heightA = np.sqrt(((tr[0] - br[0]) ** 2) + ((tr[1] - br[1]) ** 2))
+    heightB = np.sqrt(((tl[0] - bl[0]) ** 2) + ((tl[1] - bl[1]) ** 2))
+    maxHeight = max(int(heightA), int(heightB))
+    dst = np.array([
+        [0, 0],
 		[maxWidth - 1, 0],
 		[maxWidth - 1, maxHeight - 1],
 		[0, maxHeight - 1]], dtype = "float32")
-	M = cv2.getPerspectiveTransform(rect, dst)
-	warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
-	return warped
+    M = cv2.getPerspectiveTransform(rect, dst)
+    warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
+    return warped
 
 def GetEFT(img):
     ratio = img.shape[0]/500.0
@@ -52,9 +52,14 @@ def GetEFT(img):
             screenCnt=approx
             break
     cv2.drawContours(img, [screenCnt], -1, (0,255,0),2)
-#    cv2.drawContours(img, cnts, -1, (0,255,0),2) # Testing/Debug, draws all contours
-#    cv2.imshow("outline", img)
-#    cv2.waitKey(0)
-#    cv2.destroyAllWindows()
-    warped = four_point_transform(orig, screenCnt.reshape(4,2)*ratio)
+    print("PRIOR POINTS: ")
+    print(screenCnt)
+    print(type(screenCnt))
+    pts = screenCnt.reshape(4,2)*ratio
+    print("AFTER POINTS:")
+    print(pts)
+    print(type(pts))
+    rect = order_points(pts)
+    print(rect)
+    warped = four_point_transform(orig, rect)
     return warped

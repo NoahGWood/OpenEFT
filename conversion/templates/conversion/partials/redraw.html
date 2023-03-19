@@ -1,5 +1,5 @@
 {% load static %}
-<div class="error">
+<div id="error" hidden>
     <div class="row">
         <div class="col"></div>
         <!-- TITLE -->
@@ -12,14 +12,17 @@
         <!-- FORMS -->
         <div class="col"></div>
         <div class="col">
-            <canvas width="800" height="1100" id="canvas" >
+            <canvas id="canvas" width="1000" height="1000" >
                 Your browser does not support the canvas element
             </canvas>
           </div>
          <div class="col"></div>
     </div>
 </div>
-<img src="{% static 'bg_test2.png' %}" hidden="hidden" id="sourceImage"/>
+<form id="resection">
+{% csrf_token %}
+</form>
+<img src="{% static 'input.png' %}" hidden="hidden" id="sourceImage"/>
 
 <script>
     var prevX, prevY, currX, currY = 0;
@@ -28,9 +31,67 @@
     var img = document.getElementById("sourceImage");
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
-    clearCanvas();
+
+    function defaultSettings() {
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "green";
+        ctx.fillStyle="green";
+        ctx.textAlign="center";
+        ctx.font = "10px Arial";
+    }
+    
     canvas.addEventListener("mousemove", function(e){
         findxy('move', e)
+        if (!p4){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, img.width*ratio, img.height*ratio);
+            if(prevX){
+                ctx.beginPath();
+                ctx.moveTo(prevX,prevY);
+                ctx.lineTo(e.pageX - canvas.offsetLeft, e.pageY - canvas.offsetTop);
+                ctx.stroke();
+            }
+            currX = e.pageX - canvas.offsetLeft;
+            currY = e.pageY - canvas.offsetTop;
+            if(!p1){
+                draw("1");
+                centerText("Select The Top-Left Corner");
+            } else if(!p2){
+                draw("2");
+                centerText("Select The Top-Right Corner");
+            } else if(!p3){
+                draw("3");
+                centerText("Select The Bottom-Right Corner");
+            } else if(!p4){
+                draw("4");
+                centerText("Select The Bottom-Left Corner");
+            }
+            if(p1 != null){
+                draw("2");
+                currX = p1[0]*ratio;
+                currY = p1[1]*ratio;
+                draw("1");
+            } if(p2){
+                ctx.beginPath();
+                ctx.moveTo(p1[0]*ratio,p1[1]*ratio);
+                ctx.lineTo(p2[0]*ratio,p2[1]*ratio);
+                ctx.stroke();
+                currX = p2[0]*ratio;
+                currY = p2[1]*ratio;
+                draw("2");
+            } if (p3){
+                ctx.beginPath();
+                ctx.moveTo(p2[0]*ratio,p2[1]*ratio);
+                ctx.lineTo(p3[0]*ratio,p3[1]*ratio);
+                ctx.stroke();
+                currX = p3[0]*ratio;
+                currY = p3[1]*ratio;
+                draw("3");
+            }
+            currX = e.pageX - canvas.offsetLeft;
+            currY = e.pageY - canvas.offsetTop;
+        }
+        
     }, false);
     canvas.addEventListener("mousedown", function(e) {
         findxy('down',e)
@@ -53,29 +114,28 @@
 
         if (res == 'up' && clicked === true) {
             if (!p1){
-                p1 = [currX, currY];   
-                draw();
+                p1 = [currX/ratio, currY/ratio];   
+                draw("1");
                 clicked = false;
-                alert("Select the upper right corner of document.");
+//                alert("Select the upper right corner of document.");
             } else if (!p2) {
-                p2 = [currX, currY];
-                draw();
+                p2 = [currX/ratio, currY/ratio];
+                draw("2");
                 clicked = false;
-                alert("Select the lower left corner of document.");
+//                alert("Select the lower right corner of document.");
             } else if (!p3){
-                p3 = [currX, currY];
-                draw();
+                p3 = [currX/ratio, currY/ratio];
+                draw("3");
                 clicked = false;
-                alert("Select the lower right corner of document.");
+//                alert("Select the lower left corner of document.");
             } else if (!p4){
-                p4 = [currX, currY];
-                draw();
-                console.log("POINTS!")
+                p4 = [currX/ratio, currY/ratio];
+                draw("4");
                 clicked = false;
+                drawPoints();
                 if (confirm('Did you check all corners?')) {
                   // Save it!
-                  console.log(p1, p2, p3, p4);
-                  console.log('Thing was saved to the database.');
+                  postPoints();
                 } else {
                     clearCanvas();
                 }
@@ -83,17 +143,60 @@
         }
     }
 
-    function draw() {
+    function drawPoints() {
+        ctx.beginPath();
+        ctx.moveTo(p1[0]*ratio,p1[1]*ratio);
+        ctx.lineTo(p2[0]*ratio,p2[1]*ratio);
+        ctx.lineTo(p3[0]*ratio,p3[1]*ratio);
+        ctx.lineTo(p4[0]*ratio,p4[1]*ratio);
+        ctx.lineTo(p1[0]*ratio,p1[1]*ratio);
+        ctx.stroke();
+    }
+    function draw(i) {
         ctx.beginPath();
         ctx.arc(currX, currY, 10,0,2*Math.PI);
         ctx.stroke();
+        ctx.fillText(i, currX-2.5, currY+2.5);
+    }
+
+    function centerText(t) {
+        ctx.fillStyle="black";
+        ctx.textAlign="center";
+        ctx.font = "25px Arial";
+        ctx.fillText(t, img.width*ratio/2, img.height*ratio/2);
+        defaultSettings();
     }
 
     function clearCanvas() {
         p1=null;p2=null;p3=null;p4=null;
+        prevX=null;prevY=null;
+        hratio = canvas.width / img.width;
+        vratio = canvas.height / img.height;
+        ratio = Math.min(hratio,vratio);
         alert("Select the upper left corner of document.");
-        ctx.clearRect(0,0,img.width,img.height);
-        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, img.width*ratio, img.height*ratio);
     }
-//    canvas.style="background-size: 100% 100%;"
+    
+    async function postPoints() {
+        let formData = new FormData(document.getElementById("resection"));;
+        formData.append("p1", p1);
+        formData.append("p2", p2);
+        formData.append("p3", p3);
+        formData.append("p4", p4);
+        formData.append("method", "POST");
+        formData.append("enctype","multipart/form-data");
+        heads = new Headers();
+        heads.append('X-CSRFToken', window.csrf_token);
+        init = {
+            method: "POST",
+            headers:heads,
+            body: formData
+        }
+        request = new Request('/new/resection', init);
+        await fetch(request).then(response => response.json()).then(json => {
+            console.log(json);
+            showFingerprints(json);
+        });
+    };
 </script>

@@ -8,7 +8,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.conf import settings
 
-from conversion.core.core import generate_eft, section_fp
+from conversion.core.core import generate_eft, section_fp, manual_section
 
 CWD = os.getcwd()
 TMP_DIR = settings.TMP_DIR
@@ -27,6 +27,14 @@ def process_fp():
     for each in RESULTS:
         each.convert()
 
+def resection(request):
+    if request.method == "POST":
+        data = request.POST.dict()
+        fname = os.path.join(TMP_DIR, 'input.png')
+        out = manual_section(fname=fname, data=data)
+        return JsonResponse({'values':out}, safe=False)
+    return 200
+
 def step1(request):
     global RESULTS
     if request.method == "POST":
@@ -37,7 +45,10 @@ def step1(request):
         with open(fname, 'wb+') as dest:
             for chunk in file.chunks():
                 dest.write(chunk)
-        out = section_fp(fname=fname)
+        try:
+            out = section_fp(fname=fname)
+        except:
+            out = False;#[False,False,False]
         return JsonResponse({'values':out}, safe=False)
     return 200
 

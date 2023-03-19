@@ -31,6 +31,7 @@
         {% include 'conversion/partials/step5.html' %}
     </form>
         {% include 'conversion/partials/spinner.html' %}
+        {% include 'conversion/partials/redraw.html' %}
     <br />
 </div>
 <iframe name="dummy" id="dummy" style="display:none;"></iframe>
@@ -43,8 +44,7 @@
     let preloader = document.querySelector('body');
     let successDiv = document.getElementById('success');
     let progressBar = document.getElementsByClassName('progress-bar')[0];
-
-    let f1 = document.getElementById('form1');
+    let error = document.getElementById("error");   
     let file = document.getElementById('formFileLg');
     let current_step = 0;
     let stepCount = step.length - 1;
@@ -155,6 +155,7 @@
         } else {
             console.log("NO");
             prevBtn.disabled=false;
+            showFingerprints({'values':false})
         }
     }
     async function SubmitForm1() {
@@ -176,6 +177,20 @@
         let request = new Request('/new/step1', init);
 
         await fetch(request).then(response => response.json()).then(json => {
+            showFingerprints(json);
+        });
+    };
+
+    function showFingerprints(json) {
+        if (json.values==false){
+            step[current_step].classList.remove('d-block');
+            step[current_step].classList.add('d-none');
+            error.removeAttribute("hidden");
+            clearCanvas();
+        } else {
+            error.setAttribute("hidden","true");
+            step[current_step].classList.remove('d-none');
+            step[current_step].classList.add('d-block');
             document.getElementById("thumb").onload = setTimeout(checkImages,1000);
             document.getElementById("rslap").src = "static/" + json.values[0];
             document.getElementById("lslap").src = "static/" + json.values[1];
@@ -183,7 +198,7 @@
             // Make sure we disallow next button
             nextBtn.disabled=true;
             prevBtn.disabled=true;
-        });
-    };
+        }
+    }
 </script>
 {% endblock %}

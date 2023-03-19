@@ -11,15 +11,30 @@
         <!-- FORMS -->
         <div class="col"></div>
         <div class="col-lg-7 mx-0 px-0">
+            <img id="fp-img" src="" width="250" height="250">
             <div>
-               <form id="form1" method="POST" enctype="multipart/form-data" accept="image/*">
+               <form id="form1" method="POST" enctype="multipart/form-data">
                {% csrf_token %}
                 <!-- STEPS HERE -->
                   <label for="formFileLg" class="form-label">FD-258 Scan</label>
-                  <input class="form-control form-control-lg" id="formFileLg" type="file" name="formFileLg">
+                  <input class="form-control form-control-lg" id="formFileLg" type="file" name="formFileLg"  accept="image/*" onchange="readURL(this);">
                </form>
             </div>
          </div>
          <div class="col"></div>
     </div>
 </div>
+<script>
+function readURL(input) {
+    fpimg = document.getElementById("fp-img");
+    if(input.files[0]){
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            fpimg.setAttribute("src", reader.result);
+            fpimg.removeAttribute("hidden");
+        };
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>

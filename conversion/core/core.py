@@ -1,8 +1,9 @@
 import os
 import cv2
 import uuid
+import numpy as np
 from django.conf import settings
-from conversion.core.align import GetEFT
+from conversion.core.align import GetEFT, four_point_transform
 from conversion.core.fd258_ocr import OCR_LOCATIONS
 from conversion.core.fingerprint import Fingerprint
 from conversion.core.eft_helper import Type1, Type2, Type14
@@ -78,9 +79,12 @@ def section_fp(fname):
     img = cv2.imread(fname)
     # Align image
     aligned = GetEFT(img)
+    return _section(aligned)
+
+def _section(img):
     t = os.path.join(os.getcwd(),'static')
     template = cv2.imread(os.path.join(t,'fd-258.png'))
-    img = cv2.resize(aligned, (template.shape[0], template.shape[1]))
+    img = cv2.resize(img, (template.shape[0], template.shape[1]))
     # Section fingerprints
     out = []
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -89,3 +93,17 @@ def section_fp(fname):
         f = Fingerprint(loc, src_img=img, tmpdir=TMP_DIR)
         RESULTS.append(f)
     return out
+
+def manual_section(fname, data):
+    img = cv2.imread(fname)
+    p1 = np.array([np.float32(float(x)) for x in data.get("p1").split(',')])
+    p2 = np.array([np.float32(float(x)) for x in data.get("p2").split(',')])
+    p3 = np.array([np.float32(float(x)) for x in data.get("p3").split(',')])
+    p4 = np.array([np.float32(float(x)) for x in data.get("p4").split(',')])
+    points = np.zeros((4,2), np.float32)
+    points[0] = p1
+    points[1] = p2
+    points[2] = p3
+    points[3] = p4
+    aligned = four_point_transform(img, points)
+    return _section(aligned)
