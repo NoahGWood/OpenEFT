@@ -95,7 +95,7 @@ If you mess up on a fingerprint, you can use a white address label within the bl
    ```sh
    pip install -r requirements.txt
    ```
-   
+
 3. Install libopenjp2:
 
    ```sh
@@ -106,8 +106,18 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 
    ```sh
    python3 openeft.py
+3. Install libopenjp2:
+
+   ```bash
+   sudo apt install libopenjp2-tools
    ```
-### Requirements
+
+5. Run the program!
+
+   ```bash
+   ./eft.py /path/to/your/tenprint/scan.png
+
+## Requirements
 
 #### Operating Systems
 
