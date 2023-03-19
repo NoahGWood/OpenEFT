@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	targetNamespace="http://biometrics.nist.gov/standard/2-2008"
+	xmlns:itl="http://biometrics.nist.gov/standard/2-2008"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:s="http://niem.gov/niem/structures/2.0"
+	xmlns:ansi-nist="http://niem.gov/niem/ansi-nist/2.0"
+	xmlns:i="http://niem.gov/niem/appinfo/2.0"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified">
+
+	<!--  =============================== -->
+	<!--  IMPORTED SCHEMA -->
+	<!--  =============================== -->
+	<xsd:import schemaLocation="niem/ansi-nist/2.0/ansi-nist_itl_constraint-2008-Annex-L.xsd" namespace="http://niem.gov/niem/ansi-nist/2.0"/>
+	<xsd:import schemaLocation="niem/structures/2.0/structures.xsd" namespace="http://niem.gov/niem/structures/2.0"/>
+	<xsd:import schemaLocation="niem/appinfo/2.0/appinfo.xsd" namespace="http://niem.gov/niem/appinfo/2.0"/>
+	
+	<!--  =============================== -->
+	<!--  NIST-ITL BIOMETRIC INFORMATION EXCHANGE PACKAGE -->
+	<!--  =============================== -->
+	<xsd:element name="NISTBiometricInformationExchangePackage" type="itl:NISTBiometricInformationExchangePackageType"/>
+	<!--  Record type 01 -->
+	<xsd:element name="PackageInformationRecord" type="itl:PackageInformationRecordType"/>
+	<!--  Record type 02 -->
+	<xsd:element name="PackageDescriptiveTextRecord" type="itl:PackageDescriptiveTextRecordType"/>
+	<!--  ABSTRACT BASE FOR ALL RECORD TYPES 03 through 99 -->
+	<xsd:element name="PackageDataRecord" abstract="true"/>
+	<!--  Record type 09 (a PackageMinutiaeRecordType) -->
+	<xsd:element name="PackageMinutiaeRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageMinutiaeRecordType"/>
+	<!--  UNIQUE NAMES FOR RECORD TYPES  03, 04, 05, 06, 07, 08, 10, 13, 14, 15, 16, 17, 99 (all PackageImageRecordType) -->
+	<!--  Type 03 -->
+	<xsd:element name="PackageLowResolutionGrayscaleImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 04 -->
+	<xsd:element name="PackageHighResolutionGrayscaleImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 05 -->
+	<xsd:element name="PackageLowResolutionBinaryImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 06 -->
+	<xsd:element name="PackageHighResolutionBinaryImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 07 -->
+	<xsd:element name="PackageUserDefinedImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 08 -->
+	<xsd:element name="PackageSignatureImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 10 -->
+	<xsd:element name="PackageFacialAndSMTImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 13 -->
+	<xsd:element name="PackageLatentImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 14 -->
+	<xsd:element name="PackageFingerprintImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 15 -->
+	<xsd:element name="PackagePalmprintImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 16 -->
+	<xsd:element name="PackageUserDefinedTestingImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 17 -->
+	<xsd:element name="PackageIrisImageRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	<!--  Type 99 -->
+	<xsd:element name="PackageCBEFFBiometricDataRecord"  substitutionGroup="itl:PackageDataRecord" type="itl:PackageImageRecordType"/>
+	
+	<!--  =============================== -->
+	<!--  PACKAGE TYPE DEFINITION -->
+	<!--  =============================== -->
+	<xsd:complexType name="NISTBiometricInformationExchangePackageType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="itl:PackageInformationRecord"/>
+					<xsd:element ref="itl:PackageDescriptiveTextRecord" maxOccurs="unbounded"/>
+					<xsd:element ref="itl:PackageDataRecord" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!--  =============================== -->
+	<!--  RECORD TYPE DEFINITIONS -->
+	<!--  =============================== -->
+
+	<!--  Record Type 01  -->
+	<xsd:complexType name="PackageInformationRecordType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:RecordCategoryCode"/>
+					<xsd:element ref="ansi-nist:Transaction"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!--  Record Type Base for  02 through 99  -->
+	<xsd:complexType name="PackageDataRecordType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:RecordCategoryCode"/>
+					<!-- ====================================================== fieldID="XX.002" fieldMnemonic="IDC" == -->
+					<xsd:element ref="ansi-nist:ImageReferenceIdentification"/>
+					<!-- =================================================== fieldID="XX.200-998" fieldMnemonic="UDF" == -->
+					<xsd:element ref="itl:UserDefinedFields" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!--  Record Type 02  -->
+	<xsd:complexType name="PackageDescriptiveTextRecordType">
+		<xsd:complexContent>
+			<xsd:extension base="itl:PackageDataRecordType">
+				<xsd:sequence>
+					<xsd:element ref="itl:UserDefinedDescriptiveText"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!-- Image Records:  03, 04, 05, 06, 07, 08, 10, 13, 14, 15, 16, 17, 99 -->
+	<xsd:complexType name="PackageImageRecordType">
+		<xsd:complexContent>
+			<xsd:extension base="itl:PackageDataRecordType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:RecordImage"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!-- Minutiae Record:  09 -->
+	<xsd:complexType name="PackageMinutiaeRecordType">
+		<xsd:complexContent>
+			<xsd:extension base="itl:PackageDataRecordType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:MinutiaeImpressionCaptureCategory"/>
+					<xsd:element ref="ansi-nist:MinutiaeFormatNISTStandardIndicator"/>
+					<xsd:element ref="itl:RecordMinutiae"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+		
+	<!--  =============================== -->
+	<!--  IMAGE RECORDS SUBSTITUTION GROUP -->
+	<!--  =============================== -->
+	<xsd:element name="FingerprintImage"  substitutionGroup="ansi-nist:RecordImage" type="itl:FingerprintImageType"/>
+	<xsd:element name="PalmprintImage"  substitutionGroup="ansi-nist:RecordImage" type="itl:PalmprintImageType"/>
+	<xsd:element name="IrisImage"  substitutionGroup="ansi-nist:RecordImage" type="itl:IrisImageType"/>
+	<xsd:element name="TestImage"  substitutionGroup="ansi-nist:RecordImage" type="ansi-nist:NISTImageType"/>
+	<xsd:element name="FaceImage"  substitutionGroup="ansi-nist:RecordImage" type="itl:FaceImageType"/>
+	<!--  Here is a sample substitute for the Type07 user defined image.  Users should create their own in a different domain. -->
+	<xsd:element name="ExampleRecordImage"  substitutionGroup="ansi-nist:RecordImage" type="xsd:anyType"/>
+	<!--  =============================== -->
+	<!--  MINUTIAE RECORD SUBSTITUTION GROUP -->
+	<!--  =============================== -->
+	<xsd:element name="RecordMinutiae" abstract="true"/>
+	<xsd:element name="Minutiae" substitutionGroup="itl:RecordMinutiae" type="itl:MinutiaeType"/>
+	
+	<!--  =============================== -->
+	<!--  ITL ELEMENTS -->
+	<!--  =============================== -->
+	<xsd:element name="FingerprintImageSegmentPositionSquare" type="itl:FingerprintImageSegmentPositionSquareType"/>
+	<xsd:element name="FingerprintImageSegmentPositionPolygon" type="itl:FingerprintImageSegmentPositionPolygonType"/>
+	<xsd:element name="FingerprintImageFingerMissing" type="itl:FingerprintImageFingerMissingType"/>
+	<xsd:element name="FingerprintImageQuality" type="ansi-nist:FingerprintImageQualityType"/>
+	<xsd:element name="PalmprintImageQuality" type="itl:PalmprintImageQualityType"/>
+	<xsd:element name="PositionPolygonVertexQuantity" type="xsd:nonNegativeInteger"/>
+	<xsd:element name="PositionPolygonVertex" type="itl:PositionPolygonVertexType"/>
+	<xsd:element name="FingerMissingCode" type="itl:AMPCodeType"/>
+	<xsd:element name="IrisDiameterPixelQuantity" type="xsd:nonNegativeInteger"/>
+	<xsd:element name="FaceImageAcquisitionSource" type="itl:FaceImageAcquisitionSourceType"/>
+	<xsd:element name="CaptureSourceDescriptionText" type="xsd:string"/>
+	
+	<!--  ITL USER DEFINED DESCRIPTIVE TEXT AND FIELDS -->
+	<xsd:element name="UserDefinedDescriptiveText" type="itl:UserDefinedDescriptiveTextType"/>
+	<!--  Users may define substitutes for the following abstract elements . -->
+	<xsd:element name="DomainDefinedDescriptiveText" abstract="true"/>
+	<xsd:element name="OtherDescriptiveText" abstract="true"/>
+	<xsd:element name="UserDefinedFields" abstract="true"/>
+	<!--  Here are sample substitutes for user-defined abstract elements.  Users should create their own in a different domain. -->
+	<xsd:element name="ExampleDomainDefinedDescriptiveText"  substitutionGroup="itl:DomainDefinedDescriptiveText" type="xsd:anyType"/>
+	<xsd:element name="ExampleOtherDescriptiveText"  substitutionGroup="itl:OtherDescriptiveText" type="xsd:anyType"/>
+	<xsd:element name="ExampleUserDefinedFields"  substitutionGroup="itl:UserDefinedFields" type="xsd:anyType"/>
+	
+	<!--  =============================== -->
+	<!-- CORRECTED NIEM 2.0 ELEMENTS -->
+	<!--  =============================== -->
+	<xsd:element name="MinutiaeNISTStandard" type="itl:NISTStandardMinutiaeType"/>
+	<xsd:element name="MinutiaDetail" type="itl:MinutiaType"/>
+	<xsd:element name="MinutiaeFingerPatternDetail" type="itl:MinutiaeFingerPatternType"/>
+	<xsd:element name="FingerPatternCodeSourceCode" type="itl:PCSCodeType"/>
+		
+	<!--  =============================== -->
+	<!--  ITL ELEMENT TYPES -->
+	<!--  =============================== -->
+	
+	<xsd:complexType name="FingerprintImageType">
+		<xsd:complexContent>
+			<xsd:extension base="ansi-nist:NISTImageType">
+				<xsd:sequence>
+					<!-- =====================================================fieldID="XX.003" fieldMnemonic="IMP" == -->
+					<xsd:element ref="ansi-nist:FingerprintImageImpressionCaptureCategory"/>
+					<!-- =====================================================fieldID="XX.013" fieldMnemonic="FGP" == -->
+					<xsd:element ref="ansi-nist:FingerPositionCode" maxOccurs="unbounded"/>
+					<!-- =====================================================fieldID="XX.014" fieldMnemonic="SPD" == -->
+					<!-- =====================================================fieldID="XX.015" fieldMnemonic="PPC" == -->
+					<xsd:element ref="ansi-nist:FingerprintImageMajorCasePrint" minOccurs="0"/>
+					<!-- =====================================================fieldID="14.018" fieldMnemonic="AMP" == -->
+					<xsd:element ref="itl:FingerprintImageFingerMissing" minOccurs="0" maxOccurs="4"/>
+					<!-- =====================================================fieldID="14.021" fieldMnemonic="SEG" == -->
+					<xsd:element ref="itl:FingerprintImageSegmentPositionSquare" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- =====================================================fieldID="14.022" fieldMnemonic="NQM" == -->
+					<xsd:element ref="ansi-nist:FingerprintImageNISTQuality" minOccurs="0" maxOccurs="4"/>
+					<!-- =====================================================fieldID="14.023" fieldMnemonic="SQM" == -->
+					<xsd:element ref="ansi-nist:FingerprintImageSegmentationQuality" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- =====================================================fieldID="13.024" fieldMnemonic="LQM" == -->
+					<!-- =====================================================fieldID="14.024" fieldMnemonic="FQM" == -->
+					<xsd:element ref="itl:FingerprintImageQuality" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- =====================================================fieldID="14.025" fieldMnemonic="ASEG" == -->
+					<xsd:element ref="itl:FingerprintImageSegmentPositionPolygon" minOccurs="0" maxOccurs="4"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PalmprintImageType">
+		<xsd:complexContent>
+			<xsd:extension base="ansi-nist:NISTImageType">
+				<xsd:sequence>
+					<!-- =====================================================fieldID="XX.003" fieldMnemonic="IMP" == -->
+					<xsd:element ref="ansi-nist:FingerprintImageImpressionCaptureCategory"/>
+					<!-- =====================================================fieldID="13.013" fieldMnemonic="FGP" == -->
+					<!-- =====================================================fieldID="15.013" fieldMnemonic="PLP" == -->
+					<xsd:element ref="ansi-nist:PalmPosition" maxOccurs="unbounded"/>
+					<!-- =====================================================fieldID="13.024" fieldMnemonic="LQM" == -->
+					<!-- =====================================================fieldID="15.024" fieldMnemonic="PQM" == -->
+					<xsd:element ref="itl:PalmprintImageQuality" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+		
+	<xsd:complexType name="IrisImageType">
+		<xsd:complexContent>
+			<xsd:extension base="ansi-nist:NISTImageType">
+				<xsd:sequence>
+					<!-- =====================================================fieldID="17.003" fieldMnemonic="FID" == -->
+					<xsd:element ref="ansi-nist:IrisEyePosition"/>
+					<!-- =====================================================fieldID="17.014" fieldMnemonic="RAE" == -->
+					<xsd:element ref="ansi-nist:IrisEyeRotationAngleMeasure" minOccurs="0"/>
+					<!-- =====================================================fieldID="17.015" fieldMnemonic="RAU" == -->
+					<xsd:element ref="ansi-nist:IrisEyeRotationUncertaintyValueText" minOccurs="0"/>
+					<!-- ===========See complex in ansi-nist file ============================================ -->
+					<xsd:element ref="ansi-nist:IrisImageCapture" minOccurs="0" maxOccurs="unbounded"/>					
+					<!-- =====================================================fieldID="17.020" fieldMnemonic="ECL" == -->
+					<xsd:element ref="ansi-nist:IrisEyeColorAttributeCode" minOccurs="0"/>
+					<!-- =====================================================fieldID="17.025" fieldMnemonic="ALS" == -->
+					<xsd:element ref="ansi-nist:IrisImageAcquisitionLightingSpectrumValue" minOccurs="0"/>
+					<!-- =====================================================fieldID="17.026" fieldMnemonic="IRD" == -->
+					<xsd:element ref="itl:IrisDiameterPixelQuantity" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="FaceImageType">
+		<xsd:complexContent>
+			<xsd:extension base="ansi-nist:FaceImageType">
+				<xsd:sequence>
+					<!-- =====================================================fieldID="10.023" fieldMnemonic="PAS" == -->
+					<xsd:element ref="itl:FaceImageAcquisitionSource" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="UserDefinedDescriptiveTextType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="itl:DomainDefinedDescriptiveText"/>
+					<xsd:element ref="itl:OtherDescriptiveText" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="FingerprintImageSegmentPositionSquareType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:FingerPositionCode"/>
+					<xsd:element ref="ansi-nist:SegmentBottomVerticalCoordinateValue"/>
+					<xsd:element ref="ansi-nist:SegmentLeftHorizontalCoordinateValue"/>
+					<xsd:element ref="ansi-nist:SegmentRightHorizontalCoordinateValue"/>
+					<xsd:element ref="ansi-nist:SegmentTopVerticalCoordinateValue"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="FingerprintImageSegmentPositionPolygonType">
+		<xsd:complexContent>
+			<xsd:extension base="ansi-nist:FingerprintType">
+				<xsd:sequence>
+					<xsd:element ref="itl:PositionPolygonVertexQuantity"/>
+					<xsd:element ref="itl:PositionPolygonVertex" minOccurs="3" maxOccurs="99"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PositionPolygonVertexType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:PositionHorizontalCoordinateValue"/>
+					<xsd:element ref="ansi-nist:PositionVerticalCoordinateValue"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="FingerprintImageFingerMissingType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:FingerPositionCode"/>
+					<xsd:element ref="itl:FingerMissingCode"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="AMPCodeType">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="xsd:token">
+				<xsd:attributeGroup ref="s:SimpleObjectAttributeGroup"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="PalmprintImageQualityType">
+		<xsd:complexContent>
+			<xsd:extension base="ansi-nist:FingerprintPalmImagePositionType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:QualityAlgorithmProductIdentification"/>
+					<xsd:element ref="ansi-nist:QualityAlgorithmVendorIdentification"/>
+					<xsd:element ref="ansi-nist:QualityValue"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="FaceImageAcquisitionSourceType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:CaptureSourceCode"/>
+					<xsd:element ref="itl:CaptureSourceDescriptionText" minOccurs="0"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	
+	<!--  =============================== -->
+	<!-- CORRECTIONS TO NIEM 2.0 ELEMENTS  -->
+	<!--  =============================== -->
+	
+	<xsd:complexType name="MinutiaeType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="itl:MinutiaeNISTStandard"/>
+					<!-- ======================================================== fieldID="9.008" fieldMnemonic="CRP" == -->
+					<xsd:element ref="ansi-nist:MinutiaeFingerCorePosition" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- ======================================================== fieldID="9.009" fieldMnemonic="DLT" == -->
+					<xsd:element ref="ansi-nist:MinutiaeFingerDeltaPosition" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- ======================================================== fieldID="9.007" fieldMnemonic="FPC" == -->
+					<xsd:element ref="itl:MinutiaeFingerPatternDetail" minOccurs="0" maxOccurs="unbounded"/>
+					<!-- ======================================================== fieldID="9.006" fieldMnemonic="FGP" == -->
+					<xsd:element ref="ansi-nist:MinutiaeFingerPosition" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element ref="ansi-nist:MinutiaePalmPosition" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="NISTStandardMinutiaeType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<!-- ======================================================== fieldID="9.012" fieldMnemonic="MRC" == -->
+					<xsd:element ref="itl:MinutiaDetail" maxOccurs="unbounded"/>
+					<!-- ======================================================== fieldID="9.010" fieldMnemonic="MIN" == -->
+					<xsd:element ref="ansi-nist:MinutiaeQuantity"/>
+					<!-- ======================================================== fieldID="9.005" fieldMnemonic="OFR" == -->
+					<xsd:element ref="ansi-nist:MinutiaeReadingSystem" minOccurs="0"/>
+					<!-- ======================================================== fieldID="9.011" fieldMnemonic="RDG" == -->
+					<xsd:element ref="ansi-nist:MinutiaeRidgeCountIndicator"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:complexType name="MinutiaType">
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="ansi-nist:PositionHorizontalCoordinateValue"/>
+					<xsd:element ref="ansi-nist:PositionVerticalCoordinateValue"/>
+					<xsd:element ref="ansi-nist:MinutiaIdentification"/>
+					<xsd:element ref="ansi-nist:PositionThetaAngleMeasure"/>
+					<!--  ==Move 3 elements from NISTStandardMinutiaeType==== -->
+					<xsd:element ref="ansi-nist:MinutiaQualityValue" minOccurs="0"/>
+					<xsd:element ref="ansi-nist:MinutiaCategory" minOccurs="0"/>
+					<xsd:element ref="ansi-nist:MinutiaRidgeCount" minOccurs="0" maxOccurs="unbounded"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<xsd:complexType name="MinutiaeFingerPatternType">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:complexContent>
+			<xsd:extension base="s:ComplexObjectType">
+				<xsd:sequence>
+					<xsd:element ref="itl:FingerPatternCodeSourceCode"/>
+					<xsd:element ref="ansi-nist:FingerPattern"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="PCSCodeSimpleType">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:token">
+			<xsd:enumeration value="T">
+				<xsd:annotation>
+					<xsd:documentation>Pattern codes from Table 16</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+			<xsd:enumeration value="U">
+				<xsd:annotation>
+					<xsd:documentation>User-defined pattern codes</xsd:documentation>
+				</xsd:annotation>
+			</xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:complexType name="PCSCodeType">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:simpleContent>
+			<xsd:extension base="itl:PCSCodeSimpleType">
+				<xsd:attributeGroup ref="s:SimpleObjectAttributeGroup"/>
+			</xsd:extension>
+		</xsd:simpleContent>
+	</xsd:complexType>
+
+</xsd:schema>

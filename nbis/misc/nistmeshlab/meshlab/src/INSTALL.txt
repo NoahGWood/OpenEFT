@@ -1,0 +1,102 @@
+MeshLab (NIST modified version) Build Procedure
+===============================================
+
+Authors: Kenneth Ko
+	 John Grantham
+Date:    06/09/2011
+
+
+Description
+-----------
+This is the build procedure for MeshLab (NIST modified verion). 
+
+The MeshLab (NIST modified version) application is a PointCloud 
+visualization tool that reads an input file with NIST-specific PointCould 
+format and provides the user with pointcloud editing, filtering and 
+rendering capabilities. 
+
+
+Pre-requisites
+--------------
+MeshLab (NIST modified version) must be built using a C++ compiler 
+and a "make" build system. Directions are provided below for building 
+MeshLab (NIST modified version) on a Windows or Linux-based platform 
+(including Mac OSX).
+
+A C++ compiler and make build system are already included on most Linux-
+based platforms. Windows does not include these tools, so in order to 
+build MeshLab (NIST modified version) on the Windows platform, Microsoft
+Visual Studio 2008 or Microsoft Visual C++ 2008 Express Edition is required.
+
+Microsoft Visual C++ 2008 Express Edition is a FREE version of Microsoft's
+Visual C++ development tool, which includes a complete development
+environment with a compiler and make system. 
+
+Microsoft Visual C++ 2008 Express Edition is available for download from:
+http://www.microsoft.com/express/Downloads/
+
+MeshLab (NIST modified version) also requires the QT library, which is 
+available for all Windows and Linux-based platforms at:
+http://qt.nokia.com/downloads
+
+To install QT on the Windows platform, download the latest Windows
+Online Installer (or the full 1.5 GB package) and install with the 
+default settings. Once installed, add the following path to your PATH
+environment variable:
+
+C:\QtSDK\Desktop\Qt\4.7.3\msvc2008\bin
+(or the path to "qmake.exe" if installed to an alternate location)
+
+On some Linux-based platforms, the QT libraries can be installed
+automatically using a package manager, such as apt-get or yum.
+
+For example, you can install the QT Library on the Ubuntu Linux with
+the following command:
+
+> sudo apt-get install libqt4-dev
+
+
+Building MeshLab (NIST modified version) on a Linux-based platform
+------------------------------------------------------------------
+1) Build MeshLab (NIST modified version)'s included external dependencies:
+	> cd meshlab/src/external
+	> qmake -recursive external.pro 
+	> make
+
+2) Build the MeshLab (NIST modified version) application:
+	> cd ..
+	> qmake -recursive nistmeshlab.pro
+	> make
+
+
+Building MeshLab (NIST modified version) on Windows
+----------------------------------------------------
+
+1) Open a Microsoft Visual C++ command prompt or run "vcvars32.bat" from 
+the Microsoft Visual C++ installation directory. 
+	Example:
+	>> "C:\Program Files\Microsoft Visual Studio 9.0\vc\bin\vcvars32.bat"
+
+2) Build MeshLab (NIST modified version)'s included external dependencies: 
+	>> cd meshlab\src\external
+	>> qmake -recursive external.pro
+	>> nmake release
+
+3) Build the MeshLab (NIST modified version) application:
+	>> cd ..
+	>> qmake -recursive NISTmeshlab.pro
+	>> nmake release
+
+
+Running MeshLab (NIST modified version)
+---------------------------------------
+Once MeshLab (NIST modified version) has built successfully, the 
+application's executable can be found in the "distrib" sub-directory.
+
+For example, on Linux:
+	> cd distrib
+	> ./meshlab
+
+And, on Windows:
+	>> cd distrib
+	>> meshlab.exe

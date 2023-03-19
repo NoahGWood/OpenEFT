@@ -1,0 +1,6 @@
+pnn_tmat.bin - The transformation matrix used to convert
+               ridge flow features to inputs for the PNN
+               classifier.
+
+profvs.bin - The prototype (training) feature vectors.
+procls.asc - The classes for the prototype feature vectors.

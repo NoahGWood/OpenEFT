@@ -1,0 +1,62 @@
+<div class="step">
+    <div class="row">
+        <div class="col"></div>
+        <!-- TITLE -->
+        <div class="col-lg-4 offset-lg-1 mx-0 px-0">
+            <h2>Bio Information</h2>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <!-- FORMS -->
+        <div class="col"></div>
+        <div class="col-lg-7 mx-0 px-0">
+            <div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">State Born</span>
+                    <select class="form-select" name="state" id="state">
+                        {% include "partials/state.html" %}
+                    </select>
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Date of Birth</span>
+                    <input id="dob" type="date" name="dob">
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Race</span>
+                    <select class="form-select" name="race" id="race">
+                        {% include "partials/race.html" %}
+                    </select>
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Eye Color</span>
+                    <select class="form-select" name="eye" id="eye">
+                        {% include "partials/eye.html" %}
+                    </select>
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Hair Color</span>
+                    <select class="form-select" name="hair" id="hair">
+                        {% include "partials/hair.html" %}
+                    </select>
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Height</span>
+                    <input type="text" id="hgt" name="height" placeholder="511" data-toggle="tooltip"
+                        data-placement="top"
+                        title="3 Digits, First digit is feet, second digit is 10 inches, third digit is number of inches. (e.g. 5'11'' = 511)">
+                    <span class="input-group-text">Weight</span>
+                    <input type="text" id="wgt" name="weight" placeholder="190" data-toggle="tooltip"
+                        data-placement="top" title="Weight (lbs)">
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Sex</span>
+                    <select class="form-select" name="sex" id="sex">
+                        {% include "partials/sex.html" %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>

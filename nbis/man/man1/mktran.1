@@ -1,0 +1,72 @@
+.\" @(#)mktran.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH MKTRAN 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+mktran \- makes transform matrix from regional weights and
+eigenvectors.
+.SH SYNOPSIS
+.B mktran
+.I <regwts_file> <eigvecs_file> <n_eigvecs_use>
+.I <tranmat_file> <tranmat_file_desc> <ascii_outfile>
+.SH DESCRIPTION
+.B Mktran
+takes a matrix of regional weights, and a set of eigenvectors, and
+makes a transform matrix from the regional weights and the specified
+number of (first) eigenvectors.  The resulting matrix is suitable for
+transforming an orientation array into a low\-dimensional feature
+vector.
+.SH OPTIONS
+.TP
+.I <regwts_file>
+Regional weights file in PCASYS "matrix" format.  The dimensions must
+be 14x15, because that is the pattern of 2x2\-vector blocks of
+orientation vectors. (Usually the output of \fBoptrws\fR.)
+.TP
+.I <eigvecs_file>
+Eigenvectors file in PCASYS "matrix" format.  The first dimension is
+the number of eigenvectors contained in the file; the second dimension
+must be 1680, which is the dimension of an orientation array when it
+is thought of as a single vector. (Usually the output of \fBeva_evt\fR.)
+.TP
+.I <n_eigvecs_use>
+The number (first) eigenvectors to be used.  This will
+be the first dimension of the resulting transform matrix.
+.TP
+.I <tranmat_file>
+Transform file to be made, in PCASYS "matrix" format.  First dimension
+will be \fIn_eigvecs_use\fR and second dimension will be 1680.
+.TP
+.I <tranmat_file_desc>
+A string to be written into the transform matrix output file as its
+description string.  This string can be of any length, but must not
+contain embedded newline characters.  If it contains spaces, tabs, or
+shell metacharacters that are not to be expanded, then it should be
+quoted.  To leave the description empty, use '' (two single quotes,
+i.e.  single\-quoted empty string).  To let mktran make a description,
+use \- (hyphen).
+.TP
+.I <ascii_outfile>
+If y, makes an ascii output file; if n, binary.  Binary is
+recommended, unless the output file must be portable across different
+byte orders or floating\-point formats.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/mktran/mktran.src\fR:
+.PP
+.RS
+.B % mktran ../optrws/optrws.bin ../eva_evt/fv1-9.evt 64 fv1-9.opt - n
+.br
+Uses a set of optimized regional weights (\fIoptrws.bin\fR) to
+adjust a eigen-vector basis set (\fIfv1-9.evt\fR) and create
+a new transformation matrix (\fIfv1-9.opt\fR) that is used
+to reduce the dimensionality of the feature vectors.
+.SH "SEE ALSO"
+eva_evt (1B), lintran (1B), optrws (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

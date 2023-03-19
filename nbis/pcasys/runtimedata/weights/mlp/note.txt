@@ -1,0 +1,7 @@
+mlp_tmat.bin - The transformation matrix used to convert
+               ridge flow features to inputs for the MLP
+               classifier.
+
+mlp_wts.bin - Weights used by the MLP classifier. Obtained
+              by training on fv1-9.kls using the provided
+              spec file.

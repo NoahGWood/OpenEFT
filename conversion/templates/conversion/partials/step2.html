@@ -1,0 +1,28 @@
+{% load static %}
+<div class="step">
+   <div class="row">
+      <div class="col"></div>
+      <!-- TITLE -->
+      <div class="col-lg-4 offset-lg-1 mx-0 px-0">
+         <h2>Confirm Fingerprint Sections</h2>
+      </div>
+      <div class="col"></div>
+   </div>
+   <div class="row">
+      <!-- FORMS -->
+      <div class="col">
+         <img id="lslap" src="{% static 'loading.gif' %}" />
+      </div>
+      <div class="col">
+         <img id="thumb" src="{% static 'loading.gif' %}" />
+      </div>
+      <div class="col">
+         <img id="rslap" src="{% static 'loading.gif' %}" />
+      </div>
+   </div>
+</div>
+<style>
+   img {
+      width: 100%;
+   }
+</style>

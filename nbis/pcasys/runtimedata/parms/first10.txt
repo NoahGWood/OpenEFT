@@ -1,0 +1,10 @@
+Test_5.0.0/pcasys/data/images/s0024301.wsq
+Test_5.0.0/pcasys/data/images/s0024302.wsq
+Test_5.0.0/pcasys/data/images/s0024303.wsq
+Test_5.0.0/pcasys/data/images/s0024304.wsq
+Test_5.0.0/pcasys/data/images/s0024305.wsq
+Test_5.0.0/pcasys/data/images/s0024306.wsq
+Test_5.0.0/pcasys/data/images/s0024307.wsq
+Test_5.0.0/pcasys/data/images/s0024308.wsq
+Test_5.0.0/pcasys/data/images/s0024309.wsq
+Test_5.0.0/pcasys/data/images/s0024310.wsq

@@ -1,0 +1,46 @@
+.\" @(#)fixwts.1 2008/10/02 NIST
+.\" I Image Group
+.\" Craig I. Watson & C. L. Wilson
+.\"
+.TH FIXWTS 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+fixwts \- M-weighted robust weight filter from network activations.
+.SH SYNOPSIS
+.B fixwts
+.I <long_error_file> <output_pat_wts>
+.SH DESCRIPTION
+.B Fixwts
+creates a set of unequal pattern weights. The unequal pattern
+weights make the least squares function more efficient for
+non-standard distributions of the output errors by giving
+less weight to outliers in the distribution.
+.br
+[ref. D.F.Andrews, \fITechnometrics\fR, 16 (1974) 523.]
+.SH OPTIONS
+.TP
+.I <long_error_file>
+The long error output file from an MLP training run. (Usually
+the output of a training run for \fBmlp\fR.)
+.TP
+.I <output_pat_wts>
+The pattern weights to be used in the next MLP training
+run. It would replace "fg_pat_wts" in the example directory
+test/pcasys/execs/mlp/mlp_dir.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/fixwts/fixwts.src\fR:
+.PP
+.RS
+.B % fixwts ../mlp/mlp_dir/trn01l.err fixwts.out
+.br
+Takes the long error file (trn01l.err) from a mlp training run
+and computes a set of robust weights (fixwts.out) to use in the
+next training run.
+.SH "SEE ALSO"
+mlp (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

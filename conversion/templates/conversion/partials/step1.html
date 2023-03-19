@@ -1,0 +1,25 @@
+<div class="step">
+    <div class="row">
+        <div class="col"></div>
+        <!-- TITLE -->
+        <div class="col-lg-4 offset-lg-1 mx-0 px-0">
+            <h2>File Upload</h2>
+         </div>
+         <div class="col"></div>
+        </div>
+    <div class="row">
+        <!-- FORMS -->
+        <div class="col"></div>
+        <div class="col-lg-7 mx-0 px-0">
+            <div>
+               <form id="form1" method="POST" enctype="multipart/form-data" accept="image/*">
+               {% csrf_token %}
+                <!-- STEPS HERE -->
+                  <label for="formFileLg" class="form-label">FD-258 Scan</label>
+                  <input class="form-control form-control-lg" id="formFileLg" type="file" name="formFileLg">
+               </form>
+            </div>
+         </div>
+         <div class="col"></div>
+    </div>
+</div>

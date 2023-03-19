@@ -1,0 +1,249 @@
+Spectral Image Validation/Verification (SIVV) Utility
+=====================================================
+
+Author: John D. Grantham
+Date:	9/07/2011
+
+
+Description
+-----------
+
+The new SIVV Utility is built to detect the presence of 
+fingerprints within an image (using an algorithm described in 
+NISTIR 7599). SIVV utilizes the Open Computer Vision (OpenCV) 
+library and will accept any image formats compatible with OpenCV 
+(see SIVV man page for more info). The results returned by the 
+SIVV application include image and signal statistics which 
+indicate the presence or absence of a fingerprint within an 
+image, as well as (optionally) a graph of the image's signal 
+with pertinent features marked (if found).
+
+For more detailed information, please see NISTIR 7599 and the
+man page for the SIVV Utility. 
+
+
+Pre-requisites
+--------------
+
+Before building and running SIVV, you will need to first need to
+install the OpenCV library. OpenCV is available for download via
+SourceForge for both Windows and Linux platforms:
+
+http://sourceforge.net/projects/opencvlibrary/
+
+Once installed, you can test the correct installation and configuration 
+of OpenCV by building and running the sample programs included with OpenCV.
+
+In addition, depending on your platform (OS), you may need to install
+the following pre-requisites as well:
+
+Windows: Microsoft Visual C++ 2005 SP1 Redistributable Package
+	 http://www.microsoft.com/downloads/details.aspx?FamilyID=200b2fd9-ae1a-4a14-984d-389c36f85647&displaylang=en
+
+	 MinGW and MSYS
+	 http://www.mingw.org/wiki/MinGW
+	 http://www.mingw.org/wiki/msys
+
+Linux:	 GCC/G++ version 4.0 or better (included in most Linux distributions)
+	 http://gcc.gnu.org/
+	 
+
+Installing OpenCV (Windows)
+---------------------------
+
+1) Download the latest version from Sourceforge:
+
+http://sourceforge.net/projects/opencvlibrary/
+
+2) Run the executable to install
+
+3) Configure by adding the path to the OpenCV DLL's (ex: "C:\OpenCV2.1\bin") to the SYSTEM PATH 
+	>> Control Panel -> System Properties -> Environment Variables -> System variables
+
+4) Test your OpenCV installation by running the samples and/or correctness tests (cvtest, cxcoretest) in the OpenCV bin directory
+
+For more detailed and the most up-to-date information, please see the OpenCV Install Guide:
+
+http://opencv.willowgarage.com/wiki/InstallGuide
+
+
+Building a 64-bit version of the OpenCV library (Windows)
+---------------------------------------------------------
+
+For those interested in building a fully 64-bit version of SIVV, it is necessary to first build a 64-bit 
+version of OpenCV. This can be accomplished using the CMake GUI on Windows and following these steps:
+
+1) Install CMake v 2.8.
+2) Run CMake (gui) on OpenCV 2.1.0:
+	- Source code location: dir that contains CMakeLists.txt file.
+	- Where to build the binaries:  create an appropriate subdir.
+	- Configure CMake to use the compiler of choice.
+3) Click Configure button.
+4) Click Generate button.
+5) Build the OpenCV library using compiler specified during CMake process.
+
+Copy the resulting cxcore210 cv210 highgui210 libraries (.dll) to a directory in listed in the SYSTEM PATH.
+
+
+Installing OpenCV (Linux)
+-------------------------
+
+1) Install OpenCV pre-requisites
+	>> GCC/G++ version 4.0 or better (yum packages: gcc, gcc-c++)
+	>> Imaging packages (with source code)
+		-> JPEG		(yum packages: libjpeg, libjpeg-devel)
+		-> TIFF		(yum packages: libtiff, libtiff-devel)
+		-> Jasper	(yum packages: jasper, jasper-devel)
+		-> PNG		(yum packages: libpng, libpng-devel)
+		-> Zlib		(yum packages: zlib, zlib-devel)
+	>> Cmake 2.6 or better	(yum package: cmake)
+
+2) Download the latest version of OpenCV via SVN using the command:
+svn co https://code.ros.org/svn/opencv/trunk/opencv
+
+3) Configure OpenCV installation using Cmake
+	>> Create a subdirectory called "build" inside the OpenCV source directory (the directory containing INSTALL, CMakeLists.txt etc.)
+	>> Run cmake from inside the "build" directory
+		-> Example: cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
+	>> If Cmake configuration is sucessful and the pre-requisites are installed correctly, cmake should report that JPEG, PNG, TIFF, JPEG2000 are "TRUE" in the summary report
+
+4) Build OpenCV using "make" and install using "sudo make install"
+
+5) Make sure that the environment variable LD_LIBRARY_PATH is confiugred properly
+	>> If not, configure the path:
+		-> export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+		-> sudo ldconfig
+		-> add the above export line to .bash_profile (or equivalent)
+
+6) Test your OpenCV installation by running the samples and/or correctness tests (cvtest, cxcoretest) in the bin directory (inside the build directory)
+
+For more detailed and the most up-to-date information, please see the OpenCV Install Guide:
+
+http://opencv.willowgarage.com/wiki/InstallGuide
+
+
+Building SIVV
+-------------
+
+Example compiler commands are listed below. Please note that the 
+paths used in the examples may differ from the paths on your system.
+
+g++ -c -o SIVVCore.o SIVVCore.cpp -I../include -I/usr/local/include/opencv 
+g++ -c -o SIVVGraph.o SIVVGraph.cpp -I../include -I/usr/local/include/opencv 
+g++ -c -o SIVVUtility.o SIVVUtility.cpp -I../include -I/usr/local/include/opencv
+g++ -o SIVVUtility SIVVUtility.o SIVVCore.o SIVVGraph.o -L/usr/local/lib -lcxcore -lcv -lhighgui
+
+*MinGW*
+g++ -c -o SIVVCore.o SIVVCore.cpp -I"..\include" -I"C:\OPENCV2.1\include\opencv"
+g++ -c -o SIVVGraph.o SIVVGraph.cpp -I"..\include" -I"C:\OPENCV2.1\include\opencv"
+g++ -c -o SIVVUtility.o SIVVUtility.cpp -I"..\include" -I"C:\OPENCV2.1\include\opencv"
+g++ -o SIVVUtility.exe SIVVUtility.o SIVVCore.o SIVVGraph.o -L"C:\OpenCV2.1\lib" -lcxcore210 -lcv210 -lhighgui210 
+
+
+Running SIVV
+------------
+
+SIVV will accept any image formats compatible with OpenCV (see
+SIVV man page for more info). The results returned by the SIVV 
+application include image and signal statistics which indicate 
+the presence or absence of a fingerprint within an image, as 
+well as (optionally) a graph of the image's signal with pertinent 
+features marked (if found).
+
+USAGE: [EXECUTABLE] image_filename [FLAGS]
+
+FLAGS:
+
+-nowindow                = Turn windowing off (on by default)
+-windowtype [name]       = Set window type to either "blackman" or "tukey"
+			   (default is blackman)
+-smooth [value]          = Turn smoothing off (value <= 1)
+                           or set width of moving average (value > 1)
+                           (smoothing value default is 7)
+-verbose                 = Turn "verbose" mode on (off by default)
+-nocenter                = Turn "autocentering" off (on by default)
+-textonly                = Turn on "textonly" mode for text-only output
+                           (off by default)
+-quiet                   = Turn on "quiet" mode for no screen output
+                           (implies "textonly" and overrides "verbose",
+                           off by default)
+-ROI [X1] [Y1] [X2] [Y2] = Set Region Of Interest to a rectangular area
+                           specified by (X1,Y1) and (X2,Y2)
+                           (X1,Y1) and (X2,Y2) can be any two diagonally
+                           opposite corners of the rectangular area
+                           Setting the ROI flag implies the "-nocenter" flag
+-signaltofile [FILE]     = Write full 1D signal to specified file
+                           (comma-separated values)
+-graphtofile [FILE]      = Save graph of 1D signal to specified file
+                           (must be BMP, TIFF, PNG, or JPEG -- PNG recommended)
+-histtofile [FILE]       = Write full histogram of image to specified file
+                           (comma-separated values with header row)
+-faildir "[DIRECTORY]"   = Path to directory in which to place copies of images
+                           which produce no peaks in SIVV signal
+                           (annotated with box indicating ROI processed)
+                           NOTE: Path should be placed inside quotes ("")
+
+
+EXAMPLES:
+---------
+
+"SIVVUtility ../data/images/card0001_01.bmp"
+
+Runs the full SIVV process using the default values and prints a vector
+of image statistics indicitive of the presence (or absense) of a 
+fingerprint within the image, as well as a graph representing the 1D 
+spectral summary signal.
+
+"SIVVUtility ../data/images/card0001_01.bmp -textonly"
+
+Runs the full SIVV process using the default values and prints a vector
+of image statistics indicitive of the presence (or absense) of a 
+fingerprint within the image.
+
+"SIVVUtility ../data/images/card0001_01.bmp -nowindow -verbose -ROI 150 100 500 400"
+
+Runs the SIVV process without autocentering or the application of the window 
+function only on the rectangular portion of the image within the coordinates 
+of (150, 100) and (500, 400). 
+
+"SIVVUtility ../data/images/card0001_01.bmp -smooth 1"
+
+Runs the SIVV process without any smoothing applied to the image signal
+
+"SIVVUtility.exe ../data/images/card0001_01.bmp -signaltofile sivv_output.txt"
+
+Runs the SIVV process and writes the signal values to sivv_output.txt.
+
+"SIVVUtility.exe ../data/images/card0001_01.bmp -histtofile sivv_histogram.txt"
+
+Runs the SIVV process and writes the signal values to sivv_histrogram.txt.
+
+"SIVVUtility -h"
+
+Prints the usage instructions for SIVV
+
+
+RESULTS / OUTPUT
+----------------
+
+SIVV returns results in the form of a string (or vector) of image statistics which
+indicate the presence or absence of a fingerprint in the input image. These statistics 
+consist of the following, in order:
+
+(1) image file name
+(2) ordinal location of the maximum peak among the array of peaks returned by the peak finder
+(3) number of peaks returned by the peak detector
+(4) power difference (dy) between the maximum peak and the signal minimum (valley) immediately preceding it
+(5) frequency difference (dx) between the valley and peak
+(6) slope between the valley and peak (dy/dx)
+(7) frequency of the midpoint between the valley and the peak
+(8) frequency of the peak only
+
+
+More Information
+----------------
+
+For more detailed information on running SIVV, please see the SIVV man page.
+
+For more detailed information on the SIVV algorithm, please see NISTIR 7599:
+http://www.mel.nist.gov/publications/get_pdf.cgi?pub_id=903078

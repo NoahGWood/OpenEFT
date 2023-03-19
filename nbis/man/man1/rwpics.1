@@ -1,0 +1,104 @@
+.\" @(#)rwpics.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH RWPICS 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+rwpics \- makes pictures of regional weights or gradients.
+.SH SYNOPSIS
+.B rwpics
+.I <rwfile_in[rwfile_in...]> <rws|eg|seg> <outpics_dir>
+.SH DESCRIPTION
+.B Rwpics
+reads a set of PCASYS "matrix" format files each of size 14 x 15.  The
+input files either should be a set of points in regional weights space
+(in particular, basepoints produced by the optimize regional weights
+command optrws), or they should be a set of estimated gradients of the
+activation error (also produced by optrws).  Makes a corresponding set
+of IHead format image files depicting the weights points or
+gradients; these image files can then be displayed using dpyimage.
+Rwpics can be used as a sanity check on whether optrws is
+working properly, and to help decide when the time has come that it is
+reasonable to stop an optrws run because further significant change of
+the weights seems unlikely.
+.SH OPTIONS
+.TP
+.I <rwfile_in[rwfile_in...]>
+The pcasys "matrix" format file(s) to be depicted.  Either they should
+each be a basepoint of the optrws optimization (point in
+regional weights space), or they should each be an estimated
+gradient, also produced by optrws.  In either case, they must
+be matrices of size 14 x 15, corresponding to the weights, each of
+which is associated with one 2 x 2 vector block of the 28 x 30
+pattern of orientation vectors. (Usually the output of \fBoptrws\fR.)
+.TP
+.I <rws|eg|seg>
+A code telling rwpics what kind of pictures to make:
+
+If rws ("regional weights"), the program makes a grayscale picture
+that is reasonable if the input file represents a set of regional
+weights, e.g. one of the bspt files produced by an optrws run.  To do
+so, it linearly maps absolute values of input values to gray tones,
+setting the mapping so that 0. maps to black and the maximum absolute
+value across all components of all input matrices, to white.  Absolute
+values are the reasonable thing to depict when examining a point in
+regional-weights space, since the sign of a regional weights has no
+effect on the PNN classifier.  (Optimization may sometimes cause some
+unimportant outer weights to be slightly negative.)  The mapping is
+adapted to the maximum absolute value across all input files, rather
+than being separately adapted for each input file; this is done so
+that the several resulting pictures can be examined side by side with
+the knowledge that all gray tones are on the same scale.
+
+If eg ("estimated gradient"), the program makes a grayscale picture
+that is reasonable if the input file represents an estimated gradient
+of the error function, e.g. one of the egrad files produced by an
+optrws run.  To do so, it affinely maps input values to gray tones,
+setting the mapping so that the minimum input value across all input
+files is mapped to white and the maximum input value, to black.
+
+If seg ("sign of estimated gradient"), the program makes a
+grayscale-binary (ie. 0 and 255 pixel values) picture that is
+reasonable if the input file represents an estimated gradient
+of the error function.  To do so, it maps negative values to white (255)
+and nonnegative values to black (0).  This is interesting because if
+the component of the estimated gradient (i.e., the estimated partial
+derivative) associated with a region is negative, that shows that the
+weight for this region should be increased (and will be increased by
+optrws).
+.TP
+.I <outpics_dir>
+The directory in which the program should produce its output files,
+which will be raster images in the NIST IHead format.  (The directory
+must already exist, i.e. rwpics does not produce it.) Each output
+file's name is produced by taking the last component of the
+corresponding input file and appending an underscore, then the
+rws|eg|seg code, then .pct (the standard IHEAD file suffix).  The
+output image files may be examined using the dpyimage command.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/rwpics/rwpics.src\fR:
+.PP
+.RS
+.B % rwpics ../optrws/optrws.bin rws rwpics
+.br
+Produces an image of the optimized regional weights, which
+can be converted to JPEG format using the \fBcjpegb\fR command.
+.PP
+.B % rwpics ../optrws/optdir/egrad_1.bin eg rwpics
+.br
+Produces an image of the estimated gradient, which
+can be converted to JPEG format using the \fBcjpegb\fR command.
+.PP
+.B % rwpics ../optrws/optdir/egrad_1.bin seg rwpics
+.br
+Produces an image of the sign of estimated gradient, which
+can be converted to JPEG format using the \fBcjpegb\fR command.
+.SH "SEE ALSO"
+dpyimage (1B), optrws (1B), cjpegb (1G)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

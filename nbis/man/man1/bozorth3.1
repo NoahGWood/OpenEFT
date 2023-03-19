@@ -1,0 +1,246 @@
+.\" @(#)bozorth3.1 2004/09/24 NIST
+.\" I Image Group
+.\" Stanley A. Janet
+.\"
+.TH BOZORTH3 1E "24 September 2004" "NIST" "NBIS Reference Manual"
+
+
+.SH NAME
+bozorth3 \- Computes match scores between fingerprints
+
+
+.\" [\fIFILE\fR]...
+
+
+.SH SYNOPSIS
+.br
+.B bozorth3
+[\fIoptions\fR]
+.I probe-file.xyt
+.I gallery-file.xyt
+.I ...
+.br
+.B bozorth3
+.RI [ options ]
+.BI \-M " mates.lis"
+.br
+.B bozorth3
+.\" .RI [ options ]
+[\fIoptions\fR]
+.BI \-P " probe.lis"
+.I gallery*.xyt
+.br
+.B bozorth3
+.RI [ options ]
+.BI \-G " gallery.lis"
+.I probe*.xyt
+.br
+.sp
+.B bozorth3
+.\" .RI [ options ]
+[\fIoptions\fR]
+.BI \-p " probe-file.xyt"
+.I gallery*.xyt
+.br
+.B bozorth3
+.RI [ options ]
+.BI \-p " probe-file.xyt " \-G " gallery.lis"
+.br
+.B bozorth3
+.RI [ options ]
+.BI \-g " gallery-file.xyt"
+.I probe*.xyt
+.br
+.B bozorth3
+.RI [ options ]
+.BI \-g " gallery-file.xyt " \-P " probe.lis"
+.br
+
+.SH DESCRIPTION
+The program
+.I bozorth3
+computes match scores from fingerprint minutiae files. The files
+are expected to be in xyt-format, a simple text file format that is
+produced by the minutiae detector program \fImindtct\fR, which is
+also part of the NFIS distribution.
+
+By default, each pair of arguments on the command line is considered
+to be a probe file and a gallery file, in that order, that are to be
+matched to yield a score of similarilty. The higher the score, the more
+closely the minutiae in them match. The match score for known mates
+is often close to the number of minutiae in the probe or gallery file,
+but it can be lower or higher than that number, sometimes much higher.
+
+There are two main mechanisms that allow running the \fIbozorth3\fR
+matcher other than by simply specifying pairs of xyt-files on the
+command line.  The mechanisms are useful or necessary under several
+circumstances.  For example, with large data sets, the number of
+pairs of files to be matched could easily exceed the maximum size
+the user's shell permits on a command line, or that's permitted by
+\fIexec*()\fP system calls.  And there are cases where it's just more
+logical to have input filenames stored in a file.  So one mechanism
+uses \fIlist files\fR \(em they contain xyt-filenames, one per line,
+with newline characters as line-endings.  The other mechanism fixes
+the probe (or gallery) file for an entire run, so that the filename
+doesn't have to be specified over and over again.
+
+One form of the list file mechanism allows the pairs of files to be
+read from a single file.  The \fI-M mates.lis\fR option requires
+a single list file of filenames to be matched against each other.
+The probe filenames are on the odd lines, and the gallery filenames
+are on the even lines.
+
+Similarly, the \fI-P probes.lis\fR option specifies that the probe
+filenames are in the file, and the gallery filenames come from the
+command line. The \fI-G gallery.lis\fR option specifies just the
+opposite. Both options may be present, in which case all filenames
+will be read from the two files, and there will be no xyt-files on
+the command line.
+
+The other subset of mechanisms fix a single file to be matched against
+a gallery (or probe) set of any size. For example, \fI-p probe-file\fR
+fixes the probe file for the entire run; it will be matched against
+a gallery consisting of all other files on the command line (or, if
+\fI-G gallery.lis\fR is specified, against a gallery read from a file).
+
+The \fI-g gallery-file\fR option specifies just the opposite. While
+it may seem illogical to reverse the notion of probe and gallery files
+by allowing a single gallery file to be compared against a probe set,
+it's allowed both for consistency and to make it easier to test how
+close scores are when the files are matched in reverse order.
+
+Fixing both the probe and gallery file is legal, but it's equivalent
+to having just a single pair of filenames on the command line without
+the \fI-p\fR and \fI-g\fR.
+
+The score for a probe file \fIa\fR matched to a gallery file \fIb\fR
+is often identical to the score for \fIb\fR matched to \fIa\fR. One
+one data set, the scores were the same more than 75% of the time,
+and only a very small number were different by more than 3.
+
+.SH "Minutiae file format"
+
+Each line in a minutiae file contains three integers, representing the
+x- and y-coordinates and direction of the minutiae, and an optional
+fourth column of integers representing the quality of the minutiae
+at those coordinates.  If the quality column isn't present in a file,
+all minutiae are assumed to be of the same quality.
+
+A finger typically has 40-80 minutiae. Any automated minutiae extractor
+will, of course, flag some things as minutiae that aren't. To work
+with highly sensitive minutiae detectors such as \fImindtct\fR, the
+\fIbozorth3\fR matcher allows each xyt-file to contain as many as 1000
+minutiae lines.  However, by default, only the 150 highest-quality
+minutiae are used to compute the match score.  That number may be
+changed to any number from 0 to 200.  If multiple minutiae have the
+same quality value at the cut-off point, the tie-breaking method is
+simple truncation of the list, sorted by quality but with an undefined
+sort order among its equal-quality elements.
+
+The optimal number of minutiae that should be used depends on the
+fingerprint images and the minutiae detector that processes them. Using
+more than is necessary typically reduces the accuracy of the matcher
+and increases its run time.
+
+To compute a match score between two fingerprints, both sets must have
+at least a minimum number of minutiae.  That number is 10 by default,
+and can be changed to any non-zero integer.  Otherwise the computation
+returns a match score of 0.
+
+.SH OPTIONS
+The command line options can be logically grouped into
+four classes:
+
+.SH "General options"
+.TP
+-h
+Print a help screen detailing the command line options.
+.TP
+-version
+Print ANSI/NIST stardand and NBIS software version.
+.TP
+-v
+Enable verbose mode.
+.TP
+-A verbose=<section>
+Enable verbose mode in a section of the code; the recognized sections
+are: main, load, bozorth, threshold.
+
+
+.SH "Input options"
+.TP
+-m1
+all xyt files use representation according to ANSI INCITS 378-2004. This
+flag must be used if it was used by the \fBmindtct\fR algorithm when extracting
+the minutiae points.
+.TP
+-n max-minutiae
+Set maximum number of minutiae to use from any file [150];
+the legal range is [0,200].
+.TP
+-A minminutiae=#
+Set minimum number of minutiae required for the match score to be more than 0 [10].
+.TP
+-A maxfiles=#
+Set maximum number of files in any gallery, probe, or mates list file [10000].
+.TP
+-A plines=#-#
+Process a subset of files in the probe file.
+.TP
+-A glines=#-#
+Process a subset of files in the gallery file.
+.TP
+-A dryrun
+Test mode only. Do not compute and print any match scores, just print the
+filenames between which match scores would be computed.
+
+
+.SH "Thresholding options"
+.TP
+-T threshold
+Set match score threshold. By default, all match scores are
+printed. However, when a threshold specified, only match scores
+meeting or exceeding that value are printed.
+.TP
+-q
+Quit processing the probe file when a gallery file
+is found for which the match score meets or exceeds the specified threshold.
+
+.SH "Output options"
+.TP
+-A nooutput
+Compute match scores, but don't print them.
+.TP
+-A outfmt=[spg]*
+Output lines will contain (s)core, (p)robe and/or 
+(g)allery filename. By default, only scores are output.
+.TP
+-O score-dir
+Set the directory to write score files in.
+.TP
+-o score-file
+Set the filename to store scores in.
+.TP
+-e stderr-file
+Set the filename to store all other output in.
+.TP
+-b
+Use the default Standard I/O buffering to print the
+match scores. This is equivalent to line-buffering
+when the output is being printed to a terminal,
+and to block-buffering when the output is being printed
+to a file.
+.TP
+-l
+Use line-buffering to print the match scores.
+By default, output lines are stored and printed
+just prior to the \fIbozorth3\fP exiting.
+
+
+.SH SEE ALSO
+.B mindtct (1C)
+
+
+.SH AUTHOR
+Allan S. Bozorth of the FBI; modified by Michael Garris 
+and Stan Janet, both of NIST/ITL/DIV894/Image Group.

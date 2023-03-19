@@ -1,0 +1,2 @@
+ARCH_FLAG = 
+ARCH_FLAG =  -fPIC

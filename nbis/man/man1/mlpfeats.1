@@ -1,0 +1,52 @@
+.\" @(#)mlpfeats.1 2008/10/02 NIST
+.\" I Image Group
+.\" Craig I. Watson & C. L. Wilson
+.\"
+.TH MLPFEATS 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+mlpfeats \- converts PCASYS formatted feature files into
+the format compatible with the mlp command line function.
+.SH SYNOPSIS
+.B mlpfeats
+.I <feats_file> <class_file> <mlp_feats_file>
+.SH DESCRIPTION
+.B Mlpfeats
+is used to convert a PCASYS formatted feature
+file from the lintran function into the format used by the
+mlp command. PCASYS keeps the feature file and class file in
+separate files and mlp stores them in a single file with
+different header information format. At this point it was decided to
+just convert the format from PCASYS features to mlp features
+file format, any future release may try and resolve this
+problem into a single format.
+.SH OPTIONS
+.TP
+.I <feats_file>
+The PCASYS formatted features file. (Usually the output of
+\fBlintran\fR.)
+.TP
+.I <class_file>
+The PCASYS formatted class file.
+.TP
+.I <mlp_feats_file>
+The MLP features file to be written, containing the PCASYS formatted
+feature and class files merged into a single MLP formatted file.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/mlpfeats/mlpfeats.src\fR:
+.PP
+.RS
+.B % mlpfeats ../lintran/fv1-9mlp.kls ../../data/oas/fv1-9.cls fv1-9mlp.kls
+.br
+Converts the feature file from the PCASYS file format to the mlp
+data file format (combines class and features into a single file.)
+It is unfortunate that two file formats exist but for now it is
+easier to keep both formats around.
+.SH "SEE ALSO"
+lintran (1B), mlp (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

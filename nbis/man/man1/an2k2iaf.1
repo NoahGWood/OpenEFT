@@ -1,0 +1,69 @@
+.\" @(#)an2k2iaf.1 2008/10/02 NIST
+.\" I Image Group
+.\" Michael D. Garris
+.\"
+.TH AN2K2IAF 1F "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+an2k2iaf \- Modifies minutiae and fingerprint image records
+in an ANSI/NIST 2007 file to meet FBI/IAFIS specifications.
+.SH SYNOPSIS
+.B an2k2iaf
+.I <file in>
+.I <file out>
+.SH DESCRIPTION
+.B An2k2iaf
+parses a standard  compliant ANSI/NIST-ITL 1-2007 file
+and, if necessary, converts specific records and fields
+to meet FBI/IAFIS specifications.
+Please note that this utility does not
+exhaustively validate the output to ensure compliant
+FBI/IAFIS transactions, rather it focuses on the
+format of minutiae and image records.
+
+Minutiae fields:
+.br
+When a Type-9 record is encountered in the input file,
+this utility checks to see which fields are populated.
+If the NIST-assigned fields 5-12 are populated, but the
+FBI/IAFIS-assigned fields 13-23 are empty, then the
+FBI/IAFIS fields are populated by translating the data
+recorded in the NIST fields, and the NIST fields are
+removed.
+
+Image records:
+.br
+FBI/IAFIS specifications (EFTS V7) require binary field
+images; therefore, this utility looks for tagged field
+fingerprint records and converts them appropriately.  If a
+Type-13 or Type-14 record is encountered, it is inspected to
+determine if the image is bi-level or grayscale and to
+see what scan resolution and image compression was used.
+Records containing bi-level images scanned at 19.69 ppmm
+(500 ppi) and either WSQ-compressed or uncompressed
+are converted to Type-6 records; records containing grayscale
+images scanned at 19.69 ppmm and either WSQ-compressed or
+uncompressed are converted to Type-4 records; otherwise,
+the tagged field image record is ignored.
+
+.SH OPTIONS
+.TP
+.I <file in>
+the ANSI/NIST file to be converted
+.TP
+.I <file out>
+the resulting ANSI/NIST file
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version
+
+.SH EXAMPLES
+From \fItest/an2k/execs/an2k2iaf/an2k2iaf.src\fR:
+.PP
+.RS
+.B % an2k2iaf ../../data/nist.an2 iafis.an2
+.SH SEE ALSO
+.BR iaf2an2k (1F),
+.BR mindtct (1C)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

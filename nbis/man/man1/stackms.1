@@ -1,0 +1,68 @@
+.\" @(#)stackms.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH STACKMS 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+stackms \- stacks PCASYS formatted matrix files together.
+.SH SYNOPSIS
+.B stackms
+.I <matrixfile_in[matrixfile_in...]> <matrixfile_out>
+.I <matrixfile_out_desc> <ascii_outfile messages>
+.SH DESCRIPTION
+.B Stackms
+stacks together several PCASYS "matrix" files: produces a file whose
+matrix has, as its rows, the rows of all the input matrices. All input
+matrices must have the same second dimension.  (The standard "cat"
+(catenate files) command is insufficient for proper stacking of matrix
+files, since the files contain header information and not just the
+rows of entries.)
+.SH OPTIONS
+.TP
+.I <matrixfile_in[matrixfile_in...]>
+The matrix files to be read.  (Can be ascii or binary, and they don't
+all have to have the same ascii/binary setting.)  All must have the
+same second dimension.
+.TP
+.I <matrixfile_out>
+The matrix file to be written.  Its rows will be the rows of all the
+input matrices.
+.TP
+.I <matrixfile_out_desc>
+A string to be written into the output matrix file as its description
+string; must contain no embedded newline characters.  If it contains
+spaces, tabs, or shell metacharacters that are not to be expanded,
+then it should be quoted.  To leave the description empty, use '' (two
+single quote marks, i.e. a single\-quoted empty string).  To let
+stackms make the description (stating that the file was made by
+stackms, and listing the names of the input files), use \- (hyphen).
+.TP
+.I <ascii_outfile>
+If y, stackms makes an ascii output file; if n, it makes a binary
+output file.  Binary is recommended, unless the output file must be
+portable across different byte orders or floating\-point formats.
+.TP
+.I <messages>
+If y, stackms writes a progress message to the standard output each
+time it is about to start reading a new input file; if n, no messages.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/stackms/stackms.src\fR:
+.PP
+.RS
+.B % stackms ../meancov/fv1.men ../meancov/fv2.men tst.men - n y
+.br 
+Combines the mean files \fIfv1.men\fR and \fIfv2.men\fR into
+a single file.  This is only and example, the \fBcmbmcs\fR should
+be used to combine mean files.  The mean files were used to preserve
+disk space.  The \fBstackms\fR in practice is used to combine feature
+vector files (ie. where one wants to stack the data in the files).
+.SH "SEE ALSO"
+asc2bin (1B), bin2asc (1B)
+
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

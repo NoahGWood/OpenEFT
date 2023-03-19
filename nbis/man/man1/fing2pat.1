@@ -1,0 +1,61 @@
+.\" @(#)fing2pat.1 200/10/02 NIST
+.\" I Image Group
+.\" Michael Garris
+.\" Elham Tabassi
+.\"
+.TH FING2PAT 1D "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+fing2pat \- Takes a list of fingerprint images and creates a
+feature vector file that can be used in MLP training for the NFIQ
+algorithm.
+
+.SH SYNOPSIS
+.B fing2pat
+.I [-z <znormfile>]
+.I <image&class list>
+.I <binpats out>
+
+.SH DESCRIPTION
+.B Fing2pat
+Takes a list of grayscale fingerprint images, and for each image,
+computes a feature vector for use by the NFIQ algorithm for MLP
+training. \fBFing2pat\fR gives the user the ability to create
+feature vector files that can be used to retrain the weights used
+by the MLP classifier in determining a fingerprint's image quality
+value. These could then be used by \fBnfiq\fR instead of the default
+weights.
+
+.SH OPTIONS
+.TP
+.I [-z <znormfile>]
+if set the feature vectors are ZNormalized based on the statistics provided
+in the znormfile.
+.TP
+.I <image&class list>
+file list of the fingerprint images and their corresponding class to
+be used for MLP training.
+.TP
+.I <binpats out>
+file where the feature vectors are written
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/nfiq/execs/fing2pat/fing2pat.src\fR:
+.PP
+.RS
+.B fing2pat -z ../../../../nfiq/znorm.dat imgcls.lst norm.bin
+.br
+
+NOTE: The classes assigned in the file imgcls.lst are not REAL
+they are just made up for this example.
+
+.SH SEE ALSO
+.BR znormdat (1D),
+.BR znormpat (1D),
+.BR nfiq (1D),
+.BR mlp (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

@@ -1,0 +1,15 @@
+# Default values of additional parms needed by mkoas (make
+# orientation arrays command), besides the parms whose names (and
+# default values) are shown in oas.prs.  This file also has
+# comments mentioning the two parms that have no defaults; their values
+# must be specified in the user parms file.
+
+ascii_oas n         # n means non-ascii, i.e., binary
+update_freq 1       # frequency of progress messages
+clobber_oas_file n  # n means do not overwrite oas_file if it already
+                    #   exists
+
+# No default for: proc_images_list, the list of fingerprint images
+#   to make orientation arrays from.
+# No default for: oas_file, the output file that is to be produced
+#   containing orientation arrays.

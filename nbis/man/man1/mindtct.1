@@ -1,0 +1,240 @@
+.\" @(#)mindtct.1 2008/10/02 NIST
+.\" I Image Group
+.\" Michael D. Garris
+.\"
+.TH MINDTCT 1C "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+mindtct \- detects minutiae from a fingerprint image that is either
+an ANSI/NIST 2007 formatted file or a WSQ compressed file.
+.SH SYNOPSIS
+.B mindtct
+.I [-b]
+.I [-m1]
+.I <finger_img_in>
+.I <oroot>
+.SH DESCRIPTION
+.B Mindtct
+takes either a WSQ compressed image file or parses a standard
+compliant ANSI/NIST-ITL 1-2007 file searching for the first
+occurrence of a grayscale fingerprint image record. The fingerprint
+image is processed and minutiae are automatically detected.
+
+If the input file was in ANSI/NIST 2007 format the minutiae results
+are formatted and stored using the NIST fields 5-12 in a Type-9 record.
+Upon successful completion, the input ANSI/NIST record sequence is
+augmented with two new records, the Type-9 minutiae record and a
+tagged field image record containing the results of image binarization.
+This augmented record sequence is then written to the output file
+<oroot>.mdt. The minutiae values are also written to a text file
+<oroot>.xyt in "x y theta quality" format. This <oroot>.xyt file
+is the format used by the bozorth3 matcher.
+
+If the input image is a WSQ compressed file the minutiae are only written
+to the text file <oroot>.xyt. In addition a file called <oroot>.brw
+is created which is a raw pixel file of the binarized image
+created by mindtct when detecting the minutiae points.
+
+The default is minutiae points computed based on the pixel origin being
+at the bottom left of the image and directions are pointing out and away
+from the ridge ending or bifurcation valley.
+
+.B Mindtct
+also generates the following text files in the current
+working directory: \fI<oroot>.dm\fR, \fI<oroot>.hcm\fR, \fI<oroot>.lcm\fR,
+\fI<oroot>.lfm\fR, \fI<oroot>.qm\fR, and \fI<oroot>.min\fR.
+These files are described below.
+
+.SH OPTIONS
+.TP
+.I [-b]
+perform image enhancement on low contrast images.  Only affects low
+contrast images, others are unchanged.
+.TP
+.I [-m1]
+write the minutiae points (in files <oroot>.{mdt,xyt,min}) according to
+ANSI INCITS 378-2004. This format has the pixel origin at the top left of the
+image and directions are pointing up the ridge ending or bifurcation valley.
+The default for \fBmindtct\fR has the pixel origin at the bottom left of
+the image and directions are pointing out and away from the ridge ending
+or bifurcation valley. NOTE: If this flag is used when extracting the
+mintuiae points it must also be used with the \fBbozorth3\fR matcher.
+
+.TP
+.I <finger_img_in> 
+the fingerprint file to be processed
+.TP
+.I <oroot>
+the root name for the output files (<oroot>.???)
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH TEXT OUTPUT FILES
+.TP
+.I <oroot>.dm
+The \fIDirection Map\fR represents the direction of ridge flow within
+the fingerprint image.  The map contains a grid of integer directions,
+where each cell in the grid represents an 8x8 pixel neighborhood
+in the image.  Ridge flow angles are quantized into 16 integer
+bi-directional units equally spaced on a semicircle.  Starting with
+vertical direction 0, direction units increase clockwise and
+represent incremental jumps of 11.25 degrees, stopping at direction
+15 which is 11.25 degrees shy of vertical.  Using this scheme, direction
+8 is horizontal.  A value of -1 in this map represents a neighborhood
+where no valid ridge flow was determined.
+.TP
+.I <oroot>.hcm
+The \fIHigh-Curvature Map\fR represents areas in the image having
+high-curvature ridge flow.  This is especially true of core and delta
+regions in the fingerprint image, but high-curvature is not limited
+to just these cases.  This is a bi-level map with same dimension as
+the Direction Map.  Cell values of 1 represent 8x8 pixel
+neighborhoods in the fingerprint image that are located within
+a high-curvature region, otherwise cell values are set to 0.
+.TP
+.I <oroot>.lcm
+The \fILow-Contrast Map\fR represents areas in the image having
+low-contrast.  The regions of low contrast most commonly represent
+the background in the fingerprint image.  This is a bi-level map with
+same dimension as the Direction Map.  Cell values of 1
+represent 8x8 pixel neighborhoods in the fingerprint image that are
+located within a low-contrast region, otherwise cell values are set to 0.
+.TP
+.I <oroot>.lfm
+The \fILow-Flow Map\fR represents areas in the image having
+non-determinable ridge flow.  Ridge flow is determined using a set
+of discrete cosine wave forms computed for a predetermined range
+of frequencies.  These wave forms are applied at 16 incremental
+orientations.  At times none of the wave forms at none of the
+orientations resonate sufficiently high within the region in the
+image to satisfactorily determine a dominant directional frequency.
+This is a bi-level map with same dimension as the Direction Map.
+Cell values of 1 represent 8x8 pixel neighborhoods in the fingerprint
+image that are located within a region where a dominant directional
+frequency could \fInot\fR be determined, otherwise cell values are set to 0.
+The Direction Map also records cells with non-determinable ridge
+flow.  The difference is that the Low-Flow Map records \fIall\fR cells
+with non-determinable ridge flow, while the Direction Map records
+only those that remain non-determinable after extensive \fIinterpolation\fR
+and \fIsmoothing\fR of neighboring ridge flow directions.
+.TP
+.I <oroot>.qm
+The \fIQuality Map\fR represents regions in the image having varying
+levels of quality.  The maps above are combined heuristically to form
+5 discrete levels of quality.  This map has the same dimension as the
+Direction Map, with each value in the map representing an 8x8 pixel
+neighborhood in the fingerprint image.  A cell value of 4 represents
+highest quality, while a cell value of 0 represent lowest possible
+quality.
+.TP
+.I <oroot>.xyt
+This text file reports the minutiae detection results.
+This reports only the x,y coordinates, theta, and quality of the
+minutie points for the image.  Each line in this file contains
+the space delimited information for one minutiae point. The
+<oroot>.xyt is the minutiae format used by the \fBbozorth3\fR
+matching algorithm.
+.TP
+.I <oroot>.min
+This text file reports the minutiae detection results.
+The majority of the results listed in this text file are also encoded
+and stored in a Type-9 record in the output ANSI/NIST file.  The
+first non-empty line in the text file lists the number of minutiae
+that were detected in the fingerprint image.  Following this,
+the attributes associated with each detected minutia are recorded,
+one line of text per minutia.  Each minutia line has the same format.
+Fields are separated by a ':', subfields are separated by a ';',
+and items within subfields are separated by a ','.  A minutia line
+may be represented as:
+
+.RE 2
+.RS 2
+\fIMN\fR : \fIMX\fR, \fIMY\fR : \fIDIR\fR : \fIREL\fR : \fITYP\fR : \fIFTYP\fR : \fIFN\fR : \fINX1\fR, \fINY1\fR; \fIRC1\fR : ...
+.PP
+.RE
+.RS
+.RS
+.RS
+where:
+.TP
+.I MN
+is the integer identifier of the detected minutia.
+.TP
+.I MX
+is the x-pixel coordinate of the detected minutia.
+.TP
+.I MY
+is the y-pixel coordinate of the detected minutia.
+.TP
+.I DIR
+is the direction of the detected minutia.  Minutia direction is
+represented similar to ridge flow direction, only minutia direction
+is uni-directional starting at vertical pointing up with unit 0 and
+increasing clockwise in increments of 11.25 degrees completing a
+full circle.  Using this scheme, the angle of a detected minutia is
+quantized into the range 0 to 31 with 8 representing horizontal to the
+right, 16 representing vertical pointing down, and 24 representing
+horizontal to the left.
+.TP
+.I REL
+is the reliability measure assigned to the detected minutia.  This
+measure is computed by looking up the quality level
+associated with the position of the minutia from the Quality Map.
+The quality level is then heuristically combined with simple
+neighborhood pixel statistics surrounding the minutia point.
+The results is a floating point value in the range 0.0 to 1.0,
+with 0.0 representing lowest minutia quality and 1.0 representing
+highest minutia quality.
+.TP
+.I TYP
+is the type of the detected minutia.
+.RS
+bifurcation  = "BIF"
+.br
+ridge ending = "RIG"
+.RE
+.TP
+.I FTYP
+is the type of feature detected.
+.RS
+appearing    = "APP"
+.br
+disappearing = "DIS"
+.br
+(This attribute is primarily useful for
+purposes internal to the minutia detection algorithm.)
+.RE
+.TP
+.I FN
+is the integer identifier of the type of feature detected.
+(This attribute is primarily useful for
+purposes internal to the minutia detection algorithm.)
+.TP
+.I NX1
+is the x-pixel coordinate of the first neighboring minutia.
+.TP
+.I NY1
+is the y-pixel coordinate of the first neighboring minutia.
+.TP
+.I RC1
+is the ridge count calculated between the detected minutia and its
+first neighbor.
+.TP
+.I ...
+for each additional neighbor ridge count computed, the pixel
+coordinate of the neighbor and the ridge count to that neighbor
+are reported.
+
+.SH EXAMPLES
+From \fItest/mindtct/execs/mindtct/mindtct.src\fR:
+.PP
+.RS
+.B % mindtct ../../data/g001t2u.eft g001t2u
+.SH SEE ALSO
+.BR an2k2txt (1F),
+.BR an2ktool (1F),
+.BR dpyan2k (1F),
+.BR bozorth3 (1E)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

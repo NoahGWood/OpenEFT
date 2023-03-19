@@ -1,0 +1,213 @@
+.\" @(#)optrws.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH OPTRWS 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+optrws \- optimizes the regional weights for PNN classifier.
+.SH SYNOPSIS
+.B optrws
+.I <prsfile>
+.SH DESCRIPTION
+.B Optrws
+optimizes the regional weights, each of which goes with one 2x2-vector
+block of the orientation array.  Since that array has 28 x 30 vectors,
+there are (28 / 2) x (30 / 2) = 210 regional weights.
+
+Optimization consists of attempting to approximate the minimum,
+or at least a local minimum, of an "activation error rate" of the
+Probabilistic Neural Network (PNN) classifier when it is run on a set
+of fingerprints, using the same set as the prototypes for the PNN but
+leaving out of the prototype set, each time, the particular
+fingerprint that the network is being run on.  The program first finds
+a reasonable value to use as an initial value for all 210 weights.
+Then, it uses a very simple form of a gradient descent algorithm to
+finish optimizing the weights.  Each iteration consists of, first,
+estimating the gradient of the error at the current "basepoint", and
+second, approximately finding the minimum (or at least a local
+minimum) of the error along the straight line pointing in the
+anti-estimated-gradient direction.  (Estimating the gradient seems to
+be sufficient, and calculating it from its definition may actually
+require more computation then estimating.)  Because the activation
+error is apparently such a well-behaved function of distance along
+this line, for this particular problem, it seems sufficient to use a
+very simple algorithm for the line search: this consists of taking
+large equal-sized steps in the anti-gradient direction until the error
+ceases to decrease, then halving the stepsize and going in the
+opposite direction along the line until the error again ceases to
+decrease, etc., with the process stopping when the step size becomes
+smaller than a threshold.  This finds a local minimum, and it appears
+that this function generally is unimodal along the line, so that this
+local minimum will be the minimum along the line.
+
+The 0th basepoint is (irw,irw,...,irw), where irw is the initial value
+decided upon for all regional weights.  The 1st basepoint is the
+result of the line search that follows the gradient-estimation at the
+0th basepoint; etc.  Stopping of the program is controlled by
+specifying the number of line searches that are to be done.  If this
+parameter is set to 1, then the program only gets as far as basepoint
+1.  Since optrws records each basepoint, the program can be manually
+stopped if it turns out that it is taking too much time, without the
+run being a total waste of cycles.
+
+At each of the basepoints, optrws produces the following files (in a
+directory specified as one of the parameters).  The basepoint, as a
+"matrix" file of dimensions 14 x 15 (these dimensions correspond to
+the geometric interpretation of the basepoint as a set of regional
+weights); these files have names bspt_0.bin, bspt_1.bin, etc. or
+bspt_0.asc, bspt_1.asc, etc.  The estimated gradient of the activation
+error rate at the basepoint, also as a "matrix" file of dimensions 14
+x 15; these files have names egrad_0.bin, egrad_1.bin, etc. or
+egrad_0.asc, egrad_1.asc, etc.  And, the activation error rate at the
+basepoint, as a text file; these files have names acerr_0.txt,
+acerr_1.txt, etc.  As optrws is running (which make take several
+hours), these intermediate results files may be examined to find out
+what kind of progress the optimization is making.  The acerr files
+obviously can be examined to find out if the reported error rate is
+still decreasing or has leveled off. Also, the rwpics command (see
+rwpics man page) can be used to make, from a set of bspt files, a set
+of grayscale IHead images depicting these regional weights sets in
+their proper geometric layout.  Rwpics can also make two other
+kinds of pictures: grayscale pictures of a set of estimated
+gradients (egrad files), and grayscale-binary (i.e. 0 and 255 pixels)
+pictures showing the signs of the elements of estimated gradients.
+(The blocks whose estimated gradient elements, i.e. estimated
+partials, are negative, are ones whose weights will be increasing as
+optrws takes steps in the anti-estimated-gradient direction.)  For the
+"optimal" set of regional weights, just use the final bspt file
+produced before the optrws run stops by itself (because of doing the
+specified number of iterations) or, if optimization appears not to be
+making much more progress, kill the optrws process and use the last
+bspt file produced.  Or, it could also be interesting to do testing
+using various basepoints, to find out whether the decreases in the
+activation error during optimization correspond to error decreases on
+a test set, i.e. to find out whether even small improvements in the
+weights in the sense of training error rate, are actually significant
+in the sense of generalizing to other data.  (The weights seem to
+generalize well, not too suprisingly since there are only 210 of them,
+hardly a large enough number for them to be capable of becoming very
+specifically tuned to the training data in such a way as to have
+little generalization value.)
+
+The parameters of optrws are specified by parameter files.  The
+program first reads \fIpcasys/parms/optrws.prs\fR, which contains
+default values of some of its parameters; then it reads the
+user-provided parameters file whose name is given as the argument.
+Consult optrws.prs to find out what the parameters are, and as an
+example of the format of a parameters file.  Optrws.prs specifies
+default values for the parameters that have defaults, and it also has
+a comment concerning each parameter that has no default value.  The
+user parameters file must specify a value for each parameter that does
+not have a default, and it also can specify default-overriding values
+for one or more of the other parameters.
+
+Optrws can start several simultaneous instances of another program,
+optrwsgw, each time it needs to estimate the gradient, if desired.
+This can reduce the time needed for optimization, if there are several
+processors available.  To use this feature, set
+acerror_stepped_points_nprocs in your parameters file to a value > 1
+(probably should be <= number of processors available).  If the
+operating system on your computer does not implement fork() and
+execl(), then the Makefile for optrws should be modified by appending
+-DNO_FORK_AND_EXECL to the definition of CFLAGS, so that a different
+subset of the code will be compiled and the linker will thereby find
+no unresolved references.
+.SH OPTIONS
+.TP
+.I <prsfile>
+A file specifying values of some or all of the parameters.  Parameters
+not specified in this file assume default values.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH PARAMETER FILES
+.TP
+.I pcasys/parms/optrws.prs
+Contains default values for some of the optrws parameters.
+The remaining parameters, with no default values
+must be specified in the user \fIprsfile\fR.
+.PP
+.RS
+.B Default settings in \fIpcasys/parms/optrws.prs\fR
+.TP
+.B n_feats_use \fI64\fR
+How many (first) features of each K-L feature vector to use.
+
+.TP
+.B irw_init \fI0.1\fR
+Initial value for irw.
+.TP
+.B irw_initstep \fI1.0\fR
+Initial step size for irw.
+.TP
+.B irw_stepthr \fI.01\fR
+Optimization of irw stops when step size becomes smaller than
+this threshold.
+
+.TP
+.B grad_est_stepsize \fI.001\fR
+Step size for secant-estimation of gradient.
+.TP
+.B n_linesearches \fI2\fR
+Number of (estimate gradient, line search) iterations to do.
+.TP
+.B linesearch_initstep \fI.1\fR
+Initial step size for line search.
+.TP
+.B linesearch_stepthr \fI.01\fR
+Line search stops when its step size becomes smaller than this threshold.
+.TP
+.B tablesize \fI1000\fR
+Size of a table used to hold pairs of values corresponding to previous
+computations of the error, either as a function of irw or as a function
+of distance along downhill-pointing line.  Lookup in this table saves
+some cycles by avoiding repeated calculations.
+.TP
+.B acerror_stepped_points_nprocs \fI1\fR
+How many processes to use when computing the activation error at the
+points stepped to from a basepoint, in order to compute the
+approximate gradient by secant method.  If 1, optrws computes the
+error at all stepped points itself.  If > 1, optrws starts this many
+child processes, each of which computes the error at an interval
+of the stepped points.
+.TP
+.B verbose \fIy\fR
+If y, write progress messages to standard output.
+.TP
+.B ascii_outfiles \fIn\fR
+Whether outputfiles are to be ascii (y) or binary (n).
+
+.TP
+.B klfvs_file \fI(no default, user must set)\fR
+File containing K-L feature vectors to be used as prototypes set,
+and also as "tuning" set, for the optimization. Usually the output
+on the lintran function.
+.TP
+.B classes_file \fI(no default, user must set)\fR
+File containing the classes that go with the feature vectors of
+\fIklfvs_file\fR.  Must be a pcasys "classes" formatted file.
+.TP
+.B n_klfvs_use \fI(no default, user must set)\fR
+How many of the K-L feature vectors to use (off the top).
+.TP
+.B eigvecs_file \fI(no default, user must set)\fR
+File containing the eigenvectors.
+.TP
+.B outfiles_dir \fI(no default, user must set)\fR
+The directory in which optrws is to produce its output files.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/optrws/optrws.src\fR:
+.PP
+.RS
+.B % optrws optrws.prs
+.br
+Optimizes the regional weights for a set of feature vectors based
+on the parameters set in the file \fIoptrws.prs\fR.
+.SH "SEE ALSO"
+rwpics (1B)
+
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

@@ -1,0 +1,387 @@
+*******************************************************************************
+
+License: 
+This software and/or related materials was developed at the National Institute
+of Standards and Technology (NIST) by employees of the Federal Government
+in the course of their official duties. Pursuant to title 17 Section 105
+of the United States Code, this software is not subject to copyright
+protection and is in the public domain. 
+
+This software and/or related materials have been determined to be not subject
+to the EAR (see Part 734.3 of the EAR for exact details) because it is
+a publicly available technology and software, and is freely distributed
+to any interested party with no licensing requirements.  Therefore, it is 
+permissible to distribute this software as a free download from the internet.
+
+Disclaimer: 
+This software and/or related materials was developed to promote biometric
+standards and biometric technology testing for the Federal Government
+in accordance with the USA PATRIOT Act and the Enhanced Border Security
+and Visa Entry Reform Act. Specific hardware and software products identified
+in this software were used in order to perform the software development.
+In no case does such identification imply recommendation or endorsement
+by the National Institute of Standards and Technology, nor does it imply that
+the products and equipment identified are necessarily the best available
+for the purpose.
+
+This software and/or related materials are provided "AS-IS" without warranty
+of any kind including NO WARRANTY OF PERFORMANCE, MERCHANTABILITY,
+NO WARRANTY OF NON-INFRINGEMENT OF ANY 3RD PARTY INTELLECTUAL PROPERTY
+or FITNESS FOR A PARTICULAR PURPOSE or for any purpose whatsoever, for the
+licensed product, however used. In no event shall NIST be liable for any
+damages and/or costs, including but not limited to incidental or consequential
+damages of any kind, including economic damage or injury to property and lost
+profits, regardless of whether NIST shall be advised, have reason to know,
+or in fact shall know of the possibility.
+
+By using this software, you agree to bear all risk relating to quality,
+use and performance of the software and/or related materials.  You agree
+to hold the Government harmless from any claim arising from your use
+of the software.
+
+*******************************************************************************
+
+
+                                 Change History
+                   ----------------------------------------------
+
+03/04/2015  NBIS: Rel 5.0.0
+            - Updated OpenJPEG library support from version 1.4 to 2.1.
+            - The official NIST JPEG2000 Reference CODEC (based on
+              OpenJPEG 2.1) has been included in this release for the first
+              time, and replaces the previously generic CJP2K encoder and
+              DJP2K decoder.
+            - Replaced non-POSIX strdup() with POSIX malloc() and POSIX
+              strncpy() to prevent pointer conversion error.
+            - New installation instructions for CYGWIN.
+            - Updated installation instructions for LINUX, MAC OSX and
+              Windows operating systems.
+            - Various minor enhancements and bug fixes.
+
+10/30/2013  NBIS: Rel 4.2.0
+            - Fixed compile issues with MAC OSX 10.8.X. Forced OpenJPEG only
+              uses LMCS-1.
+            - Fixed 32bit OpenJPEG build issue on a 64bit LINUX environment 
+              when --m32 option is set. 
+            - Remove return statements from void-returning functions in 
+              xytrepsc.c, whose presence raises an error in newer compilers.
+            - Add -l compile option to link with X11 for PCASYS application.
+            - Add missing X11 include for libpca build.  
+            - Enhancements and bug fixes for MSYS installation.
+
+05/21/2012  NBIS: Rel 4.1.0
+            - New installation instruction for LINUX, MAC OSX and Windows
+              operating system.
+            - Remove operating system architecture check from setup.sh.
+            - Default build with -fPIC compiling option.
+            - Fixed OpenJPEG build issue relate to -m32 and -m64 compiling
+              operation.
+            - Bug fix on libnbis.a creation.
+            - JASPER library support is deprecated.
+            - Add --without-OPENJPEG option to disable OpenJPEG image 
+              format support.
+            - Add two new functions (lfs2nist_format and bz_prune) to support 
+              in-memory write/read on minutiae detection to XYT structure.
+
+10/16/2011  NBIS: Rel 4.0.1
+            - Correct a flaw introduced in Rel 4.0.0 where a binary object
+              larger than four bytes fails to be read from an AN2K record.
+
+09/15/2011
+            NBIS: Rel 4.0.0
+            - Updated OpenJPEG library support from version 1.3 to 1.4.
+            - Added support for scanning an AN2K record from a memory buffer. 
+              This change adds a few functions that are substitutes for
+              fread(3), ftell(3), and fgetc(3) in order to read/scan from a 
+              file or buffer, making the change to the existing read routines 
+              simpler.
+            - New option is implemented for "make install LIBNBIS=[yes|no]". 
+              If you enable the "LIBNBIS=no" option during make install, it 
+              will create the following libraries: 
+                   liban2k.a libclapck.a libfft.a libioutil.a libmindtct.a
+                  libnfseg.a libpcautil.a libutil.a libbozorth3.a libf2c.a 
+                  libihead.a libjpegb.a libmlp.a libopenjpeg.a libpcax.a 
+                  libwsq.a libcblas.a libfet.a libimage.a libjpegl.a 
+                  libnfiq.a libpca.a libpng.a libz.a
+              If you enable the "LIBNBIS=yes" option during make install, the 
+              build process will combine all the libraries listed above and 
+              build a libnbis.a.
+            - Included in this release of NBIS is the NIST point cloud 
+              visualization bundle which is designed to allow users to
+              visualize fingerprint images using either 3D point cloud data
+              or convert legacy 2D RAW fingerprint images (*.RAW) into a 2.5D 
+              simulated 3D images within the viewer.
+              The NIST point cloud visualization bundle contains two 
+              applications:
+                  1) MeshLab (NIST modified version) - is a point cloud 
+                          visualization tool that reads an input file with 
+                          NIST-specific point cloud format and provides the 
+                          user with point cloud editing, filtering and
+                          rendering capabilities.
+                  2) Point Cloud Creator - this application allows the user to 
+                          convert a RAW fingerprint image to the NIST-specific 
+                          point cloud file format.
+             - The SIVV library and utility application have been updated with 
+               improvements to memory management, speed, and efficiency. SIVV 
+               now uses less memory when processing images and is capable of 
+               processing those images more quickly than in previous versions. 
+               Additionally, the segmentation/centering feature has been improved 
+               and now provides more accurate results. Finally, two new 
+               command-line switches have been added which allow the user to 
+               specify which windowing function to be used by the algorithm as 
+               well as suppress console (screen) output.
+             - Included in this release of NBIS is the source code for the final 
+               release C++ version of ANSI-NIST ITL Part 1 and Part 2 (XML) data
+               conversion tool. Improvement from last version include:
+                  - Added and improved API
+                  - Added new namespace for EBTS and DOJ.
+                  - Improved validation for subfield and item elements
+                  - Enhanced regular-expressions for string comparison
+                  - Added new function to validate min and max of item value
+                  - Added new type 1 and type 2 fields for validation
+               See README file under <FINAL INSTALLATION DIR>/misc/an2kconvert 
+               directory for installation, usage, and examples.
+             - Big-endian compilation is no longer being tested and support as 
+               an official release. Warning: This version of NBIS may compile on 
+               a big-endian machine; however, undesired behavior may occur. Use 
+               NBIS at your own risk. 
+
+10/13/2010
+            NBIS: Rel 3.3.1
+            - Separated the README file to INSTALL and CHANGELOG.
+            - Updated the setup instruction.
+            - The openjpeg implementation is still under evaluation.  While the
+              cjp2k and djp2k applications are included, the default parameters
+              switches for lossy and lossless compression, as listed under notes
+              for Rel 3.3.0, are not available.
+            - Fix to WSQ compression algorithm variance computation that fixes 
+              a problem with images captured near the edge of larger platen 
+              capture devices. The compression of these images could cause 
+              severe degradation or complete loss of the original image. To 
+              date this was mostly noticed in the two thumb captures in 
+              Identification Flats.
+            - Please use Test_3.3.0 test branch to test against this NBIS release.
+
+09/15/2010
+            NBIS: Rel 3.3.0
+            - NBIS now builds by default using OpenJPEG libraries for JPEG2000
+              standard implementation.  To build instead with Jasper libraries,
+              use appropriate setup.sh switch.  Note: must run 'make clean'
+              between builds using --with-OPENJPEG and --with-JASPER; otherwise
+              jpeg2000 libraries will not be updated and build will fail.
+            - Codecs for OpenJPEG compression/decompression have file names
+              cjp2k/djp2k.  cjp2k has been modified to include switches that
+              define default parameters for lossy and lossless compression
+              of 1000 ppi fingerprint images.  See man pages for details.
+              Also, OpenJPEG codecs require LibTIFF library to build and run.
+              For Windows platforms, download the LibTIFF source, build, and
+              then copy libtiff.a to the <FINAL INSTALLATION DIR>\openjpeg\src
+              \lib\openjpeg\libs\libtiff directory.
+            - Jasper implementations for Jpeg 2000 standard are now included
+              as part of this suite: jp2codec (for compression and decompression),
+              imgcmp, and imginfo.  These apps are built when the --with-JASPER
+              switch is used for setup.sh.
+            - A new application has been included in this release of NBIS, histogen.
+              This application processes one or more ANSI/NIST 2007 files and builds
+              a histogram of the number of times each field and sub-field appears
+              within that set of ANSI/NIST files.
+              For examples of the various field types, see document NIST Special
+              Publication 500-271 ANSI/NIST-ITL 1-2007.
+              Histogen depends on the an2k2txt executable as a prerequisite.
+              Please ensure that an2k2txt is in your environment PATH.
+            - For all Windows platforms, must upgrade to latest version of
+              MinGW/GCC.  To install manually on 32-bit platform, unzip the
+              following archives into <ROOT_DRIVE>:/mingw.  Note that g++ compiler
+              is required to build LibTIFF library under Windows.
+                gcc-core 4.5.0
+                gcc-c++  4.5.0
+                binutils 2.20.1
+                libmpc   0.8.1
+                libmpfr  2.4.1
+                libgmp   5.0.1
+                mingwrt  3.18  (dev)
+                win32api 3.14  (dev)
+
+              To install MinGW/GCC on 64-bit Windows, see instructions above.
+            - Included in this release of NBIS is the source code for the Beta-4
+              (Candidate final) C++ version of ANSI-NIST ITL Part 1 and Part 2 (XML)
+              data conversion tool. See README file under <FINAL INSTALLATION DIR>/
+              misc/an2kconvert directory for installation, usage, and examples.
+
+02/01/2010
+            NBIS: Rel 3.2.0
+            - NBIS suite is now available for Windows.  In order to build
+              and run on Windows platform, must install MinGW, MSYS, and upgrade
+              to gcc version 4.4.x.  These tools are free and available for
+              download. Support includes WinXP Pro, Windows 7, both 32- and
+              64-bit platforms.
+            - The Spectral Image Validation/Verification (SIVV) Metric for
+              Fingerprints application has been added to this NBIS suite.
+              It requires a separate build process and other dependencies in
+              order to build and run.  See the accompanying README under the
+              SIVV directory.
+            - Added new app under an2k named chkan2k.  See man page for usage
+              and description. *Warning* This application is in late beta
+              stages and still undergoing changes and testing.
+            - CropCoeff app: wsq_crop_qdata() finds and copies the coefficients
+              that need to be retained for the crop.  Instead of blindly
+              stepping through all the coefficients as was done in the old
+              version, the new version jumps directly to the regions needed,
+              and uses memcpy on just the chunks required.  Outside of the
+              Huffman coding, this is the other main time sink for CropCoeff.
+            - Added benchmarking to test scripts (*.sh).  A new shell script
+              bench/exec_time.sh was added.  When test scripts run, the
+              execution time(s) is entered into a log file, one for each test
+              script.  There is also a "master" log file that is created and
+              updated when master_test.sh is run.  Each files' content is 
+              delimited by ; (semicolon) for easy import into a spreadsheet.
+            - There are file dependencies generated and required by the test
+              scripts.  For example, the optrws application as run from the
+              optrws_test.sh script requires files created by the eva_evt and
+              lintran applications.  Running master_test.sh handles these
+              dependencies.
+            - Master Test runtime tip for Linux: pcasysx will run indefinitely.
+              You will know it's running by the images flashed on the display.
+              In order for master_test.sh script to run to completion, kill the
+              pcasysx process only.
+            - Test scripts require the following environment variables to be
+              set: FINAL_INSTALLATION_BIN_DIR and NBIS_TEST_DIR.  On Windows
+              platform, environment variables may be set by either 1) Advanced
+              tab of System Properties dialog or 2) export command in the
+              <MSYS install dir>\etc\profile file.
+            - Windows 64-bit applications are built without any compiler
+              optimizations as this is not fully supported by GNU gcc on the
+              Windows 64-bit platform.
+            - MSYS does not (yet) support UNIX-style Manpages documentation
+              format. Therefore, on Windows platform, you can either install
+              the MSYS support (internet search "mingw FAQ man") or install
+              Cygwin. For Cygwin, simply run the "man" command as described in
+              the "User's Guide to NIST Biometric Image Software (NBIS)" in a
+              Cygwin window. 
+            - *WARNING* While the following applications will build on
+              64-bit platforms as part of the NBIS build process, they exhibit
+              64-bit operational issues and should not be used until further
+              notice:
+                - eva_evt
+                - fixwts
+                - kltran
+                - lintran
+                - meancov
+                - mkoas
+           - Note: The "User's Guide to NIST Biometric Image Software (NBIS)"
+             under the doc/ directory is pending to update in the next release.
+
+05/29/2009
+            NBIS     : Rel 3.1.0
+            - Integrated NFSEG and BOZORTH3 to NBIS.
+              It has been determined that the export control restriction
+              did not apply to the NFSEG and BOZORTH3 software, due to both
+              being outside the scope of EAR(see Part 734.3 of the EAR for 
+              exact details); they are freely distributed and considered 
+              public domain.
+            - Modified the NBIS to support 64 bit systems.
+            - Modified the NFIQ application to support a raw image as input.
+            - Modified the RDIMGWH application output format.
+            - Made changes to better detect corrupt WSQ encoded images 
+              during decoding.
+            - Modified the build system to build on MSYS with MinGW on
+              WIN32 machine.
+            - Added setup option to allow user to specific to compile
+              either 32bit or 64bit machine.
+            - Added setup option to disable JASPER and PNG libraries 
+              support
+            - Added cjp2k and djp2k applications to encode and decode
+              JPEG2000 image format. This is based on OPENJPEG library.
+
+            - Note: The "User's Guide to NIST Biometric Image
+                    Software (NBIS)" under the doc/ directory
+                    is pending to update in the next release.
+
+            - Warning: The CWSQ and DWSQ applications are only 
+                       experimental on 64-bit OS. Use at your
+                       own risk.
+
+10/30/2008
+            NBIS Non-Export Control    : Rel 3.0.0
+            - Renamed an2k7 naming convention back to an2k for 
+              compatibility issues.
+            - Added code to the AN2K library to select specific
+              records from ANSI/NIST files based on metadata
+              included in the record, and to parse new command
+              line options used to control those selections.
+            - Corrected a subtle but serious typographic error in
+              the copy_ANSI_NIST() function in the AN2K library.
+            - Modified DPYAN2K to use the new record selection
+              code in the AN2K library, so that it will display
+              only the specified images.  Also added display of
+              segmentation data if present in SEG or ASEG fields
+              of Type-14 records.
+            - Modified AN2K library to be able to insert complex
+              structures, i.e., records, fields, subfields, into
+              an AN2K structure from memory instead of only from
+              a file.
+            - Added support to AN2K library for 8-bit JP2 images,
+              in addition to previously supported 24-bit images.
+            - Added CORCOEFF application, which extracts the individual 
+              fingerprint images from the WSQ compressed slap images
+              (left/right hand, thumbs) in ANSI/NIST 2007 Type-14
+              records into individual WSQ files without
+              decompressing/recompressing the slap images.
+            - Added the RDIMGWH application, which finds the image
+              width and height within an image file or specified
+              images in ANSI/NIST files, and displays them.
+            - Modified NFIQ to use new AN2K library record
+              selection options, to write results into the NQM
+              field of Type-14 records, and to convert Type-4
+              records to Type-14 when necessary in order to
+              add the NQM field.
+            - Updated test scripts and added new test data for
+              DPYAN2K and NFIQ, to test the added functionality.
+            - Updated test script and added new test data for
+              DPYIMAGE to test it more thoroughly.
+            - Added a test script for the new RDIMGWH and CORPCOEFF
+              applications.
+ 
+            - Note: The "User's Guide to NIST Biometric Image
+                    Software (NBIS)" under the doc/ directory
+                    is pending to update in the next release.
+
+            - Warning: This Software is working only on a 32-bit
+                       OS. If you are compile on a 64-bit OS, it
+                       will not work properly. We are in the
+                       process on resolving this issue in the
+                       upcoming release.
+
+06/04/2008
+            NBIS Non-Export Control    : Rel 2.0.0
+            - New application to takes a WSQ compressed image file and
+              deletes all comments in the file.
+
+02/26/2008
+            NBIS Non-Export Control    : Rel 2.0.0
+            - Update to ANSI/NIST-ITL 1-2007 standards.
+
+10/24/2007
+            NBIS Non-Export Control    : Rel 1.2.0
+            - Modified the build system and the source code which allow the 
+              NBIS software to detect and build on a HP-UX platform.
+            - Updated the AN2K package to handle Type 17 and 99 records.
+            - Added code to read comments that are inserted in the WSQd
+              compressed file after the last data block. (there are 3 data 
+              blocks in a WSQ compressed file) and before the end of image
+              (EOI) marker. Previously, these comments caused the code
+              to exit with an error.
+
+04/04/2007
+            NBIS Non-Export Control    : Rel 1.1.0
+            - Enhanced the build system.
+            - Removed duplicate jpeglib.h from IMGTOOLS.  This header file
+              already provide on IJG  package.
+            - Updated the NFIQ test result because of added opt on the
+              NFIQ application.
+            - Updated the "User's Guide to NIST Biometric Image Software".
+
+03/05/2007  
+            NBIS Non-Export Control    : Rel 1.0.0
+            - NBIS Non-Export Control first release. 
+

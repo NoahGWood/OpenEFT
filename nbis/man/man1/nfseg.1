@@ -1,0 +1,232 @@
+.\" @(#)nfseg.1 2008/02/13 NIST
+.\" I Image Group
+.\" Craig Watson
+.\" Updated by Joseph Konczal
+.\"
+.TH NFSEG 1A "19 November 2009" "NIST" "NBIS Reference Manual"
+.SH NAME
+nfseg \- Segments multiple finger plain impressions into individual
+fingers or removes white space from single finger rolled/plain impressions
+isolating just the fingerprint portion of the image.
+.SH SYNOPSIS
+\fBnfseg \fI[options] <ANSI/NIST in> [<ANSI/NIST out>]\fR
+.RS 9
+\fB-v
+.br
+\fB-b \fI<BTHR_ADJ>\fR
+.br
+\fB-r
+.br
+\fB-c \fI<COMP_SEG>\fR
+.br
+\fB-R
+.RE
+or
+.br
+\fBnfseg \fI<FGP> <BTHR_ADJ> <ROT_SEARCH> <COMP_SEG> <ROT_SEG> <in file>\fR
+.br
+or
+.br
+.B nfseg -version
+
+.SH DESCRIPTION
+\fBNfseg\fP takes a four finger plain impression fingerprint image
+(FGP finger positions 13 "right hand", 14 "left hand", or 0 "Unknown
+Hand") and segments it into four individual fingerprint images. For
+two-thumb images (FGP 15) \fBnfseg\fR segments the input image into
+two individual flat thumb images (FGP 11 and 12).  For single finger
+images (FGP 1-12) \fBnfseg\fR can be used to isolate the fingerprint
+in the image by removing white space around the fingerprint.
+
+The input image can be in ANSI/NIST format, WSQ compressed format,
+baseline JPEG, or lossless JPEG.  \fBNfseg\fR will output the results
+to WSQ compressed files (.wsq at 5:1 or 15:1 compression ratio),
+lossless JPEG (.jpl) or RAW pixel data (.raw).  \fBNfseg\fR can also
+rotate the segmented image to a vertical position or leave it in its
+original position.  Output filenames are derived from the input
+file name and written into the current working directory. They have an
+underscore and finger number appended to the base name.  If the
+fingerprint is left in its original position all pixels in the image
+outside the fingerprint bounding box are set to white.
+
+If the input is an ANSI/NIST file, the other parameters can be
+determined automatically, or overridden by the user.  The binarization
+threshold will be adjusted for images where the impression type
+inidcates a non-live scan, assuming scanned paper-and-ink, and not
+adjusted for live scan images.  Rotation will default to none.  Also,
+an output file may be specified, which will have any Type-4 images
+converted to Type-14, and the results will be inserted in a SEQ or
+ASEQ field depending on whether the search is unrotated or rotated.
+If an ANSI/NIST output file is specified, output of individual image
+files is normally suppressed, but it can be turned back on by
+specifying the type of compression to use with the -c option.  Output
+files generated in this mode of operation also include an underscore
+and the record number, before the finger number, in order to ensure
+none of the files have the same name.
+
+.SH OPTIONS
+.TP
+\fB-v\fR
+turns on verbose output
+
+.TP
+.I <FGP>
+indicates the finger position of the input image.
+
+.RS
+\fB1-5\fR - right hand rolled impressions
+.br
+\fB6-10\fR - left hand rolled impressions
+.br
+\fB11\fR - right thumb plain impression
+.br
+\fB12\fR - left thumb plain impression
+.br
+\fB13\fR - right hand four finger plain impression (tend to be rotated left of
+vertical)
+.br
+\fB14\fR - left hand four finger plain impression (tend to be rotated right of
+vertical)
+.br
+\fB15\fR - both thumbs plain impression
+.br
+\fB0\fR - unknown hand (for four finger plain impression will search all
+angles and make guess at hand based on rotation angle)
+.br
+
+For segmentation purposes \fB1-12\fR are treated the same. Plain impressions
+\fB13-14\fR are treated similarly, the exception being the angles of rotation
+that are searched for the four fingers. Unknown type \fB00\fR is searched for
+four finger plain impressions over the whole range of angles used in both
+left and right hand images. The algorithm will make a guess at left or right
+hand based on the rotation angle of the fingerprints.
+.RE
+.TP
+\fB-b\fR or \fI<BTHR_ADJ>\fR Adjust binarization threshold to improve
+segmentation of low contrast images.  The \fB-b\fR option overrides
+the automatically determined value based on the impression type in the
+ANSI/NIST input file.
+
+.RS
+\fB0\fR - No threshold adjustment.
+.br
+\fB1\fR - Adjust binarization threshold higher.
+.RE
+.TP
+\fB-r\fR or \fI<ROT_SEARCH>\fR
+Allows user to search the image for rotated fingerprints (ie. 2" data) or
+assume the fingerprints are vertical (ie. 3" data).
+
+.RS
+\fB0\fR - Assume fingerprints are not rotated.
+.br
+\fB1\fR - Assume fingerprints may be rotated in the image.
+.RE
+.TP
+\fB-c\fR or \fI<COMP_SEG>\fR 
+indicates the type of compression for the
+segmented images output, and causes the images to be output even if an
+ANSI/NIST output file is specified.
+
+ansi/.RS
+\fB0\fR - Lossless JPEG
+.br
+\fB1\fR - WSQ 5:1
+.br
+\fB2\fR - WSQ 15:1
+.br
+\fB3\fR - RAW pixel data
+.RE
+.TP
+\fB-R\fR or \fI<ROT_SEG>\fR
+indicates if output image is to be rotated to vertical position.
+
+.RS
+\fB0\fR - Do not rotate
+.br
+\fB1\fR - Rotate to vertical
+.RE
+.TP
+\fB-o \fI<ansi_nist_output_file>\fR 
+indicates an ANSI/NIST output file name to which SEG or ASEG records
+are added, and output of image files is suppressed
+.TP
+\fI<file>\fR or \fI<ansi_nist_file>\fR
+the input file to be segmented.
+
+.TP
+\fB-version
+\fRPrint ANSI/NIST standard and NBIS software version.
+
+.SH NFSEG OUTPUT
+For each output image, \fBnfseg\fR will print a line of text to standard
+output as follows:
+
+.I <filname>
+->
+.I <error flag> <sw> <sh> <sx> <sy> <theta>
+
+.RS
+.I <filename>
+the name of the segmented output file.
+.TP
+.I <error flag>
+a flag set if the segmented image does not meet certain minimum requirements.
+
+.RS
+\fB0\fR - no errors
+.br
+\fB1\fR - segmented image width is less than "FING_WIDTH_MIN" parameter
+in nfseg.h
+.br
+\fB2\fR - segmented image height is less than "FING_HEIGHT_MIN" parameter
+in nfseg.h
+.br
+\fB3\fR - spacing between adjacent fingers was less than "FING_SPACE_MIN"
+parameter in nfseg.h
+.br
+\fB4\fR - spacing between adjacent fingers was more than "FING_SPACE_MAX"
+parameter in nfseg.h
+
+Error flags 3 and 4 usually indicate the image did not segment correctly.
+.SH
+.RS
+.TP
+.I <sw> <sh>
+the width and height of the segmented image file
+
+.TP
+.I <sx> <sy>
+where the center of the segmented image was located at in the original
+four finger plain imression image.
+
+.TP
+.I <theta>
+rotation angle of the fingers in the four finger plain impression image,
+positive values are left of vertical and negative values are right.
+
+.SH EXAMPLES
+From \fItest/nfseg/execs/nfseg/nfseg.src\fR:
+.PP
+.RS
+.B % nfseg 13 1 1 1 0 a011_13.wsq
+.br
+segments the image into four single finger plain images. Creates
+the output files: a011_13_0[2-5].wsq
+
+.SH BUGS
+Ignores segmentation error flags when writing results to an
+ANSI/NIST file.
+
+Perhaps a user defined record should be written telling where the SEG
+or ASEG data came from.
+
+.SH SEE ALSO
+.BR dwsq (1G),
+.BR djpegl (1G),
+.BR an2ktool (1F),
+.BR txt2an2k (1F),
+.BR nfiq (1D)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

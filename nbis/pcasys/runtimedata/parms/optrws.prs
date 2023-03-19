@@ -1,0 +1,57 @@
+# Default values of the parameters of optrws (optimize regional
+# weights command).  This file also has comments for the
+# parms that do not have defaults; the required user parms file
+# must contain values for those parms, and it can also contain
+# values for any other parms, with such values overriding the
+# defaults.
+
+
+n_feats_use 64    # How many (first) features of each K-L feature
+                  #   vector to use.
+
+# Parms affecting irw (initial value for all regional weights), which
+# optrws optimizes before it allows the weights to separate:
+irw_init .1       # Initial value for irw.
+irw_initstep 1.   # Initial step size for irw.
+irw_stepthr .01   # Optimization of irw stops when step size becomes
+                  #   smaller than this threshold.
+
+grad_est_stepsize .001 # Step size for secant-estimation of gradient.
+n_linesearches 2       # Number of (estimate gradient, line search)
+                       #   iterations to do.
+linesearch_initstep .1 # Initial step size for line search.
+linesearch_stepthr .01 # Line search stops when its step size becomes
+                       #   smaller than this threshold.
+tablesize 1000         # Size of a table used to hold pairs of values
+                       #   corresponding to previous computations of
+                       #   the error, either as a function of irw or
+                       #   as a function of distance along downhill-
+                       #   pointing line.  Lookup in this table saves
+                       #   some cycles by avoiding repeated
+                       #   calculations.
+acerror_stepped_points_nprocs 1 # How many processes to use when
+  # computing the activation error at the points stepped to from
+  # a basepoint, in order to compute the approximate gradient by
+  # secant method.  If 1, optrws computes the error at all stepped
+  # points itself.  If > 1, optrws starts this many child processes,
+  # each of which computes the error at an interval of the stepped
+  # points.
+verbose y # If y, write progress messages to standard output.
+ascii_outfiles n  # Whether outputfiles are to be ascii (y) or
+                  #   binary (n).
+
+# No default for: klfvs_file, containing K-L feature vectors to
+#   be used as prototypes set, and also as "tuning" set, for the
+#   optimization.  This must be a pcasys "matrix" file, with each
+#   K-L feature vector being a row of the matrix; such a file may
+#   be produced by running the lintran command on a set of
+#   orientation arrays, using an eigenvectors file as the transform
+#   matrix.
+# No default for: classes_file, containing the classes that go with
+#   the feature vectors of klfvs_file.  Must be a pcasys "classes"
+#   file.
+# No default for: n_klfvs_use, how many of the K-L feature vectors
+#   to use (off the top).
+# No default for: eigvecs_file, containing eigenvectors.
+# No default for: outfiles_dir, the directory in which optrws is to
+#   produce its output files.

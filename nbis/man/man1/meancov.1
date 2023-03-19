@@ -1,0 +1,92 @@
+.\" @(#)meancov.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH MEANCOV 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+meancov \- computes mean vector and covariance matrix for a set
+of feature vectors.
+.SH SYNOPSIS
+.B meancov
+.I <vecsfile_in[vecsfile_in...]> <meanfile_out> <meanfile_out_desc>
+.I <covfile_out> <covfile_out_desc> <ascii_outfiles> <message_freq>
+.SH DESCRIPTION
+.B Meancov
+computes sample mean vector and sample covariance matrix of a set of
+feature vectors.
+
+If several processors are available, it may be possible to save time,
+when computing the mean and covariance of a large set of feature vectors.
+First, run several simultaneous instances of meancov, each
+instance computing the mean and covariance of a subset of the vectors.
+Then, use cmbmcs to combine the resulting output files.  See the
+cmbmcs man page.
+.B Note:
+If using cmbmcs, the subset mean vectors made by the meancov instances
+must be saved for later use by cmbmcs even if, ultimately, all that
+is wanted is the overall covariance matrix. Construction of the
+overall covariance requires the subset means, as well as the
+subset covariances.
+.SH OPTIONS
+.TP
+.I <vecsfile_in[vecsfile_in...]>
+Input data file(s) in PCASYS "matrix" format, each consisting of a
+block of the vectors that are to be used, i.e. the vectors are the
+rows of the matrix (matrices).  Of course, all input matrices must
+have the same second dimension, which is the dimension of the
+constituent vectors. (Usually the output of \fBmkoas\fR.)
+.TP
+.I <meanfile_out>
+Mean file to be written, in PCASYS "matrix" format, with first dimension
+set to 1 and with second dimension set to the dimension of the input
+vectors.
+.TP
+.I <meanfile_out_desc>
+A string to be written into the mean output file as its description
+string.  This string can be of any length, but must not contain
+embedded newline characters.  If it contains spaces, tabs, or shell
+metacharacters that are not to be expanded, then it should be quoted.
+To leave the description empty, use '' (two single quotes, i.e.
+single\-quoted empty string).  To let meancov make a description
+(stating that this is a mean vector made by meancov and listing the
+names of the input files), use \- (hyphen).
+.TP
+.I <covfile_out>
+Covariance file to be written.  Meancov saves memory and cycles by
+allocating a buffer only large enough for the nonstrict lower triangle
+of the symmetric covariance matrix and computing only those elements,
+and it saves disk space by storing the covariance in PCASYS
+"covariance" format, which stores only the nonstrict lower triangle.
+The order of the covariance is the dimension of the input vectors.
+.TP
+.I <covfile_out_desc>
+Description string for covariance file or \- to let meancov make the
+description, same as for the mean file description argument.
+.TP
+.I <ascii_outfiles>
+If y, makes ascii output files; if n, binary.  Binary is recommended,
+unless the output files must be portable across different byte orders
+or floating\-point formats.
+.TP
+.I <message_freq>
+If a positive integer, then every this many vectors through each input
+file, during the accumulation phase, meancov writes a progress message
+to the standard output, and it also writes a few other progress
+messages.  If 0, no messages.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+.TP
+From \fItest/pcasys/execs/meancov/meancov.src\fR:
+.PP
+.RS
+.B % meancov ../../data/oas/fv[1-9].oas fv1-9.men - fv1-9.cov - n 100
+.br
+Compute the mean and covariance matrices for a set of feature vectors.
+.SH "SEE ALSO"
+cmbmcs (1B), mkoas (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

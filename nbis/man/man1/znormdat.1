@@ -1,0 +1,50 @@
+.\" @(#)znormdat.1 2008/10/02 NIST
+.\" I Image Group
+.\" Michael Garris
+.\" Elham Tabassi
+.\"
+.TH ZNORMDAT 1D "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+nzormdat \- Takes a patterns file of (un-normalized) feature vectors
+and computes and writes the statistics (mean and stddev) to support
+ZNormalization.
+
+.SH SYNOPSIS
+.B znormdat
+.I <binpats in>
+
+.SH DESCRIPTION
+.B Znormdat
+takes a patterns file of (un-normalized) feature vectors and computes their
+mean and stddev. Prints these statistics to stdout which can be stored
+and used as input to \fBznormpat\fR to perform ZNormalization on the feature
+vector file.
+.SH OPTIONS
+.TP
+.I <binpats in>
+input patterns file containing un-normalized feature vectors
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/nfiq/execs/znormdat/znormdat.src\fR:
+.PP
+.RS
+.B znormdat ../fing2pat/nonorm.bin > znorm.dat
+.br
+
+NOTE: This is just an example of how to generate the global mean
+and standard deviation statistics used to z-normalize the
+pattern feature vectors.  There are only 8 feature vectors
+in the file ../fing2pat/nonorm.bin and approximately 240,000
+were used to generate the statistics in ../../../../nfiq/znorm.dat
+
+.SH SEE ALSO
+.BR feats2pat (1D),
+.BR znormpat (1D),
+.BR nfiq (1D),
+.BR mlp (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

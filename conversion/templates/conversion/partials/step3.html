@@ -1,0 +1,35 @@
+<div class="step">
+    <div class="row">
+        <div class="col"></div>
+        <!-- TITLE -->
+        <div class="col-lg-4 offset-lg-1 mx-0 px-0">
+            <h2>EFT Information</h2>
+        </div>
+        <div class="col"></div>
+    </div>
+    <div class="row">
+        <!-- FORMS -->
+        <div class="col"></div>
+        <div class="col-lg-7 mx-0 px-0">
+            <div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Reason</span>
+                    <select class="form-select" name="rsn" id="rsn">
+                        {% include "partials/reason.html" %}
+                    </select>
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Date of Fingerprinting</span>
+                    <input id="dof" name="dof" type="date" min="<?= date('Y-m-d'); ?>">
+                </div>
+                <div class="input-group mb-2">
+                    <span class="input-group-text">Missing<br /> Fingerprints</span>
+                    <select class="form-select" multiple id="missing" name="missing" default="None">
+                        {% include "partials/fingers.html" %}
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>

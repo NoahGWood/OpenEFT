@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:i="http://niem.gov/niem/appinfo/2.0" xmlns:s="http://niem.gov/niem/structures/2.0" targetNamespace="http://niem.gov/niem/appinfo/2.0" attributeFormDefault="qualified" version="1">
+  <xsd:annotation>
+    <xsd:documentation>The appinfo schema provides support for high level
+    data model concepts and additional syntax to support the NIEM
+    conceptual model and validation of NIEM-conformant
+    instances.</xsd:documentation>
+  </xsd:annotation>
+  <xsd:element name="Resource">
+    <xsd:annotation>
+      <xsd:documentation>The Resource element provides a method for
+      application information to define a name within a schema, without the
+      name being bound to a schema component. This is used by the
+      structures schema to define names for structures:Object and
+      structures:Association.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Deprecated">
+    <xsd:annotation>
+      <xsd:documentation>The Deprecated element provides a method for
+      identifying components as being deprecated. A deprecated component is
+      one which is provided, but whose use is not
+      recommended.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="value" use="required">
+        <xsd:simpleType>
+          <xsd:restriction base="xsd:boolean">
+            <xsd:pattern value="true"/>
+          </xsd:restriction>
+        </xsd:simpleType>
+      </xsd:attribute>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="Base">
+    <xsd:annotation>
+      <xsd:documentation>The Base element provides a mechanism for
+      indicating base types and base elements in schema, for the cases in
+      which XML Schema mechanisms are insufficient. For example, it is used
+      to indicate Object or Association bases.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+      <xsd:attribute name="namespace" type="xsd:anyURI" use="optional"/>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ReferenceTarget">
+    <xsd:annotation>
+      <xsd:documentation>The ReferenceTarget element indicates a NIEM type
+      which may be a target (that is, a destination) of a NIEM reference
+      element. It may be used in combinations to indicate a set of valid
+      types.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+      <xsd:attribute name="namespace" type="xsd:anyURI" use="optional"/>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="AppliesTo">
+    <xsd:annotation>
+      <xsd:documentation>The AppliesTo element is used in two ways. First,
+      it indicates the set of types to which a metadata type may be
+      applied. Second, it indicates the set of types to which an
+      augmentation element may be applied.</xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:attribute name="name" type="xsd:NCName" use="required"/>
+      <xsd:attribute name="namespace" type="xsd:anyURI" use="optional"/>
+    </xsd:complexType>
+  </xsd:element>
+  <xsd:element name="ConformantIndicator" type="xsd:boolean">
+    <xsd:annotation>
+      <xsd:documentation>The ConformantIndicator element may be used in two
+      ways. First, it is included as application information for a schema
+      document element to indicate that the schema is NIEM-conformant.
+      Second, it is used as application information of a namespace import
+      to indicate that the schema is not
+      NIEM-conformant.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="ExternalAdapterTypeIndicator" type="xsd:boolean">
+    <xsd:annotation>
+      <xsd:documentation>The ExternalAdapterTypeIndicator element indicates
+      that a complex type is an external adapter type. Such a type is one
+      that is composed of elements and attributes from non-NIEM-conformant
+      schemas. The indicator allows schema processors to switch to
+      alternative processing modes when processing NIEM-conformant versus
+      non-NIEM-conformant content.</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+</xsd:schema>

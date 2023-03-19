@@ -1,0 +1,85 @@
+.\" @(#)cmbmcs.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH CMBMCS 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+cmbmcs \- combines PCASYS mean/covariance data file pairs.
+.SH SYNOPSIS
+.B cmbmcs
+.I <meanfile_in[meanfile_in...]> <covfile_in[covfile_in...]>
+.I <meanfile_out> <meanfile_out_desc>
+.I <covfile_out> <covfile_out_desc> <ascii_outfiles>
+.SH DESCRIPTION
+.B Cmbmcs
+combines pairs of PCASYS mean vector and covariance matrix
+data files, to produce a mean/covariance pair that is approximately
+the same as would have resulted if all the vectors that were used to
+make the input means and covariances had been given to the meancov
+function in one large set.  So, if the sample covariance matrix needs to
+be made from a large set of vectors, and several processors are
+available, it may be possible to save run time by, first, running
+several simultaneous instances of meancov, each on a subset of the
+vectors, and second, running cmbmcs to combine the means
+and covariances made by the meancov instances.  (Even if only the
+covariance is ultimately needed, i.e. not the mean, it is necessary
+for the meancov instances to compute the means and for cmbmcs to
+use them, to compute the overall covariance.)
+.SH OPTIONS
+.TP
+.I <meanfile_in[meanfile_in...]>
+Input files each containing a mean vector.  These files must be in
+PCASYS "matrix" format, each with first dimension 1 and all having the
+same second dimension. (Usually the output of \fBmeancov\fR.)
+.TP
+.I <covfile_in[covfile_in...]>
+Input files each containing a covariance matrix.  These files must be
+in PCASYS "covariance" format.  The i'th input covariance file goes
+with the i'th input mean file.  These covariances must all have the
+same order, which must be the second dimension of the input mean
+vector files. (Usually the output of \fBmeancov\fR.)
+.TP
+.I <meanfile_out>
+Mean file to be written, in PCASYS "matrix" format.
+.TP
+.I <meanfile_out_desc>
+A string to be written into the mean output files description
+string.  This string can be of any length, but must not contain
+embedded newline characters.  If it contains spaces, tabs, or shell
+metacharacters that are not to be expanded, then it should be quoted.
+To leave the description empty, use '' (two single quotes, i.e.
+single\-quoted empty string).  To let cmbmcs make a description
+(stating that this is a mean vector made by cmbmcs and listing the
+names of the input files), use \- (hyphen).
+.TP
+.I <covfile_out>
+Covariance file to be produced, in PCASYS "covariance" format.  Its
+"number of vectors" field will be set to the sum of the values of that
+field across the input covariances.
+.TP
+.I <covfile_out_desc>
+Description string for output covariance file or - to let cmbmcs make
+the description (as for output mean file description).
+.TP
+.I <ascii_outfiles>
+If y, makes ascii output files; if n, binary.  Binary is recommended,
+unless the output files must be portable across different byte orders
+or floating_point formats.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/cmbmcs/cmbmcs.src\fR:
+.PP
+.RS
+.B % cmbmcs ../meancov/fv1.men ../meancov/fv2.men \
+../meancov/fv1.cov ../meancov/fv2.cov fv_tst.men - fv_tst.cov - n
+.br
+Combines the mean/covariance files for fv1 and fv2 into a
+mean/covariance set of files.
+.SH "SEE ALSO"
+meancov (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

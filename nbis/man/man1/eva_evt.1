@@ -1,0 +1,77 @@
+.\" @(#)eva_evt.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH EVA_EVT 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+eva_evt \- finds a desired number of eigenvalues and eigenvectors.
+.SH SYNOPSIS
+eva_evt
+.I <covfile_in> <num_eva_evt_wanted> <evafile>
+.I <eva_desc> <evtfile> <evt_desc>
+.I <ascii_outfiles>
+.SH DESCRIPTION
+.B eva_evt
+finds a desired number of eigenvalues, and corresponding eigenvectors,
+of a covariance matrix (or really, of any symmetric positive definite real
+matrix). Uses CLAPACK routines, which were originally in Fortran but
+were converted into C using f2c.
+.SH ARGUMENTS
+.TP
+.I <covfile_in>
+The covariance matrix (really, symmetric positive definite real
+matrix) some of whose eigenvalues and corresponding eivenvectors are
+to be found.  Must be a PCASYS "covariance" file. (Usually the output
+of \fBmeancov\fR.)
+.TP
+.I <num_eva_evt_wanted>
+Specifies how many eigenvalues and eigenvectors to return for
+the given covariance matrix.
+.TP
+.I <evafile>
+File to be written containing the eigenvalues that are found; will be
+a PCASYS "matrix" file, with first dimension equal to 1 and second
+dimension equal to the number of eigenvalues found.  The eigenvalues
+will be stored in decreasing order.
+.TP
+.I <eva_desc>
+A string to be written into the eigenvalues output file as its
+description string.  This string can be of any length, but must not
+contain embedded newline characters.  If it contains spaces, tabs, or
+shell metacharacters that are not to be expanded, then it should be
+quoted.  To leave the description empty, use '' (two single quotes,
+i.e.  single-quoted empty string).  To let eva_evt make a description
+(stating that this is an eigenvalues file made by eva_evt, and showing the
+covariance file and number of eigenvalues), use - (hyphen).
+.TP
+.I <evtfile>
+File to be written containing the eigenvectors that are found; will
+be a PCASYS "matrix" file.  The i'th row of this matrix will be the
+eigenvector corresponding to the i'th entry in the eigenvalues output
+file.
+.TP
+.I <evt_desc>
+Description string for eigenvectors output file, or - to let eva_evt make
+the description. As per the \fIeva_desc\fR.
+.TP
+.I <ascii_outfiles>
+If y, makes ascii output files; if n, binary.  Binary is recommended,
+unless the output files must be portable across different byte orders
+or floating\-point formats.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/eva_evt/eva_evt.src\fR:
+.PP
+.RS
+.B % eva_evt ../meancov/fv1-9.cov 128 fv1-9.eva - fv1-9.evt - n
+.br
+Computes the eigen-values and eigen-vectors for fv1-9.cov and
+sorts in decreasing order, then returns the top 128 from that list.
+.SH "SEE ALSO"
+asc2bin (1B), bin2asc (1B), lintran (1B), meancov (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

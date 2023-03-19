@@ -1,0 +1,31 @@
+all.txt: lists all 2700 provided test fingerprints 
+         (FING_CLASS is acquired inside the wsq image).
+
+all_with_class.txt: lists all 2700 provided test fingerprints 
+         (FING_CLASS is acquired from input file list).
+
+first[10,20,50].txt: self-explanatory; first20.txt is the default
+                     used in the demos (pcasys and pcasysx).
+
+mkoas.prs - Default values of some of the additional parameters,
+            besides those shown in oas.prs, for the mkoas (make
+            orientation arrays) command.
+
+oas.prs - Default values of the parameters that affect the making
+          of orientation arrays (oas).  The parameters are
+          used by mkoas (make orientation arrays command) and
+          by the demos (pcasys and pcasysx).
+
+optosf.prs - Default values of some of the parameters of the optosf
+             (optimize overall smoothing factor) command.
+
+optrws.prs - Default values of some of the parameters of the optrws
+             (optimize regional weights) command.
+
+pcasys.prs - Default values of the additional parameters,
+             besides those shown in oas.prs, of pcasys
+             (non-graphical demo).
+
+pcasysx.prs - Default values of the additional parameters,
+              besides those shown in oas.prs, of pcasysx
+              (graphical demo).

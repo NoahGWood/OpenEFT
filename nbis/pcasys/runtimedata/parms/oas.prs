@@ -1,0 +1,54 @@
+# Default values of the parms that affect the making of oa's
+# (orientation arrays).
+#
+# IMPORTANT: The values of these parms must be the same when making
+# the orientation arrays (using the mkoas command) and optimizing the
+# classifier, as they are when running the finished classifier.
+# The default values shown here are the values that were used in the
+# optimization run that produced the data provided with the
+# distribution.
+
+# For sgmnt (segmentor):
+sgmnt_fac_n 5       # how many threshold-making factors to try
+sgmnt_min_fg 2000   # min. allowed no. of foreground (true) pixels...
+sgmnt_max_fg 8000   # ...and maximum
+sgmnt_nerode 3      # do this many erosions in foreground cleanup
+sgmnt_rsblobs 1     # if 1, remove small blobs in foreground cleanup
+sgmnt_fill 1        # if 1, fill holes in rows, cols in frgrnd cleanup
+sgmnt_min_n 25      # cutting angle becomes zero if any frgrnd edge
+                    #   has fewer than this many pixels
+sgmnt_hist_thresh 20  # threshold that tilted-rows-histogram must meet
+                      #   to find top-location for cutting
+sgmnt_origras_wmax 2000  # max. allowed width of original raster
+sgmnt_origras_hmax 2000  # max. allowed height of original raster
+sgmnt_fac_min 0.75       # minimum threshold-making factor value
+sgmnt_fac_del 0.05       # delta of threshold-making factor value
+sgmnt_slope_thresh 0.90  # if any of the three edges has slope
+  # differing by more than this from the average of the slopes,
+  # then cutting angle is set to zero
+
+# For enhnc (FFT-using image enhancer):
+enhnc_rr1 150 # high-frequency elements of FFT whose r^2 is < this
+              #   value are discarded
+enhnc_rr2 449 # low-frequency elements of FFT whose r^2 is > this
+              #   value are discarded
+enhnc_pow 0.3 # power spectrum is raised to this power before it is
+              #   multiplied by the FFT output
+
+# For rors (ridge-valley orientation finder):
+rors_slit_range_thresh 10 # if the difference between the maximum
+  # and minimum slit-sums at a pixel is less than this, then this
+  # pixel makes no contribution to the histogram used to make the
+  # local average orientation
+           
+# For r92a (r92 registration program wrapper):
+r92a_discard_thresh 0.01 # if squared-length of a local-average
+  # orientation vector is less than this, then conversion of this
+  # vector to an angle for use by r92 just produces the special value
+  # 100., which means an undefined angle
+
+# For rgar (registering pixelwise-orientations-reaverager):
+rgar_std_corepixel_x 245  # x coordinate of standard (median) core...
+rgar_std_corepixel_y 189  # ...pixel, and y coord.  In other words,
+  # this is the standard registration point, to which the particular
+  # core point gets translated to implement registration.

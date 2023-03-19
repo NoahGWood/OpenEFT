@@ -1,0 +1,55 @@
+.\" @(#)oas2pics.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH OAS2PICS 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+oas2pics \- makes pictures of orientation arrays.
+.SH SYNOPSIS
+.B oas2pics
+.I <oasfile> <i_start> <i_finish outpics_dir> <verbose>
+.SH DESCRIPTION
+.B Oas2pics
+reads a specified segment of orientation arrays (oas) from a file,
+and makes IHead raster images depicting the oas.  This can be useful
+for testing whether oas are reasonable, and to find out about their
+characteristics.
+.SH OPTIONS
+.TP
+.I <oasfile>
+A PCASYS "matrix" file containing orientation arrays, with each row being
+one oa.  First dimension is number of oas in the file, and second
+dimension must be 1680 (the dimensionality of one oa). (Usually the
+output of \fBmkoas\fR.)
+.TP
+.I <i_start> <i_finish>
+The program makes pictures of the segment consisting of oas i_start
+through i_finish, numbering starting at 1.
+.TP
+.I <outpics_dir>
+The program makes image files in this directory.  (If the directory
+does not already exist, the program makes it.)  The files will
+have names i.pct where i goes from i_start through i_finish.
+.TP
+.I <verbose>
+If y, the program writes a progress message to stdout for each
+oa it is making a picture of.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/asc2bin/asc2bin.src\fR:
+.PP
+.RS
+.B % oas2pics ../../data/oas/fv1.oas 1 2 oaspics y
+.br
+Makes a set of images files (IHEAD format) so the user can
+see how the orientation arrays look and compare to the actual
+fingerprint image if desired. The files can be converted to JPEG
+format using the \fBcjegb\fR command.
+.SH "SEE ALSO"
+mkoas (1B), dpyimage (1G), cjpegb (1G)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

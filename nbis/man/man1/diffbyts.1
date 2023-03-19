@@ -1,0 +1,71 @@
+.\" @(#)diffbyts.1 2008/10/02 NIST
+.\" I Image Group
+.\" Craig Watson
+.\"
+.TH DIFFBYTS 1G "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+diffbyts \- takes two binary data files and compares them byte
+for byte, compiling a cumulative histogram of differences.
+.SH SYNOPSIS
+.B diffbyts
+.I <file1>
+.I <file2>
+
+.SH DESCRIPTION
+.B Diffbyts
+takes as input two binary files of equal length and compares the
+contents between the two files byte for byte.  The differences
+between corresponding pairs of bytes are accumulated into a histogram,
+where each bin in the histogram represents the integer difference
+between the byte pairs.  Therefore, the first bin in the histogram
+contains the count of all those byte pairs that are exactly the same
+(a difference of 0); the next bin contains the count of all those
+byte pairs that are different by exactly 1; and so on.
+
+Upon completion, this utility prints a formatted report of the
+accumulated histogram to standard output.  Each difference
+bin in the histogram is listed on separate line in the report
+and formatted at follows:
+
+.RS
+d[\fIb\fR] = \fIc\fR : \fIp\fR
+.RE
+.br
+where
+.br
+.RS
+.TP
+.I b
+is the current bin's byte pair difference.
+.TP
+.I c
+is the number of corresponding byte pairs with difference
+equal to \fIb\fR.
+.TP
+.I p
+is the cumulative percentage of corresponding pairs of bytes
+counted in all the bins up to and including the current bin.
+.RE
+
+.SH OPTIONS
+.TP
+.I <file1>
+a binary file to be compared byte for byte to \fIfile2\fR.
+.TP
+.I <file2>
+a binary file to be compared byte for byte to \fIfile1\fR.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/imgtools/execs/diffbyts/diffbyts.src\fR:
+.RS
+.PP
+.B % diffbyts ../../data/finger/gray/raw/finger.raw ../dwsq/finger.raw > finger.hst
+.br
+compiles and stores a byte-difference histogram reporting
+the amount of image degradation due to lossy WSQ compression.
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

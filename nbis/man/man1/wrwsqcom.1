@@ -1,0 +1,51 @@
+.\" @(#)wrwsqcom.1 2008/10/02 NIST
+.\" I Image Group
+.\" Craig Watson
+.\"
+.TH WRWSQCOM 1G "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+wrwsqcom \- inserts a specified comment block into a WSQ-encoded
+image file.
+.SH SYNOPSIS
+.B wrwsqcom
+.I <image file>
+<\fB-f\fR \fIcomment file\fR | \fB-t\fR \fIcomment text\fR>
+
+.SH DESCRIPTION
+.B Wrwsqcom
+takes as input a file containing a WSQ-compressed image, and inserts
+a user-specified comment block into the file.  The comment may
+be represented by the contents of a file or it may be represented
+as a string on the command line.  Comments can be read from
+a WSQ file by using the \fBrdwsqcom\fR command.
+
+.SH OPTIONS
+.TP
+.I <image file>
+the input WSQ file to modified.
+.TP
+\fB-f\fR \fIcomment file\fR
+specifies that the comment text is contained in the following file.
+.TP
+\fB-t\fR \fIcomment text\fR
+specifies that the comment text is the following string on the
+command line.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/imgtools/execs/wrwsqcom/wrwsqcom.src\fR:
+.PP
+.RS
+.B % wrwsqcom finger.wsq -f comment.txt
+.br
+inserts the contents of the file \fBcomment.txt\fR into the
+WSQ fingerprint file.
+
+.SH SEE ALSO
+.BR cwsq (1G),
+.BR rdwsqcom (1G)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

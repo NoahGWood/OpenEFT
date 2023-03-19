@@ -1,0 +1,88 @@
+.\" @(#)sd_rfmt.1 2008/10/02 NIST
+.\" I Image Group
+.\" Craig Watson and Michael D. Garris
+.\"
+.TH SD_RFMT 1G "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+sd_rfmt \- takes images from NIST Special Databases 4, 9, 10, 14,
+and 18 and reformats the compressed data to work with the
+decompressors \fBdjpegl\fR and \fBdwsq\fR.
+
+.SH SYNOPSIS
+.B sd_rfmt
+.I <SD #>
+.I<outext>
+.I <image file>
+.RS 8
+SD list = {4,9,10,14,18}
+
+.SH DESCRIPTION
+.B Sd_rfmt
+reformats images compressed with the old JPEGLSD and WSQ14
+compression, on NIST Special Databases 4, 9, 10, 18 (JPEGLSD) and
+14 (WSQ14), so the images can be decompressed with the new
+commands \fBdjpegl\fR and \fBdwsq\fR.
+
+When JPEGLSD was used to compress images on NIST Special
+Databases (4, 9, 10, 18) the NIST IHEAD header was used to store
+the data for the JPEGLSD compression.  In the new versions
+\fBcjpegl\fR and \fBdjpegl\fR the full JPEG format is used
+not the IHEAD header.
+
+The WSQ14 compression used on SD14 has problems with ordering
+of the data in the compressed file.  \fBSd_rfmt\fR simply reorders
+the data to comply with the format specified in the
+FBI's Criminal Justice Information Services (CJIS) document,
+"WSQ Gray-scale Fingerprint Compressions Specification," Dec. 1997.
+This is the only fingerprint compression format accepted by the
+FBI IAFIS system.  \fBNOTE: The method for selecting the quantization
+amount was refined after the release of SD14 so the data loss in
+the reconstructed image may be more than seen when using the new versions
+cwsq and dwsq.\fR
+
+.SH OPTIONS
+.TP
+.I <SD #>
+Specify that the input image is from NIST Special Database #.
+.TP
+.I <outext>
+the extension of the reformatted output file.
+ªTo construct the output filename, \fBsd_rfmt\fR takes the
+input filename and replaces its extension with the one
+specified here.
+.TP
+.I <image file>
+the compressed input file to be reformatted.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/imgtools/execs/sd_rfmt/sd_rfmt.src\fR:
+.RS
+.PP
+.br
+.B % sd_rfmt 7 jpl sd09.old
+.br
+.B % sd_rfmt 10 jpl sd10.old
+.br
+.B % sd_rfmt 14 wsq sd14.old
+.br
+.B % sd_rfmt 18 jpl sd18.old
+.br
+Convert the special database images to the correct
+formatted compressed files (JPEGL and WSQ).  User
+could use \fBrdjpgcom\fR and \fBrdwsqcom\fR to read the
+NISTCOM comment that is written in the reformatted output file.
+After reformatting the new file can be decompressed with
+\fBdjpegl\fR or \fBdwsq\fR.
+
+.SH SEE ALSO
+.BR djpegl (1G),
+.BR dwsq (1G),
+.BR dpyimage (1G),
+.BR rdjpgcom (1G),
+.BR rdwsqcom (1G)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

@@ -1,0 +1,150 @@
+.\" @(#)not2intr.1 2008/10/02 NIST
+.\" I Image Group
+.\" Craig Watson and Michael D. Garris
+.\"
+.TH NOT2INTR 1G "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+not2intr \- converts an image comprised of non-interleaved color
+component planes to an image with interleaved color component
+pixels.
+
+.SH SYNOPSIS
+.B not2intr
+.I <outext>
+.I <image file>
+.I <\fIw\fR,\fIh\fR,\fId\fR,[\fIppi\fR]>
+.RS 9
+[\fB-raw_out\fR]
+.br
+[\fB-YCbCr\fR \fIH0\fR,\fIV0\fR:\fIH1\fR,\fIV1\fR:\fIH2\fR,\fIV2\fR]
+
+.SH DESCRIPTION
+.B Not2intr
+takes as input a raw pixmap file containing an uncompressed image
+comprised of non-interleaved color component planes and converts the image
+to interleaved color component pixels.  This utility requires there be
+three color components in the input image.  Two output file formats are
+possible, a NIST IHead file (the default) or a raw pixmap file
+(specified by the \fB-raw_out\fR option).
+
+For example, the pixels of an RGB color image are interleaved
+when a pixel's R, G, and B components are sequentially
+adjacent in the image byte stream, ie. RGBRGBRGB... .  If the
+color components are non-interleaved, then all (R)ed components in the
+image are sequentially adjacent in the image byte stream, followed
+by all (G)reen components, and then lastly followed by all (B)lue
+components.  Each complete sequence of color components is called
+a \fIplane\fR.  The utility \fBintr2not\fR converts interleaved
+to non-interleaved color components.
+
+It is possible that the component planes of an input YCbCr image
+have been previously downsampled.  If so, the \fB-YCbCr\fR flag
+must be included on the command line, listing the appropriate component
+plane downsampling factors.  By default, this utility assumes
+no downsampling.  YCbCr image results should always be explicitly
+stored in a raw pixmap file, because the IHead format only supports
+RGB pixels.  (See YCbCr OPTIONS below.)  
+
+.SH OPTIONS
+All switch names may be abbreviated; for example,
+\fB-raw_out\fR may be written \fB-r\fR.
+.TP
+.I <outext>
+the extension of the output file.
+To construct the output filename, \fBnot2intr\fR takes the
+input filename and replaces its extension with the one
+specified here.
+.TP
+.I <image file>
+the input raw pixmap file containing the color image to be converted.
+.TP
+<\fIw\fR,\fIh\fR,\fId\fR,[\fIppi\fR]>
+the attributes of the input image in the raw pixmap file.
+.br
+.RS
+.TP
+.I w
+the pixel width of the pixmap
+.TP
+.I h
+the pixel height of the pixmap
+.TP
+.I d
+the pixel depth of the pixmap
+.TP
+.I ppi
+the optional scan resolution of the image in integer units of
+pixels per inch.
+.RE
+.TP
+.B -raw_out
+specifies that the results should be stored to a raw pixmap file.
+.TP
+\fB-YCbCr\fR \fIH0\fR,\fIV0\fR:\fIH1\fR,\fIV1\fR:\fIH2\fR,\fIV2\fR
+indicates that a YCbCr color image is being input whose
+component planes have been previously downsampled.
+The \fB-raw_out\fR flag should always be used in conjunction with
+this option.
+(See YCbCr Options below.)
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH YCbCr OPTIONS
+A common compression technique for YCbCr images is to downsample
+the Cb & Cr component planes.
+\fBNot2intr\fR can handle a limited range of YCbCr
+downsampling schemes that are represented by a list of component
+plane factors.
+These factors together represent downsampling ratios relative to
+each other.  The comma-separated list of factor pairs correspond to
+the Y, Cb, and
+Cr component planes respectively.  The first value in a factor
+pair represents the downsampling of that particular component plane
+in the X-dimension, while the second represents the Y-dimension.
+Compression ratios for a particular component plane are calculated
+by dividing the maximum component factors in the list by the current
+component's factors.  These integer factors are limited
+between 1 and 4.  H,V factors all set to 1 represent
+no downsampling.  For complete details, \fBnot2intr\fR implements
+the downsampling and interleaving schemes described in the
+following reference:
+
+.RS
+W.B. Pennebaker and J.L. Mitchell, "JPEG: Still Image Compression
+Standard," Appendix A - "ISO DIS 10918-1 Requirements and Guidelines,"
+Van Nostrand Reinhold, NY, 1993, pp. A1-A4.
+.RE
+
+For example the option specification:
+
+.RS
+-YCbCr 4,4:2,2:1,1
+.RE
+
+indicates that there has been no downsampling of the Y
+component plane (4,4 are the largest X and Y factors listed);
+the Cb component plane has been downsampled in X and Y by a factor of 2
+(maximum factors 4 divided by current factors 2); and the Cr component
+plane has been downsampled in X and Y by a factor of 4 (maximum factors 4
+divided by current factors 1).  Note that downsampling
+component planes is a form of \fIlossy\fR compression.
+The utility \fBrgb2ycc\fR converts RGB pixmaps to the YCbCr
+colorspace, and it conducts downsampling of the resulting YCbCr
+component planes upon request.
+
+.SH EXAMPLES
+From \fItest/imgtools/execs/not2intr/not2intr.src\fR:
+.PP
+.RS
+.B % not2intr raw face.nin 768,1024,24 -r
+.br
+converts the non-interleaved RGB face image in a
+raw pixmap file into interleaved color pixels.
+
+.SH SEE ALSO
+.BR intr2not (1G),
+.BR rgb2ycc (1G)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

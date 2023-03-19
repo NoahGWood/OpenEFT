@@ -1,0 +1,39 @@
+.\" @(#)bin2asc.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH BIN2ASC 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+bin2asc \- converts a PCASYS data file from binary to ascii form.
+.SH SYNOPSIS
+.B bin2asc
+.I <binary_data_in> <ascii_data_out>
+.SH DESCRIPTION
+.B Bin2asc
+reads a PCASYS binary data file of any type, and produces a
+corresponding PCASYS ascii data file or writes the ascii data to the
+standard output.
+.SH OPTIONS
+.TP
+.I <binary_data_in>
+Binary data file to be read.
+.TP
+.I <ascii_data_out>
+Ascii data file to be written. If the file already exists, bin2asc
+overwrites the file.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/bin2asc/bin2asc.src\fR:
+.PP
+.RS
+.B % bin2asc ../asc2bin/fv1.bin fv1.cls
+.br
+Converts the class file from binary to ascii data.
+.SH "SEE ALSO"
+asc2bin (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

@@ -1,0 +1,428 @@
+/* train regfactor = 1.0 */
+train_or_test train	/* C style comments allowed */
+do_confuse true		/* make confusion matrices */
+do_cvr true		/* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+purpose classifier		
+errfunc mse 
+acfunc_hids sinusoid; acfunc_outs sinusoid
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune	/* or can be no_prune or square_prune; or,      */
+			/* code-numbers 0, 2, and 3 can be used instead */ 
+			/* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4	       
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+ninps 11; nhids 22; nouts 5
+regfac 1.0
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+wts_outfile trn.wts.1
+seed 32174
+short_outfile trn1.err
+show_acs_times_1000 false; long_outfile trn1l.err
+
+newrun 
+
+/* test regfactor = 1.0*/
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 230
+regfac 1.0
+oklvl 0.0
+wts_infile trn.wts.1
+short_outfile tst1.err /* summary output file */
+
+/*============================================================================*/
+
+newrun
+
+/* train regfactor = 0.5 */
+train_or_test train	/* C style comments allowed */
+do_confuse true		/* make confusion matrices */
+do_cvr true		/* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+purpose classifier		
+errfunc mse 
+acfunc_hids sinusoid; acfunc_outs sinusoid
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune	/* or can be no_prune or square_prune; or,      */
+			/* code-numbers 0, 2, and 3 can be used instead */ 
+			/* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4	       
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+ninps 11; nhids 22; nouts 5
+regfac 0.5
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+seed 12347
+wts_infile trn.wts.1
+wts_outfile trn.wts.2
+short_outfile trn2.err
+show_acs_times_1000 false; long_outfile trn2l.err
+
+newrun 
+
+/* test regfactor = 0.5 */
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 230
+regfac 0.5
+oklvl 0.0
+wts_infile trn.wts.2
+short_outfile tst2.err /* summary output file */
+/*============================================================================*/
+
+newrun
+
+/* train regfactor = 0.2 */
+train_or_test train	/* C style comments allowed */
+do_confuse true		/* make confusion matrices */
+do_cvr true		/* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+errfunc mse 
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune	/* or can be no_prune or square_prune; or,      */
+			/* code-numbers 0, 2, and 3 can be used instead */ 
+			/* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4	       
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+regfac 0.2
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+wts_infile trn.wts.2
+wts_outfile trn.wts.4
+short_outfile trn4.err
+show_acs_times_1000 false; long_outfile trn4l.err
+
+newrun
+
+/* test regfactor = 0.2 */
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 230
+regfac 0.2
+oklvl 0.0
+wts_infile trn.wts.4
+short_outfile tst4.err /* summary output file */
+
+/*=============================================================================*/
+newrun
+
+/* train regfactor = 0.1 */
+train_or_test train     /* C style comments allowed */
+do_confuse true         /* make confusion matrices */
+do_cvr true             /* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+errfunc mse
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune  /* or can be no_prune or square_prune; or,      */
+                        /* code-numbers 0, 2, and 3 can be used instead */
+                        /* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+regfac 0.1
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+
+wts_infile trn.wts.4
+wts_outfile trn.wts.6
+short_outfile trn6.err
+show_acs_times_1000 false; long_outfile trn6l.err
+
+
+newrun /* put this (or NEWRUN) between each run and the next */
+
+
+/* test regfactor = 0.1 */
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 230
+regfac 0.1
+oklvl 0.0
+wts_infile trn.wts.6
+short_outfile tst6.err /* summary output file */
+/*============================================================================*/
+
+newrun
+
+/* train regfactor = 0.01 */
+train_or_test train     /* C style comments allowed */
+do_confuse true         /* make confusion matrices */
+do_cvr true             /* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+errfunc mse
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune  /* or can be no_prune or square_prune; or,      */
+                        /* code-numbers 0, 2, and 3 can be used instead */
+                        /* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+regfac 0.01
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+wts_infile trn.wts.6
+wts_outfile trn.wts.8
+short_outfile trn8.err
+show_acs_times_1000 false; long_outfile trn8l.err
+
+
+newrun /* put this (or NEWRUN) between each run and the next */
+
+/* test regfactor = 0.01 */
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 230
+regfac 0.01
+oklvl 0.0
+wts_infile trn.wts.8
+short_outfile tst8.err /* summary output file */
+/*============================================================================*/
+
+newrun
+
+/* train regfactor = 0.001 */
+train_or_test train     /* C style comments allowed */
+do_confuse true         /* make confusion matrices */
+do_cvr true             /* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+errfunc mse
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune  /* or can be no_prune or square_prune; or,      */
+                        /* code-numbers 0, 2, and 3 can be used instead */
+                        /* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+regfac 0.001
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+wts_infile trn.wts.8
+wts_outfile trn.wts.10
+short_outfile trn10.err
+show_acs_times_1000 false; long_outfile trn10l.err
+
+
+newrun /* put this (or NEWRUN) between each run and the next */
+
+/* test regfactor = 0.001 */
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 230
+regfac 0.001
+oklvl 0.0
+wts_infile trn.wts.10
+short_outfile tst10.err /* summary output file */
+/*============================================================================*/
+
+newrun
+
+/* train regfactor = 0.0001 */
+train_or_test train     /* C style comments allowed */
+do_confuse true         /* make confusion matrices */
+do_cvr true             /* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+errfunc mse
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune  /* or can be no_prune or square_prune; or,      */
+                        /* code-numbers 0, 2, and 3 can be used instead */
+                        /* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+regfac 0.0001
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+wts_infile trn.wts.10
+wts_outfile trn.wts.12
+short_outfile trn12.err
+show_acs_times_1000 false; long_outfile trn12l.err
+
+
+newrun /* put this (or NEWRUN) between each run and the next */
+
+/* test regfactor = 0.0001 */
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 23900
+regfac 0.0001
+oklvl 0.0
+wts_infile trn.wts.12
+short_outfile tst12.err /* summary output file */
+
+/*============================================================================*/
+newrun
+
+/* train regfactor = 0.00001 */
+train_or_test train     /* C style comments allowed */
+do_confuse true         /* make confusion matrices */
+do_cvr true             /* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+errfunc mse
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune  /* or can be no_prune or square_prune; or,      */
+                        /* code-numbers 0, 2, and 3 can be used instead */
+                        /* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+regfac 0.00001
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+wts_infile trn.wts.12
+wts_outfile trn.wts.14
+short_outfile trn14.err
+show_acs_times_1000 false; long_outfile trn14l.err
+
+newrun /* put this (or NEWRUN) between each run and the next */
+
+/* test regfactor = 0.00001 */
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 23900
+regfac 0.00001
+oklvl 0.0
+wts_infile trn.wts.14
+short_outfile tst14.err /* summary output file */
+show_acs_times_1000 false; long_outfile tst14l.err
+
+/*============================================================================*/
+newrun
+
+/* train regfactor = 0.000001 */
+train_or_test train     /* C style comments allowed */
+do_confuse true         /* make confusion matrices */
+do_cvr true             /* make correct-vs.-reject table */
+
+lcn_scn_infile patnames
+errfunc mse
+priors both;pattern_wts_infile patternWts;class_wts_infile classWts
+boltzmann square_prune  /* or can be no_prune or square_prune; or,      */
+                        /* code-numbers 0, 2, and 3 can be used instead */
+                        /* of no_prune, abs_prune,and square_prune      */
+temperature 1.0e-4
+patterns_infile trnSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 5242
+regfac 0.000001
+niter_max 50; egoal 0.000; gwgoal 0.0; nfreq 10; errdel 0.99
+nokdel 1
+oklvl 0.0
+wts_infile trn.wts.14
+wts_outfile trn.wts.16
+short_outfile trn16.err
+show_acs_times_1000 false; long_outfile trn16l.err
+
+newrun /* put this (or NEWRUN) between each run and the next */
+
+/* test regfactor = 0.000001 */
+train_or_test test
+do_confuse true
+do_cvr true
+lcn_scn_infile patnames
+errfunc mse
+priors class;class_wts_infile classWts
+patterns_infile tstSet_pat_normed.bin
+patsfile_ascii_or_binary binary
+trgoff 0.
+npats 23900
+regfac 0.000001
+oklvl 0.0
+wts_infile trn.wts.16
+short_outfile tst16.err /* summary output file */
+show_acs_times_1000 false; long_outfile tst16l.err
+
+/*============================================================================*/ 

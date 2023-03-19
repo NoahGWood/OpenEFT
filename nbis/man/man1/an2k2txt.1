@@ -1,0 +1,129 @@
+.\" @(#)an2k2txt.1 2008/10/02 NIST
+.\" I Image Group
+.\" Michael D. Garris
+.\"
+.TH AN2K2TXT 1F "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+an2k2txt \- Converts an ANSI/NIST 2007 file to a formatted text file.
+.SH SYNOPSIS
+.B an2k2txt
+.I <ansi_nist in>
+.I <fmttext out>
+.SH DESCRIPTION
+.B An2k2txt
+parses a standard  compliant ANSI/NIST-ITL 1-2007 file
+and writes its contents to a new file in a textually viewable and
+editable format.  The contents of binary image fields are stored
+to temporary files and externally referenced in the output file.
+
+.SH OPTIONS
+.TP
+.I <ansi_nist in>
+the ANSI/NIST file to be converted
+.TP
+.I <fmttext out>
+the output text file
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version
+
+.SH OUTPUT FORMAT
+Every line in the output text represents a single information
+item from the ANSI/NIST file.  These lines are formatted as
+follows:
+.PP
+.RS
+\fIr.f.s.i \fR[\fIt.n\fR]=\fIvalue{US}
+.TP
+.I r.f.s.i
+references the information item with
+.RS
+.TP
+.I r
+the item's positional \fIr\fRecord index in the file
+.TP
+.I f
+the item's positional \fIf\fRield index in the record
+.TP
+.I s
+the item's positional \fIs\fRubfield index in the field
+.TP
+.I i
+the item's positional \fIi\fRtem index in the subfield
+.PP
+Note that all indices start at 1.
+.RE
+.TP
+.I t.n
+references the Record Type and Field ID from
+the standard.
+.RS
+.TP
+.I t
+the record's \fIt\fRype
+.TP
+.I n
+the field's ID \fIn\fRumber
+.RE
+.TP
+.I value
+is the textual content of the information item, unless
+the information item contains binary image data, in which case,
+the value is the name of an external file containing the binary data.
+.TP
+.I {US}
+is the non-printable ASCII character 0x1F.  This separator character
+is one of 4 used in the standard.  In VIM, this non-printable
+character may be entered using the ^v command and entering the
+decimal code "31".  In Emacs, this non-printable character may
+be entered using the ^q command and entering the octal code "037".
+
+.RE
+.RE
+\fBExample Output Lines
+.PP
+.RS
+1.5.1.1 [1.005]=19990708\(bu
+.PP
+This is the information item corresponding to the Date (DAT) field
+in the standard.
+It is the 5th field in a Type-1 record, and the Type-1 record is
+always the first record in the ANSI/NIST file; therefore, its record
+index is 1, its field index is 5, its subfield index is 1, and its
+item index is 1.  The value of this information item represents the date
+of July 8, 1999.  The '\(bu' at the end of the line represents the
+non-printable {US} character.
+
+1.3.4.1 [1.003]=14\(bu
+.PP
+This information item is part of the File Content (CNT) field.
+The CNT field is the 3rd field in a Type-1 record, so this
+information item's record index is 1 and its field index is 3.
+This information item is in the 4th subfield of the CNT field, and
+has an item index of 1; therefore, its value 14 signifies that the
+4th record (the subfield index) in this ANSI/NIST file is a Type-14
+record.
+
+4.14.1.1 [14.999]=fld_2_14.tmp\(bu
+.PP
+This information item corresponds to an Image Data field of a
+Type-14 record.  This field always has numeric ID 999 and is
+always the last field in the image record.  This Type-14 record
+is the 4th record in this ANSI/NIST file, so the Image Data information
+item has record index 4, and it is in the 14th field (field index 14)
+in the record.  This information item in the ANSI/NIST file contains
+binary pixel data, so the output value "fld_2_14.tmp" references an
+external filename into which \fBan2ktotxt\fR stored the item's binary
+data.
+
+.SH EXAMPLES
+From \fItest/an2k/execs/an2k2txt/an2k2txt.src\fR:
+.PP
+.RS
+.B % an2k2txt ../../data/nist.an2 nist.fmt
+.SH SEE ALSO
+.BR an2ktool (1F),
+.BR txt2an2k (1F)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

@@ -1,0 +1,43 @@
+.\" @(#)rdwsqcom.1 2008/10/02 NIST
+.\" I Image Group
+.\" Craig Watson
+.\"
+.TH RDWSQCOM 1G "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+rdwsqcom \- scans a WSQ-encoded image file for any and all comment
+blocks, printing their contents to standard output.
+.SH SYNOPSIS
+.B rdwsqcom
+.I <image file>
+
+.SH DESCRIPTION
+.B Rdwsqcom
+takes as input a file containing a WSQ-compressed image, and \fIwithout\fR
+decoding and reconstructing the image, the utility scans the file for
+any and all comment blocks.  As a comment block is encountered, its
+contents is printed to standard output.  Comments can be written to
+a WSQ file by using the \fBwrwsqcom\fR command.
+
+.SH OPTIONS
+.TP
+.I <image file>
+the input WSQ file to be scanned.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/imgtools/execs/rdwsqcom/rdwsqcom.src\fR:
+.PP
+.RS
+.B % rdwsqcom finger.wsq > finger.com
+.br
+prints any comments stored in the WSQ fingerprint file
+to an output file.
+
+.SH SEE ALSO
+.BR cwsq (1G),
+.BR wrwsqcom (1G)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

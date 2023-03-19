@@ -1,0 +1,120 @@
+# Default values of the additional parms needed by pcasys
+# (non-graphical demo), besides those shown in oas.prs.  Also
+# has default values for the data files (transform matrix, prototype
+# feature vectos, and their classes), which are files that will
+# exist after installation.
+
+
+# Set classifier as (1) PNN (Probabilistic Neural Net) or
+# (2) MLP (Multi-layer Perceptron)
+#PNN
+#network_type 1
+#MLP
+network_type 2
+
+# trnsfrm (linear transform) parm: how many (first) rows of the
+# transform matrix to use, and hence, how many features to make for
+# the feature vector of each incoming fingerprint, and also how many
+# (first) features to use of each prototype feature vector when running
+# the classifier:
+#PNN
+#trnsfrm_nrows_use 64
+#MLP
+trnsfrm_nrows_use 128
+
+# trnsfrm data: transform matrix file, used by the demo to transform
+# the orientation array of an incoming fingerprint into the
+# low-dimensional feature vector that will be sent to the
+# classifier:
+#PNN
+#trnsfrm_matrix_file pcasys/weights/pnn/pnn_tmat.bin
+#MLP
+trnsfrm_matrix_file pcasys/weights/mlp/mlp_tmat.bin
+
+# Class string used in graphics mode to display the
+# ouput activations.  Should be same size as number of outputs
+# (ie. pnn_nclasses or number outputs in mlp_wts file).  Must be
+# some combination of "ALRSTW".  For PNN, these must be the same
+# classes as used in the prototype files and be in the same order 
+# as when the prototype were optimized.
+cls_str ALRSTW
+
+# pnn (Probabilistic Neural Net) parms:
+pnn_nprotos_use 24300  # How many first feature vectors to use, from
+  # the set of prototypes.  The value 24300 corresponds to the entire
+  # provided set, corresponding to volumes 1 - 9 "f" rolllings of SD14
+pnn_nclasses 6  # How many different classes there are.  For the
+  # fingerprint pattern-level classification problem, there are 6:
+  # A, L, R, S, T, and W.
+pnn_osf 1.368750 # Overall smoothing factor for the PNN.  May be optimized
+  # using optosf.
+
+# pnn data:
+#   prototype feature vectors...
+pnn_protos_fvs_file pcasys/weights/pnn/profvs.bin
+#   ...and their classes
+pnn_protos_classes_file pcasys/weights/pnn/procls.asc
+
+# MLP (Multi-layer Perceptron) network parameters:
+# mlp weights file
+mlp_wts_file pcasys/weights/mlp/mlp_wts.bin
+
+# For pseudo (pseudoridge tracer):
+pseudo_slthresh0           0.   # If squared-length of an orientation
+  # vector (in the fine grid used by pseudo) is < this value, then
+  # the vector is zeroed before the (possible) application of smoothing
+  # iterations.
+pseudo_slthresh1           0.04 # If, after (possible) smoothing
+  # iterations, the squared-length of an orientation vector is <
+  # this value, then this location is marked as bad, meaning that
+  # no pseudoridge is allowed to start here and if one arrives here,
+  # tracing stops at this point.
+pseudo_smooth_cwt          0.   # Center-weight for each iteration of
+  # smoothing of the orientation grid.  An iteration consists of
+  # replacing each vector with the weighted average of itself and its
+  # four neighbors, with itself getting this much weight and its
+  # neighbors equally dividing the remaining weight (sum of weights
+  # is 1).
+pseudo_stepsize            1.   # Length of one step in the production
+  # of a pseudoridge, which is actually a polygon.  A value of
+  # 1. corresponds to the spacing between vectors in the (finer)
+  # orientation array used by pseudo.
+pseudo_max_tilt           45    # Max allowed tilt of a candidate
+  # concave-upward's vertex (point of sharpest turning) from a
+  # horizontal that corresponds to exact uprightness.  In degrees.
+pseudo_min_side_turn      70    # Minimum cumulative turn that each
+  # side of concave-upward must have.  In degrees.
+# Limits of the block of starting positions for pseudoridge tracing:
+pseudo_initi_s            11  # small limit, vertical
+pseudo_initi_e            46  # large limit, vertical
+pseudo_initj_s            11  # small limit, horizontal
+pseudo_initj_e            50  # large limit, horizontal
+pseudo_maxsteps_eachdir  200    # Max number of steps that tracer ever
+  # takes in either of the two directions from starting point.
+  # (Controls the amount of memory needed to store a pseudoridge, and
+  # more importantly, such a limit is needed to prevent possible
+  # infinitely looping pseudridges in some whorls.)
+pseudo_nsmooth             3    # How many iterations of smoothing
+pseudo_maxturn            40    # Maximum turn that is allowed to
+  # occur in a single step (in degrees).  An attempted turn sharper
+  # than this causes tracing to stop.
+
+# For combine, the routine that combines PNN and pseudoridge-tracer
+# results.  This is the confidence value combine assigns if pseudo
+# finds a concave-upward (causing hyp class to be whorl) but PNN
+# thinks the print is not a whorl:
+combine_clash_confidence .9
+
+# List of fingerprint images to run the demo on, which
+# consists of the 2700 fingerprints of volume 10 "s" rollings of
+# NIST Special Database 14.
+demo_images_list pcasys/parms/all_with_class.txt
+
+outfile pcasys.out  # Output file to be produced.  If no output
+  # file is wanted, set this to /dev/null.
+
+clobber_outfile n  # If n, then if outfile already exists, exit with
+  # an error message.  If y, then overwrite outfile if it already
+  # exists.
+
+verbose y # If y, then write progress messages to stdout.

@@ -1,0 +1,70 @@
+.\" @(#)cropcoeff.1 2008/10/02 NIST
+.\" I Image Group
+.\" Kenneth Ko
+.\"
+.TH CORPCOEFF 1F "03 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+cropcoeff \- Read AN2K/AN2K7 file, and crop each Type-14 record.
+.SH SYNOPSIS
+.B cropcoeff
+.I [option]
+.I <file in>
+.SH DESCRIPTION
+.B CropCoeff
+Extracts the individual fingerprint images from the WSQ compressed slap
+images (left/right hand, thumbs) in ANSI/NIST 2007 Type-14 records into
+individual WSQ files without decompressing/recompressing the slap images.
+The ANSI/NIST 2007 Type-14 record must contain both the WSQ compressed
+slap image and the corresponding segmentation coordinates.  Segmentation
+coordinates are stored in the Type-14 record as defined in the
+ANSI/NIST 2007 specification.
+
+This code is briefly described in the following in the following report
+http://www.mitre.org/work/tech_papers/tech_papers_08/08_0060/index.html
+
+CropCoeff DOES NOT compute segmentation coordinates, it simply uses
+whatever is provided in the Type-14 record.  If no coordinates are
+provided in the Type-14 record CropCoeff does not produce output for
+that slap image.
+
+CropCoeff will move the x,y coordinates of the top-left corner of each
+segmentation box to the nearest factor of 32 pixels.  CropCoeff will move
+any edge that is within 24 pixels of the slap image edge out to
+that image limit. CropCoeff will expand any segmentation box less than 100
+pixels in width or height up to 100 pixels, by equally (when possible) expand
+the corresponding edges of the segmentation box.  The extracted
+fingerprint images do contain some "noise" in the reconstructed image
+around the edges as compared to decompressing the full slap image and
+extracting the same pixels from that reconstructed image.  This is
+caused by "edge wrapping/boundary" conditions in the WSQ algorithm.
+
+The output files from CropCoeff can be decompressed individually with a
+WSQ compliant algorithm.
+
+The output files contain the base name of the input file with a new extension
+containing the finger position (FNG).  For example if the input file is
+file.an2 then the output files would be file.<FNG>.wsq. FNG is assigned a
+value 1-10 corresponding to the finger number for that segmented image.
+The number are defined as 1-R. Thumb, 2-R Index, 3-R. Middle, 4-R. Ring,
+5-R. Little, 6-L. Thumb, 7-L. Index, 8-L. Middle, 9-L. Ring, and 10-L. Little.
+.SH OPTIONS
+.TP
+.I -v L 
+set verbose level of the corp wsq image which "L" is a integer.
+.TP
+.I <file in>
+the ANSI/NIST file to be converted
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/an2k7/execs/cropcoeff/cropcoeff.src\fR:
+.PP
+.RS
+.B % cropcoeff ../../data/nist.an2
+.PP
+.B % cropcoeff -v 1 ../../data/nist.an2
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

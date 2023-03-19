@@ -1,0 +1,160 @@
+*******************************************************************************
+
+License:
+This software and/or related materials was developed at the National Institute
+of Standards and Technology (NIST) by employees of the Federal Government
+in the course of their official duties. Pursuant to title 17 Section 105
+of the United States Code, this software is not subject to copyright
+protection and is in the public domain.
+
+This software and/or related materials have been determined to be not subject
+to the EAR (see Part 734.3 of the EAR for exact details) because it is
+a publicly available technology and software, and is freely distributed
+to any interested party with no licensing requirements.  Therefore, it is
+permissible to distribute this software as a free download from the internet.
+
+Disclaimer:
+This software and/or related materials was developed to promote biometric
+standards and biometric technology testing for the Federal Government
+in accordance with the USA PATRIOT Act and the Enhanced Border Security
+and Visa Entry Reform Act. Specific hardware and software products identified
+in this software were used in order to perform the software development.
+In no case does such identification imply recommendation or endorsement
+by the National Institute of Standards and Technology, nor does it imply that
+the products and equipment identified are necessarily the best available
+for the purpose.
+
+This software and/or related materials are provided "AS-IS" without warranty
+of any kind including NO WARRANTY OF PERFORMANCE, MERCHANTABILITY,
+NO WARRANTY OF NON-INFRINGEMENT OF ANY 3RD PARTY INTELLECTUAL PROPERTY
+or FITNESS FOR A PARTICULAR PURPOSE or for any purpose whatsoever, for the
+licensed product, however used. In no event shall NIST be liable for any
+damages and/or costs, including but not limited to incidental or consequential
+damages of any kind, including economic damage or injury to property and lost
+profits, regardless of whether NIST shall be advised, have reason to know,
+or in fact shall know of the possibility.
+
+By using this software, you agree to bear all risk relating to quality,
+use and performance of the software and/or related materials.  You agree
+to hold the Government harmless from any claim arising from your use
+of the software.
+
+*******************************************************************************
+
+                    NBIS Open Source Software Installation Guide
+                                   (For Windows)
+                   ----------------------------------------------
+
+Step 1:
+        Install CMake and the MinGW/MSYS build environment.
+
+        ** NOTE **
+        NBIS may not build successfully if your MinGW/MSYS is not installed
+        following the procedure described below in the "Installation Guide for 
+        the MinGW/MSYS build environment" (at the end of this document). 
+	
+        Automated installers (as well as full source code) for Windows versions
+        of CMake are available at http://www.cmake.org/download/.
+
+        ** NOTE **
+        You must add the cmake executable's location to your PATH variable
+        (the installer can do this or it can be done manually post-installation).
+
+Step 2:
+        Run the following command to setup your build environment for MSYS/MinGW
+        on WIN32 (or WIN64):
+
+        ./setup.sh <TARGET INSTALLATION DIR> --MSYS [--STDLIBS] [--32 | --64]
+
+        <TARGET INSTALLATION DIR> must be replaced by the specific directory path
+        where you want to install the NBIS applications, libraries,
+        pre-computed runtime data and manuals. The <TARGET INSTALLATION DIR> 
+        must be an absolute path. 
+
+        For both architectures, run setup.sh using <TARGET INSTALLATION DIR>
+        with the format of <DRIVE LETTER> followed by : (colon).  
+        (ex: C:/SRC/NBIS/Main)
+
+        You must run setup.sh as described above.  If you do not, then
+        there is no guarantee that all applications will build and/or run.
+
+        Options Usage:
+             --STDLIBS              Build without OPENJP2 and PNG image
+                                    format support
+             --32                   Build on 32-bit architecture machine.
+             --64                   Build on 64-bit architecture machine.
+
+
+        Example:
+        > ./setup.sh C:/SRC/NBIS/Main --MSYS --32
+ 
+Step 3:
+        Run the following commands to build "NBIS":
+        > make config
+        > make it
+
+Step 4:
+        Run the following command to install NBIS executables into the
+        <TARGET_INSTALLATION_DIR> directory:
+        > make install
+
+Step 5: (OPTIONAL)
+        Run the following command, if you want to generate a list of
+        API supported in NBIS.
+        > make catalog
+
+
+###########################################################################################
+                   Installation Guide For MinGW/MSYS build environment                    
+                             (For Windows 32- and 64-bit)
+                -----------------------------------------------------
+
+** NOTE ** 
+If you have not already installed CMake, you should do so before installing MinGW/MSYS.
+(Otherwise, you may have to restart the MSYS shell after installing CMake.)
+
+Step 1:
+        Download the following packages for MSYS and MinGW-get:
+            - MSYS: http://sourceforge.net/projects/mingw-w64/files/External%20binary%20packages%20%28Win64%20hosted%29/MSYS%20%2832-bit%29/MSYS-20111123.zip/download
+            - MinGW-get: http://sourceforge.net/projects/mingw/files/Installer/mingw-get/mingw-get-0.5-beta-20120426-1/mingw-get-0.5-mingw32-beta-20120426-1-bin.zip/download
+
+
+Step 2:
+        Download the correct MinGW package for your platform (32- or 64-bit):
+            - MinGW (32-bit): http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/megasoft78/basic/mingw-w64-bin_i686-mingw_4.5.2_20110223_megasoft78.7z/download
+                 -- OR --
+            - MinGW (64-bit): http://sourceforge.net/projects/mingw-w64/files/Multilib%20Toolchains%28Targetting%20Win32%20and%20Win64%29/megasoft78/mingw-w64-bin_x86_64-mingw_4.5.2_20110222_multilib_megasoft78.7z/download
+
+NOTE: The 64-bit version of MinGW will allow you to build NBIS binaries in 
+      both 32- and 64-bit versions, using the flags specified in the build
+      instructions above. 
+
+Step 3:
+        Extract the MinGW package to a convenient directory (without spaces).
+            Ex: C:\mingw64\ *OR* C:\mingw32\
+
+Step 4:
+        Extract the MSYS package to another, separate, directory (without spaces).
+            Ex: C:\msys\
+
+Step 5:
+        Extract the MinGW-get package to the same directory as the the MinGW
+        directory used in Step 2 above.
+           Ex: C:\mingw64\ *OR* C:\mingw32\
+
+Step 6: 
+        Open an MSYS command prompt (run MSYS.bat from the directory where the 
+        MSYS package was extracted) and run the post-install configuration script
+        by typing the following command:
+           > /postinstall/pi.sh
+
+        Answer "yes" to all questions and provide the full path to the directory 
+        where the MinGW package was extracted when prompted for the location 
+        of MinGW.
+
+Step 7:
+        Run the following command to finalize the configuration of MSYS and MinGW:
+           > mingw-get install mingw32-autotools
+
+        (This step requires that your computer is connected to the internet and 
+        may take several minutes depending on the speed of your connection.)

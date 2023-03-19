@@ -1,0 +1,179 @@
+.\" @(#)dpyan2k.1 2008/10/02 NIST
+.\" I Image Group
+.\" Stan Janet & Michael D. Garris
+.\" record selection options added by Joseph C. Konczal
+.\"
+.TH DPYAN2K 1F "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+dpyan2k \- display image and minutiae contents of an
+ANSI/NIST file.
+.SH SYNOPSIS
+.B dpyan2k
+.RB [ \-vxIN ]
+.RB [ \-f 
+.IR FGP[:IMP] ]
+.RB [ \-i 
+.IR IMP ]
+.RB [ \-n 
+.IR IDC ]
+.RB [ \-t 
+.IR LRT ]
+.RB [ \-q 
+.IR NQM ]
+.RB [ \-r 
+.IR rec-sel-in-file ]
+.RB [ \-w 
+.IR rec-sel-out-file ]
+.RB [ \-a 
+.IR accel-factor ]
+.RB [ \-b 
+.IR border-width ]
+.RB [ \-p 
+.IR minutia-size ]
+.RB [ \-W 
+.IR width ]
+.RB [ \-H 
+.IR height ]
+.RB [ \-X 
+.IR x-pos ]
+.RB [ \-Y 
+.IR y-pos ]
+.RB [ \-T 
+.IR title ]
+.RB [ \-d 
+.IR display ]
+.RB [ \-version ]
+.I ANSI/NIST-file ...
+
+
+.SH DESCRIPTION
+\fBDpyan2k\fR displays the image records in a sequence of X11
+windows.  Overlays any corresponding minutiae from Type-9 records
+contained in an ANSI/NIST-ITL 1-2007 file.  Shows any segmentation
+data in Type-14 SEG or ASEG fields using unfilled colored polygons,
+typically rectangles.  Some of the options, including \fB-f\fR, can be
+used to select certain records to display, otherwise all images are
+displayed.
+
+If multiple input files are specified,
+\fIdpyan2k\fP reads each ANSI/NIST file into memory and
+displays its contents, one file at a time.  Multiple image
+records within an ANSI/NIST file are displayed simultaneously
+by forking background window processes, one for each
+image record.
+
+If an image is too large to be displayed on the screen,
+the upper left hand corner will be displayed and the rest of the
+image can be moved into view by holding down a mouse button,
+moving in the direction desired, and then releasing the button.
+Button presses when another button(s) is already down
+and button releases when another button(s) is still down
+are ignored.
+
+Users may remove a displayed image window by striking any key
+within that window.  Once all windows associated with a
+particular ANSI/NIST file have been removed, the utility proceeds
+to display the contents of the next ANSI/NIST file listed on
+the command line.
+
+.SH OPTIONS
+.\" The following combination of several items separated by .br,
+.\" followed by .RS/.RE seems to adequately approximate a tagged
+.\" paragraph (.TP) with multiple tags.
+.P
+\fB-f \fIfinger position (FGP)\fR
+.br
+\fB-i \fIimpression type (IMP)\fR
+.br
+\fB-n \fIimage descriptor character (IDC) (actually a small number)\fR
+.br
+\fB-t \fIlogical record type (LRT)\fR
+.br
+\fB-q \fINIST fingerprint image quality metric (NQM)\fR
+.br
+\fB-r \fIread record selector from a file\fR
+.br
+\fB-w \fIwrite record selector to a file\fR
+.RS
+See
+.BR record_selector (1F)
+for details on these record selector options.
+.RE
+.TP
+\fB-a \fIn
+sets drag accelerator to \fIn\fR \(em changes in pointer position
+will result in \fIn\fR shifts in the displayed image [1].
+.TP
+\fB-v
+turns on verbose output.
+.TP
+\fB-x
+turns on debug mode, causing a core dump when an X11 error occurs.
+.TP
+\fB-b \fIn
+sets border width to \fIn\fP pixels [4].
+.TP
+\fB-I
+directs the utility to use the FBI/IAFIS fields 13-23 in a Type-9
+record when overlaying minutiae on an image. (This was changed from
+little i in version 1 to capital I in version 2.)
+.TP
+\fB-N
+directs the utility to use the NIST fields 5-12 in a
+Type-9 record when overlaying minutiae on an image.  This
+is the default setting. (This was changed from
+little n in version 1 to capital N in version 2.)
+.TP
+\fB-p
+sets the pixel width of overlayed minutia points [3].
+.TP
+\fB-W \fIn
+displays image in a window of width \fIn\fR pixels.
+.TP
+\fB-H \fIn
+displays image in a window of height \fIn\fR pixels.
+.TP
+\fB-X \fIn
+positions image window with top-left corner \fIn\fR
+pixels to the right of the display's top-left corner [0].
+.TP
+\fB-Y \fIn
+positions image window with top-left corner \fIn\fR
+pixels below the display's top-left corner [0].
+.TP
+\fB-T \fItitle
+sets all image window names to \fItitle\fR.
+.TP
+\fB-d \fIdisplay
+connects to an alternate X11 display.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+\fI<ANSI_NIST ...>
+one or more ANSI/NIST files with images and possbily
+minutiae to be displayed.
+
+.SH EXAMPLES
+.B % dpyan2k ../../data/nist.an2
+.br
+displays image records and overlays minutia using NIST
+Type-9 fields.
+
+.B % dpyan2k -I ../../data/iafis.an2
+.br
+displays image records and overlays minutia using FBI/IAFIS
+Type-9 fields.
+
+.B % dpyan2k -ft:r ../../data/a001-seg.an2
+.br
+displays image records containing rolled thumbs and overlays
+segmentation results recorded in the data file.
+
+.SH "SEE ALSO"
+.BR an2ktool (1F),
+.BR dpyimage (1G),
+.BR mindtct (1C),
+.BR record_selector (1F)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

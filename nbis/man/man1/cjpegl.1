@@ -1,0 +1,234 @@
+.\" @(#)cjpegl.1 2008/10/02 NIST
+.\" I Image Group
+.\" Craig Watson and Michael D. Garris
+.\"
+.TH CJPEGL 1G "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+cjpegl \- compresses a grayscale or color image using Lossless
+JPEG (JPEGL).
+.SH SYNOPSIS
+.B cjpegl
+.I <outext>
+.I <image file>
+.br
+.RS
+[\fB-raw_in \fIw\fR,\fIh\fR,\fId\fR,[\fIppi\fR]
+.RS 3
+[\fB-nonintrlv\fR]
+.br
+[\fB-YCbCr \fIH0\fR,\fIV0\fR:\fIH1\fR,\fIV1\fR:\fIH2\fR,\fIV2\fR]]
+.RE
+[\fIcomment file\fR]
+.SH DESCRIPTION
+.B Cjpegl
+takes as input a file containing an uncompressed grayscale or color
+image.  Two possible input file formats are accepted, NIST IHead
+files and raw pixmap files.  If a raw pixmap file is to be compressed,
+then its image attributes must be provided on the command line as well.
+Once read into memory, the grayscale or color pixmap is then
+compressed using Lossless JPEG (JPEGL).
+The JPEGL results are then written to an output file.
+
+The color components of RGB pixels in a raw pixmap file may
+be interleaved or non-interleaved.  By default, \fBcjpegl\fR
+assumes interleaved color pixels.  In fact \fBcjpegl\fR's internal
+encoder requires non-interleaved components planes; therefore,
+interleaved pixmaps are automatically converted prior to encoding
+and results are stored accordingly.
+(See INTERLEAVE OPTIONS below.)
+
+\fBCjpegl\fR also supports the compression of raw pixmap files
+containing YCbCr images with potentially downsampled component planes.
+By default, this utility assumes no downsampling of component planes.
+(See YCbCr OPTIONS below.)  Regarding color pixmaps, the NIST IHead
+file format only supports interleaved RGB images.
+
+.SH OPTIONS
+All switch names may be abbreviated; for example,
+\fB-raw_in\fR may be written \fB-r\fR.
+.TP
+.I <outext>
+the extension of the compressed output file.
+To construct the output filename, \fBcjpegl\fR takes the
+input filename and replaces its extension with the one
+specified here.
+.TP
+.I <image file>
+the input file, either an IHead file or raw pixmap file,
+containing the grayscale or color image to be compressed.
+.TP
+\fB-raw_in \fIw\fR,\fIh\fR,\fId\fR,[\fIppi\fR]
+the attributes of the input image.  This option must
+be included on the command line if the input is a
+raw pixmap file.
+.br
+.RS
+.TP
+.I w
+the pixel width of the pixmap
+.TP
+.I h
+the pixel height of the pixmap
+.TP
+.I d
+the pixel depth of the pixmap
+.TP
+.I ppi
+the optional scan resolution of the image in integer units of
+pixels per inch.
+.RE
+.TP
+.B -nonintrlv
+specifies that the color components in an \fIinput\fR raw pixmap file
+image are non-interleaved and stored in separate component planes.
+(See INTERLEAVE OPTIONS below.)
+.TP
+\fB-YCbCr \fIH0\fR,\fIV0\fR:\fIH1\fR,\fIV1\fR:\fIH2\fR,\fIV2
+denotes an \fIinput\fR raw pixmap file containing a YCbCr colorspace image
+and whether any component planes have been \fIpreviously\fR downsampled.
+H,V factors all set to 1 represent no downsampling.
+(See YCbCr Options below.)
+.TP
+.I comment file
+an optional user-supplied ASCII comment file.  (See COMMENT
+OPTIONS below.)
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH INTERLEAVE OPTIONS
+The color components of RGB pixels in a raw pixmap file may
+be interleaved or non-interleaved.  Color components are interleaved
+when a pixel's (R)ed, (G)reen, and (B)lue components are sequentially
+adjacent in the image byte stream, ie. RGBRGBRGB... .  If the color
+components are non-interleaved, then all (R)ed components in the
+image are sequentially adjacent in the image byte stream, followed
+by all (G)reen components, and then lastly followed by all (B)lue
+components.  Each complete sequence of color components is called
+a \fIplane\fR.  The utilities \fBintr2not\fR and \fBnot2intr\fR
+convert between interleaved and non-interleaved color components.
+By default, \fBcjpegl\fR assumes interleaved
+color components, and all color IHead images must be
+interleaved.  Note that \fBcjpegl\fR's internal encoder requires
+non-interleaved component planes; therefore, interleaved pixmaps
+are automatically converted prior to encoding and results are
+stored accordingly.
+
+.SH YCbCr OPTIONS
+\fBCjpegl\fR compresses color images with 3 components
+per pixel, including RGB and YCbCr colorspaces.  A common compression
+technique for YCbCr images is to downsample the Cb & Cr component
+planes.
+\fBCjpegl\fR supports a limited range of YCbCr downsampling
+schemes that are represented by a list of component plane factors.
+These factors together represent downsampling ratios relative to
+each other.  The comma-separated list of factor pairs correspond to
+the Y, Cb, and
+Cr component planes respectively.  The first value in a factor
+pair represents the downsampling of that particular component plane
+in the X-dimension, while the second represents the Y-dimension.
+Compression ratios for a particular component plane are calculated
+by dividing the maximum component factors in the list by the current
+component's factors.  These integer factors are limited
+between 1 and 4.  H,V factors all set to 1 represent
+no downsampling.  For complete details, \fBcjpegl\fR implements
+the downsampling and interleaving schemes described in the
+following reference:
+
+.RS
+W.B. Pennebaker and J.L. Mitchell, "JPEG: Still Image Compression
+Standard," Appendix A - "ISO DIS 10918-1 Requirements and Guidelines,"
+Van Nostrand Reinhold, NY, 1993, pp. A1-A4.
+.RE
+
+For example the option specification:
+
+.RS
+-YCbCr 4,4:2,2:1,1
+.RE
+
+represents a YCbCr image with non-downsampled Y component plane
+(4,4 are the largest X and Y factors listed); the Cb component
+plane is downsampled in X and Y by a factor of 2
+(maximum factors 4 divided by current factors 2); and the Cr component
+plane is downsampled in X and Y by a factor of 4 (maximum factors 4 divided
+by current factors 1).  Note that downsampling component planes
+is a form of \fIlossy\fR compression,  so while \fBcjpegl\fR
+enables the image byte stream associated with an input YCbCr
+image to be reconstructed perfectly, if any of
+its component planes were previously downsampled, then image
+loss has already taken place.  The utility \fBrgb2ycc\fR converts
+an RGB image to the YCbCr colorspace, and it will conduct component
+plane downsampling as specified.  Note that IHead images can only
+have RGB color components, so YCbCr options only pertain to
+raw pixmap files.
+
+.SH COMMENT OPTIONS
+Upon successful compression, this utility generates and inserts
+in the compressed output file a specially formatted comment block,
+called a NISTCOM.  A NISTCOM is a text-based attribute list comprised
+of (name, value) pairs, one pair per text line.
+The first line of a NISTCOM always has name = "NIST_COM" 
+and its value is always the total number of attributes included in
+the list.  The utility \fBrdjpgcom\fR scans a JPEG compressed file for
+any and all comment blocks.  Once found, the contents of each comment
+block is printed to standard output.  Using this utility, the NISTCOM
+provides easy access to relevant image attributes.  The following is
+an example NISTCOM generated by \fBcjpegl\fR:
+
+.RS
+NIST_COM 11
+.br
+PIX_WIDTH 768
+.br
+PIX_HEIGHT 1024
+.br
+PIX_DEPTH 24
+.br
+PPI -1
+.br
+LOSSY 0
+.br
+NUM_COMPONENTS 3
+.br
+HV_FACTORS 1,1:1,1:1,1
+.br
+INTERLEAVE 0
+.br
+COMPRESSION JPEGL
+.br
+JPEGL_PREDICT 4
+
+.RE
+\fBCjpegl\fR also accepts an optional comment file on the command
+line.  If provided, the contents of this file are also inserted
+into the compressed output file.  If the comment file is a
+NISTCOM attribute list, then its contents are merged with the
+NISTCOM internally generated by \fBcjpegl\fR and a single NISTCOM
+is written to the compressed output file.  Note that \fBcjpegl\fR
+gives precedence to internally generated attribute values.
+If the user provides a non-NISTCOM comment file,
+then the contents of file are stored to a separate comment block in
+the output file.  Using these comment options enables the user
+to store application-specific information in a JPEG file.
+
+.SH EXAMPLES
+From \fItest/imgtools/execs/cjpegl/cjpegl.src\fR:
+.PP
+.RS
+.B % cjpegl jpl face.raw -r 768,1024,24
+.br
+compresses a color face image in a raw pixmap file.
+
+.SH SEE ALSO
+.BR cjpegb (1G),
+.BR djpegl (1G),
+.BR dpyimage (1G),
+.BR intr2not (1G),
+.BR not2intr (1G),
+.BR rdjpgcom (1H),
+.BR rgb2ycc (1G),
+.BR wrjpgcom (1H)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

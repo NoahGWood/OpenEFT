@@ -1,0 +1,233 @@
+.\" @(#)dpyimage.1 2008/10/02 NIST
+.\" I Image Group
+.\" Stan Janet
+.\"
+.TH DPYIMAGE 1G "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+dpyimage \- displays the image contents of Baseline JPEG,
+Lossless JPEG, WSQ, IHead, and raw pixmap files.
+
+.SH SYNOPSIS
+.B dpyimage
+[\fIoptions\fR]
+.I image-file ...
+.RS 10
+.br
+\fB-r \fIw\fR,\fIh\fR,\fId\fR,\fIwp
+.br
+\fB-A
+.br
+\fB-s \fIn
+.br
+\fB-a \fIn
+.br
+\fB-v
+.br
+\fB-x
+.br
+\fB-b \fIn
+.br
+\fB-N \fIn
+.br
+\fB-O
+.br
+\fB-k
+.br
+\fB-W \fIn
+.br
+\fB-H \fIn
+.br
+\fB-X \fIn
+.br
+\fB-Y \fIn
+.br
+\fB-n
+.br
+\fB-T \fItitle
+.br
+\fB-t
+.br
+\fB-D \fIdir
+.br
+\fB-d \fIdisplay
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH DESCRIPTION
+.B Dpyimage
+reads various image file formats, decompresses and reconstructs pixmaps
+as needed, and displays image contents in an X11 window.  Supported
+file formats include Baseline JPEG (lossy), Lossless JPEG,
+WSQ (lossy), NIST IHead, and raw pixmap files.  Raw pixmaps containing
+either grayscale or interleaved RGB color pixels are supported.
+This utility automatically differentiates between these different formats.
+
+If only one file (or the \fI-n\fP option)
+is specified on the command line, the image or images are
+simply read from disk and then displayed.
+If multiple files are specified,
+\fBdpyimage\fR attempts to minimize the display waiting time
+by forking a background process to pre-read images from disk.
+By default, the child
+transfers images to the parent via a pipe.
+This always allows at least one image to be read in from disk
+while the user is viewing the current image.
+Since a process writing on a pipe
+is blocked (until a read on the other end of the pipe)
+after transferring four kilobytes, the child
+will only be one image ahead of the parent except when handling
+smaller images.
+
+If the \fI-t\fP option appears on the command line,
+the processes use temporary files as the means of exchanging
+image data. Therefore, the child is not constrained on
+the number of images it may pre-read for the parent.
+However, the filesystem on which the directory for temporary files resides
+must have enough space for copies of all images in uncompressed
+state or an error may occur.
+This is the suggested mode
+for viewing compressed images for which
+decompression takes considerably longer than disk I/O.
+
+If the image is too large to be displayed on the screen,
+the upper lefthand corner will be displayed and the rest of the
+image can be moved into view by holding down a mouse button,
+moving in the direction desired, and then releasing the button.
+Button presses when another button(s) is already down
+and button releases when another button(s) is still down
+are ignored.
+
+Users may exit from the program by striking keys 'x' or 'X'.
+Advancing to the next image is accomplished by any other
+keystroke.
+
+.SH OPTIONS
+.TP
+\fB-r, -raw  \fIw\fR,\fIh\fR,\fId\fR,\fIwp
+raw pixmap attributes:
+.RS
+\fIw\fR  - pixel width,
+.br
+\fIh\fR  - pixel height,
+.br
+\fId\fR  - pixel depth,
+.br
+\fIwp\fR - white pixel value
+.RS
+bi-level  wp=0|1
+.br
+grayscale wp=0|255
+.br
+RGB       wp=0 (value ignored)
+.RE
+.RE
+.TP
+\fB-A
+automatically advances through images.
+.TP
+\fB-s \fIn
+in automatic mode, sleeps \fIn\fP seconds before advancing to
+the next image [2].
+.TP
+\fB-a \fIn
+sets drag accelerator to \fIn\fR \(em changes in pointer position
+will result in \fIn\fR shifts in the displayed image [1].
+.TP
+\fB-v
+turns on verbose output.
+.TP
+\fB-x
+turns on debug mode, causing a core dump when an X11 error occurs.
+.TP
+\fB-b \fIn
+sets border width to \fIn\fP pixels [4].
+.TP
+\fB-N \fIn
+the child I/O process is niced to level \fIn\fP.
+.TP
+\fB-O
+overrides the redirect on windows (no window manager).
+.TP
+\fB-k
+informs utility that there is no keyboard input.
+.TP
+\fB-W \fIn
+displays image in a window of width \fIn\fR pixels.
+.TP
+\fB-H \fIn
+displays image in a window of height \fIn\fR pixels.
+.TP
+\fB-X \fIn
+positions image window with top-left corner \fIn\fR
+pixels to the right of the display's top-left corner [0].
+.TP
+\fB-Y \fIn
+positions image window with top-left corner \fIn\fR
+pixels below the display's top-left corner [0].
+.TP
+\fB-n
+does not fork to display multiple images.
+.TP
+\fB-T \fItitle
+sets window name to \fItitle\fR [\fIfile\fR].
+\fB-t
+uses temporary files to transfer multiple images to parent [via pipe].
+.TP
+\fB-D \fIdirectory
+creates temporary files in \fIdirectory\fP [/tmp].
+.TP
+\fB-d \fIdisplay
+connects to alternate display.
+.TP
+.I image-file ...
+one or more image files whose pixmaps are to be displayed.
+
+.SH ENVIRONMENT
+If the environment variable \fBTMPDIR\fR is set
+and the \fB-D\fR option is not set on the command line,
+\fBdpyimage\fR uses this directory as the location for temporary files.
+
+.SH EXAMPLES
+From \fItest/imgtools/execs/dpyimage/dpyimage.src\fR:
+.PP
+.B % dpyimage -r 500,500,8,255 ../../data/finger/gray/raw/finger.raw
+.br
+displays a fingerprint image from a raw pixmap file.
+
+.B % dpyimage ../../data/finger/gray/jpegl/finger.jpl
+.br
+displays a reconstructed fingerprint image from a Lossless JPEG file.
+
+.B % dpyimage ../../data/finger/gray/wsq/finger.wsq
+.br
+displays a reconstructed fingerprint image from a WSQ file.
+
+.B % dpyimage ../../data/face/gray/jpegb/face.jpb
+.br
+displays a reconstructed grayscale face image from a Baseline JPEG file.
+
+.B % dpyimage -r 768,1024,24,0 ../../data/face/rgb/raw/intrlv/face.raw
+.br
+displays a color face image from a raw pixmap file.
+
+.B % dpyimage ../../data/face/rgb/jpegb/face.jpb
+.br
+displays a reconstructed color face image from a Baseline JPEG file.
+
+.B % dpyimage ../../data/face/rgb/jpegl/face.jpl
+.br
+displays a reconstructed color face image from a Lossless JPEG file.
+
+.SH "SEE ALSO"
+.BR an2ktool (1F),
+.BR cjpegb (1G),
+.BR cjpegl (1G),
+.BR cwsq (1G),
+.BR djpegb (1G),
+.BR djpegl (1G),
+.BR dpyan2k (1F),
+.BR dwsq (1G)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

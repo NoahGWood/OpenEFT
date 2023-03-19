@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% block Title %}OpenEFT | New{% endblock %}
+{% block content %}
+<br />
+<!-- CONTAINER -->
+<div class="container align-items-center min-vh-100">
+    <div class="row">
+        <div class="progress">
+            <div aria-valuemax="100" aria-valuemin="50" aria-valuenow="50"
+                class="progress-bar progress-bar-animated progress-bar-striped bg-dark" role="progressbar"
+                style="width: 0%"></div>
+        </div>
+    </div>
+    <div class="row text-white" id="q-box__buttons">
+        <div class="col"></div>
+        <div class="col">
+            <div class="btn-group bg-light">
+                <button id="prev-btn" type="button" class="btn btn-dark">Previous</button>
+                <button id="next-btn" type="button" class="btn btn-dark">Next</button>
+                <button id="submit-btn" type="submit" class="btn btn-dark">Submit</button>
+            </div>
+        </div>
+        <div class="col"></div>
+    </div>
+    {% include 'conversion/partials/step1.html' %}
+    <form class="needs-validation" id="form-wrapper" method="post" name="form-wrapper" action="/new/step2">
+        {% csrf_token %}
+        {% include 'conversion/partials/step2.html' %}
+        {% include 'conversion/partials/step3.html' %}
+        {% include 'conversion/partials/step4.html' %}
+        {% include 'conversion/partials/step5.html' %}
+    </form>
+        {% include 'conversion/partials/spinner.html' %}
+    <br />
+</div>
+<iframe name="dummy" id="dummy" style="display:none;"></iframe>
+<script>
+    let step = document.getElementsByClassName('step');
+    let prevBtn = document.getElementById('prev-btn');
+    let nextBtn = document.getElementById('next-btn');
+    let submitBtn = document.getElementById('submit-btn');
+    let form = document.getElementsByTagName('form')[0];
+    let preloader = document.querySelector('body');
+    let successDiv = document.getElementById('success');
+    let progressBar = document.getElementsByClassName('progress-bar')[0];
+
+    let f1 = document.getElementById('form1');
+    let file = document.getElementById('formFileLg');
+    let current_step = 0;
+    let stepCount = step.length - 1;
+    for (let i = 1; i < stepCount + 1; i++) {
+        step[i].classList.add('d-none');
+        console.log(i);
+    };
+
+    step[current_step].classList.add('d-block');
+    if (current_step == 0) {
+        prevBtn.disabled = true;
+        submitBtn.disabled = true;
+        //nextBtn.classList.add('d-inline-block');
+    }
+
+    nextBtn.addEventListener('click', () => {
+        let dPrev = false;
+        if (current_step == 0) {
+            if (file.value !== "") {
+                // Post form
+                let previous_step = current_step - 1;
+                SubmitForm1();
+                dPrev = true;
+            } else {
+                // Go back to page
+                alert("Please add file.");
+                return;
+            }
+        }
+        current_step++;
+        let previous_step = current_step - 1;
+        if ((current_step > 0) && (current_step <= stepCount)) {
+            prevBtn.disabled = false;
+            //prevBtn.classList.add('d-block');
+            step[current_step].classList.remove('d-none');
+            step[current_step].classList.add('d-block');
+            step[previous_step].classList.remove('d-block');
+            step[previous_step].classList.add('d-none');
+            if (current_step == stepCount-1) {
+                submitBtn.disabled = false;
+                nextBtn.disabled = true;
+                //submitBtn.classList.add('d-inline-block');
+                //nextBtn.classList.remove('d-inline-block');
+            } else {
+                if (current_step > stepCount) {
+                    form.onsubmit = () => {
+                        return true;
+                    }
+                }
+            }
+            progress((100 / (stepCount-1)) * current_step);
+            if(dPrev == true){
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                submitBtn.disabled = true;
+            }
+        }
+    });
+    prevBtn.addEventListener('click', () => {
+        if (current_step > 0) {
+            current_step--;
+            let previous_step = current_step + 1;
+            prevBtn.disabled = false;
+            //prevBtn.classList.add('d-inline-block');
+            step[current_step].classList.remove('d-none');
+            step[current_step].classList.add('d-block')
+            step[previous_step].classList.remove('d-block');
+            step[previous_step].classList.add('d-none');
+            if (current_step < stepCount) {
+                //submitBtn.classList.remove('d-inline-block');
+                submitBtn.disabled = true;
+                nextBtn.disabled = false;
+                //nextBtn.classList.add('d-inline-block');
+                prevBtn.disabled = false;
+                //prevBtn.classList.add('d-inline-block');
+            }
+        }
+
+        if (current_step == 0) {
+            //prevBtn.classList.remove('d-inline-block');
+            prevBtn.disabled = true;
+        }
+        progress((100 / (stepCount-1)) * current_step);
+    });
+
+    function progress(value) {
+        progressBar.style.width = value.toString() + "%";
+        progressBar.innerHTML = "Step " + (current_step + 1).toString() + "/" + (stepCount).toString();
+        console.log(value.toString() + "%");
+    }
+
+   submitBtn.addEventListener('click', () => {
+        submitBtn.disabled=true;
+        prevBtn.disabled=true;
+        current_step++; // Show loading page
+        let previous_step = current_step - 1;
+        step[current_step].classList.remove('d-none');
+        step[current_step].classList.add('d-block');
+        step[previous_step].classList.remove('d-block');
+        step[previous_step].classList.add('d-none');
+        document.getElementById("form-wrapper").submit();
+    });
+
+    function checkImages() {
+        if(confirm("Fingerprints Sectioned Properly?")) {
+            console.log("YES");
+            nextBtn.disabled=false;
+        } else {
+            console.log("NO");
+            prevBtn.disabled=false;
+        }
+    }
+    async function SubmitForm1() {
+        // Make sure we disallow next button
+        nextBtn.disabled=true;
+        prevBtn.disabled=true;
+        var file = document.querySelector('input[type="file"]');
+        let formData = new FormData(form1);
+        formData.append("image", file.files[0]);
+        formData.append("method", "POST");
+        formData.append("enctype", "multipart/form-data");
+        let heads = new Headers();
+        heads.append('X-CSRFToken', window.csrf_token);
+        let init = {
+            method: 'POST',
+            headers: heads,
+            body: formData,
+        }
+        let request = new Request('/new/step1', init);
+
+        await fetch(request).then(response => response.json()).then(json => {
+            document.getElementById("thumb").onload = setTimeout(checkImages,1000);
+            document.getElementById("rslap").src = "static/" + json.values[0];
+            document.getElementById("lslap").src = "static/" + json.values[1];
+            document.getElementById("thumb").src = "static/" + json.values[2];
+            // Make sure we disallow next button
+            nextBtn.disabled=true;
+            prevBtn.disabled=true;
+        });
+    };
+</script>
+{% endblock %}

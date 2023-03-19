@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://niem.gov/niem/niem-core/2.0" version="1" xmlns:s="http://niem.gov/niem/structures/2.0" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:nc="http://niem.gov/niem/niem-core/2.0" xmlns:niem-xsd="http://niem.gov/niem/proxy/xsd/2.0" xmlns:twpdes="http://niem.gov/niem/twpdes/2.0" xmlns:i="http://niem.gov/niem/appinfo/2.0">
+  <xsd:annotation>
+    <xsd:appinfo>
+      <i:ConformantIndicator>true</i:ConformantIndicator>
+    </xsd:appinfo>
+  </xsd:annotation>
+  <xsd:import schemaLocation="../../structures/2.0/structures.xsd" namespace="http://niem.gov/niem/structures/2.0"/>
+  <xsd:import schemaLocation="../../appinfo/2.0/appinfo.xsd" namespace="http://niem.gov/niem/appinfo/2.0"/>
+  <xsd:import schemaLocation="../../proxy/xsd/2.0/xsd.xsd" namespace="http://niem.gov/niem/proxy/xsd/2.0"/>
+  <xsd:import schemaLocation="../../twpdes/2.0/twpdes.xsd" namespace="http://niem.gov/niem/twpdes/2.0"/>
+  <xsd:complexType name="BinaryType">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="s:ComplexObjectType">
+        <xsd:sequence>
+          <xsd:element ref="nc:BinaryObject" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="nc:BinaryDescriptionText" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="DateRangeType">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="s:ComplexObjectType">
+        <xsd:sequence>
+          <xsd:element ref="nc:StartDate" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="nc:EndDate" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="DateType">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="s:ComplexObjectType">
+        <xsd:sequence>
+          <xsd:element ref="nc:DateRepresentation" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="nc:DateAccuracyCode" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="nc:MarginDuration" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="IdentificationType">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="s:ComplexObjectType">
+        <xsd:sequence>
+          <xsd:element ref="nc:IdentificationID" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="ImageType">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:name="BinaryType"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="nc:BinaryType"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="OrganizationType">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:namespace="http://niem.gov/niem/structures/2.0" i:name="Object"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:complexContent>
+      <xsd:extension base="s:ComplexObjectType">
+        <xsd:sequence>
+          <xsd:element ref="nc:OrganizationIdentification" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="nc:OrganizationName" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:complexType name="TextType">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:namespace="http://niem.gov/niem/proxy/xsd/2.0" i:name="string"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="niem-xsd:string"/>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  <xsd:element name="Binary" type="nc:BinaryType" nillable="true"/>
+  <xsd:element substitutionGroup="nc:BinaryObject" name="BinaryBase64Object" type="niem-xsd:base64Binary" nillable="true">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:name="BinaryObject"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="BinaryDescriptionText" type="nc:TextType" nillable="true"/>
+  <xsd:element name="BinaryObject" abstract="true"/>
+  <xsd:element substitutionGroup="nc:DateRepresentation" name="Date" type="niem-xsd:date" nillable="true">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:name="DateRepresentation"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="DateAccuracyCode" type="twpdes:DateAccuracyIndicatorCodeType" nillable="true"/>
+  <xsd:element name="DateRepresentation" abstract="true"/>
+  <xsd:element substitutionGroup="nc:DateRepresentation" name="DateTime" type="niem-xsd:dateTime" nillable="true">
+    <xsd:annotation>
+      <xsd:appinfo>
+        <i:Base i:name="DateRepresentation"/>
+      </xsd:appinfo>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="EndDate" type="nc:DateType" nillable="true"/>
+  <xsd:element name="IdentificationID" type="niem-xsd:string" nillable="true"/>
+  <xsd:element name="ItemBinary" type="nc:BinaryType" nillable="true"/>
+  <xsd:element name="MarginDuration" type="niem-xsd:duration" nillable="true"/>
+  <xsd:element name="OrganizationIdentification" type="nc:IdentificationType" nillable="true"/>
+  <xsd:element name="OrganizationName" type="nc:TextType" nillable="true"/>
+  <xsd:element name="StartDate" type="nc:DateType" nillable="true"/>
+</xsd:schema>

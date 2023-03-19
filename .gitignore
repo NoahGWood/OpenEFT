@@ -1,4 +1,11 @@
+# Ignore release images, too large for github
+build/*
+openeft.spec
+dist/*
+browser/*
+
 # Byte-compiled / optimized / DLL files
+*.py[cod]
 __pycache__/
 *.py[cod]
 *$py.class
@@ -136,3 +143,11 @@ dmypy.json
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Any python caches
+*/__pycache__/*
+
+db.sqlite3
+my-cache.sqlite
+
+

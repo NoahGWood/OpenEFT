@@ -1,0 +1,267 @@
+.\" @(#)an2ktool.1 2008/10/02 NIST
+.\" I Image Group
+.\" Michael D. Garris
+.\"
+.TH AN2KTOOL 1F "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+an2ktool \- Parses, manipulates, and/or writes the results to an
+ANSI/NIST 2007 file in batch mode.
+.SH SYNOPSIS
+.B an2ktool
+.I <option>
+.br
+\fB-print \fR<all|\fIr\fR[\fI.f\fR[\fI.s\fR[\fI.i\fR]]]> <\fIfile in\fR> [\fIfile out\fR]
+.br
+\fB-delete \fIr\fR[\fI.f\fR[\fI.s\fR[\fI.i\fR]]] <\fIfile in\fR> [\fIfile out\fR]
+.br
+\fB-substitute \fIr.f.s.i\fR <new value> <\fIfile in\fR> [\fIfile out\fR]
+.br
+\fB-substitute \fIr\fR[\fI.f\fR[\fI.s\fR]] <\fIfmttext file\fR> <\fIfile in\fR> [\fIfile out\fR]
+.br
+\fB-insert \fIr.f.s.i\fR <new value> <\fIfile in\fR> [\fIfile out\fR]
+.br
+\fB-insert \fIr\fR[\fI.f\fR[\fI.s\fR]] <\fIfmttext file\fR> <\fIfile in\fR> [\fIfile out\fR]
+.br
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version
+
+.SH DESCRIPTION
+.B An2ktool
+parses a standard  compliant ANSI/NIST-ITL 1-2007 file,
+manipulates its contents, and writes the results back out.
+Batch operations may be conducted at the level of
+record, field, subfield, or information item.  Possible
+operations include printing, deleting, substituting, or
+inserting data.
+
+.SH OPTIONS
+All switch names may be abbreviated; for example,
+\fB-print\fR may be written \fB-p\fR.
+
+.SH PRINT OPTION
+\fB-print \fR<all|\fIr\fR[\fI.f\fR[\fI.s\fR[\fI.i\fR]]]> <\fIfile in\fR> [\fIfile out\fR]
+
+Prints the contents of the specified structure {file, record,
+field, subfield, or information item} to either the specified
+output file or to standard output.
+.PP
+Option settings:
+.RS
+.TP
+all
+The entire contents of the input file is printed.  Any binary image
+fields in the file are stored to temporary files, and their file names
+are externally referenced in the printed output.  This option setting is
+equivalent to running \fBan2ktxt\fR on the input file.
+.TP
+.I r
+The contents of the record at position \fIr\fR in the file is printed.
+.TP
+.I r.f
+The contents of the field at position \fIf\fR within record \fIr\fR
+is printed.
+.TP
+.I r.f.s
+The contents of the subfield at position \fIs\fR within field \fIf\fR
+within record \fIr\fR is printed.
+.TP
+.I r.f.s.i
+The contents of the information item at position \fIi\fR within
+subfield \fIs\fR within field \fIf\fR within record \fIr\fR is printed.
+.PP
+.RE
+.TP
+<\fIfile in\fR>
+The ANSI/NIST file whose content is to be printed.
+.TP
+[\fIfile out\fR]
+The optional output file.  If omitted, results are printed to
+standard output.
+
+.SH DELETE OPTION
+\fB-delete \fIr\fR[\fI.f\fR[\fI.s\fR[\fI.i\fR]]] <\fIfile in\fR> [\fIfile out\fR]
+
+Deletes the contents of the specified structure {record,
+field, subfield, or information item} from the ANSI/NIST
+file, writing the results to either the specified
+output file or to standard output.
+.PP
+Option settings:
+.RS
+.TP
+.I r
+The contents of the record at position \fIr\fR in the file is deleted.
+.TP
+.I r.f
+The contents of the field at position \fIf\fR within record \fIr\fR
+is deleted.
+.TP
+.I r.f.s
+The contents of the subfield at position \fIs\fR within field \fIf\fR
+within record \fIr\fR is deleted.
+.TP
+.I r.f.s.i
+The contents of the information item at position \fIi\fR within
+subfield \fIs\fR within field \fIf\fR within record \fIr\fR is deleted.
+.PP
+.RE
+.TP
+<\fIfile in\fR>
+The ANSI/NIST file whose content is to be modified.
+.TP
+[\fIfile out\fR]
+The optional output file.  If omitted, results are printed to
+standard output.
+
+.SH SUBSTITUTE OPTION 1
+\fB-substitute \fIr.f.s.i\fR <new value> <\fIfile in\fR> [\fIfile out\fR]
+
+Substitutes the contents of the specified information item in an
+ANSI/NIST file with the string value provided on the command line,
+writing the results to either the specified
+output file or to standard output.
+.TP
+.I r.f.s.i
+The position indices of the information item to be
+substituted.
+.TP
+<\fInew value\fR>
+The new string value.
+.TP
+<\fIfile in\fR>
+The ANSI/NIST file whose content is to be modified.
+.TP
+[\fIfile out\fR]
+The optional output file.  If omitted, results are printed to
+standard output.
+
+.SH SUBSTITUTE OPTION 2
+\fB-substitute \fIr\fR[\fI.f\fR[\fI.s\fR]] <\fIfmttext file\fR> <\fIfile in\fR> [\fIfile out\fR]
+
+Substitutes the contents of the specified structure {record,
+field, or subfield} in an ANSI/NIST file with the contents of
+a formatted text file consistent in format to those produced
+by \fBan2k2txt\fR.  The results are written to either the specified
+output file or to standard output.
+.PP
+Option settings:
+.RS
+.TP
+.I r
+The contents of the record at position \fIr\fR in the file is substituted.
+.TP
+.I r.f
+The contents of the field at position \fIf\fR within record \fIr\fR
+is substituted.
+.TP
+.I r.f.s
+The contents of the subfield at position \fIs\fR within field \fIf\fR
+within record \fIr\fR is substituted.
+.TP
+.I r.f.s.i
+The contents of the information item at position \fIi\fR within
+subfield \fIs\fR within field \fIf\fR within record \fIr\fR is substituted.
+.PP
+.RE
+.TP
+<\fIfmttext file\fR>
+The formatted text file containing the new values.
+.TP
+<\fIfile in\fR>
+The ANSI/NIST file whose content is to be modified.
+.TP
+[\fIfile out\fR]
+The optional output file.  If omitted, results are printed to
+standard output.
+
+.SH INSERT OPTION 1
+\fB-insert \fIr.f.s.i\fR <new value> <\fIfile in\fR> [\fIfile out\fR]
+
+Inserts an information item at the specified position within an
+ANSI/NIST file, assigning the new item the string value provided
+on the command line.  The results are written to either the specified
+output file or to standard output.
+.TP
+.I r.f.s.i
+The position indices where the new information item is to be
+inserted.
+.TP
+<\fInew value\fR>
+The new information item's string value.
+.TP
+<\fIfile in\fR>
+The ANSI/NIST file whose content is to be modified.
+.TP
+[\fIfile out\fR]
+The optional output file.  If omitted, results are printed to
+standard output.
+
+.SH INSERT OPTION 2
+\fB-insert \fIr\fR[\fI.f\fR[\fI.s\fR]] <\fIfmttext file\fR> <\fIfile in\fR> [\fIfile out\fR]
+
+Inserts a structure {record, field, or subfield} at the specified
+position within an ANSI/NIST file.  The new structure is assigned
+the contents of a formatted text file consistent in format to
+those produced by \fBan2k2txt\fR. The results are written to either
+the specified output file or to standard output.
+.PP
+Option settings:
+.RS
+.TP
+.I r
+A record at position \fIr\fR is inserted.
+.TP
+.I r.f
+A field at position \fIf\fR within record \fIr\fR is inserted.
+.TP
+.I r.f.s
+A subfield at position \fIs\fR within field \fIf\fR
+within record \fIr\fR is inserted.
+.TP
+.I r.f.s.i
+An information item at position \fIi\fR within subfield \fIs\fR
+within field \fIf\fR within record \fIr\fR is inserted.
+.PP
+.RE
+.TP
+<\fIfmttext file\fR>
+The formatted text file containing the new values.
+.TP
+<\fIfile in\fR>
+The ANSI/NIST file whose content is to be modified.
+.TP
+[\fIfile out\fR]
+The optional output file.  If omitted, results are printed to
+standard output.
+
+.SH EXAMPLES
+From \fItest/an2k/execs/an2ktool/an2ktool.src\fR:
+.PP
+.B % an2ktool -d 2.12.1.4 ../../data/nist.an2 delete.an2
+.br
+deletes the information item recording the first minutia's type.
+
+.B % an2ktool -i 2.12.1.4 A delete.an2 insert.an2
+.br
+inserts an information item setting the first minutia's type to "A".
+
+.B % an2ktool -s 2.12.1.4 A ../../data/nist.an2 subitem.an2
+.br
+replaces the information item recording the first minutia's type
+with the value "A".
+
+.B % an2ktool -s 2.12.1 subfld.fmt ../../data/nist.an2 subfld.an2
+.br
+replaces the subfield containing all the attributes related to
+the first minutia with the contents of the formatted text file
+\fIsubfld.fmt\fR.
+
+.SH SEE ALSO
+.BR an2k2iaf (1F),
+.BR an2ktxt (1F),
+.BR dpyan2k (1F),
+.BR iaf2an2k (1F),
+.BR txt2an2k (1F)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

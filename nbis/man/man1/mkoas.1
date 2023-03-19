@@ -1,0 +1,194 @@
+.\" @(#)mkoas.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH MKOAS 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+mkoas \- makes orientation arrays from fingerprint images.
+.SH SYNOPSIS
+.B mkoas
+.I <prsfile>
+.SH DESCRIPTION
+.B Mkoas
+makes orientation arrays (oas), for a set of fingerprint image files.
+An oa can be thought of as a 28 (height) by
+30 (width) array of real two-dimensional orientation vectors, each of
+which represents the local average ridge/valley orientation at one
+point of an equally-spaced rectangular grid; but, sometimes it is more
+convenient to think of an oa as a single 1680-dimensional real vector
+(1680 = 28 x 30 x 2).  To make an oa from a fingerprint, mkoas uses
+the same sequence of preprocessing/feature-extraction routines that is
+used by the classifier demos pcasys and pcasysx.  Mkoas causes each
+oa to be one row of the PCASYS "matrix" file that is its output.
+
+Mkoas sets the values of its parameters as follows.  First, it reads
+the default oas-production parms file \fIpcasys/parms/oas.prs\fR; then,
+it reads the file of default values of additional mkoas parms,
+\fIpcasys/parms/mkoas.prs\fR; finally, it reads the required user
+parms file, which is the argument (\fIprsfile\fR).  Each time a parms file
+is read, its values override those set by previously read parms
+file(s), if any.  See PARAMETER FILES, below, for a description of the
+difference between \fIoas.prs\fR and \fImkoas.prs\fR.
+
+Since the oas of a large set of fingerprints can turn out to be
+quite a large amount of data, it may be that the entire set of oas
+that are to be produced cannot exist as a single file, because of
+disk space limitations.  If so, one should run several instances of
+mkoas, each producing a matrix file that is a subset of
+the required oas.  To estimate output file size as a function of
+number of oas, note that each oa consists of 1680
+single-precision floating-point numbers, and therefore it takes 1680
+x 4 = 6720 bytes.  Allow slightly more space, for header data
+contained in a matrix file.
+.SH OPTIONS
+.TP
+.I <prsfile>
+A file containing parameters.  To find out what the available
+parameters are, and as examples of the format of parameters files,
+consult the default files \fIpcasys/parms/oas.prs\fR and
+\fIpcasys/parms/mkoas.prs\fR.  Each parameter is specified
+by having its name and value on a line; a pound sign indicates that
+the rest of its line is a comment.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH PARAMETER FILES
+.TP
+.I pcasys/parms/oas.prs
+Contains default values of the parameters that affect the making of
+orientation arrays (oas): these are the parms of the segmentor
+(sgmnt), the image enhancer (enhnc), the ridge-valley orientation
+finder (rors), the registration program (r92a), and the
+registration-implementing pixelwise orientations reaverager (rgar).
+The values used for these parms when making the oas used in
+optimizing the classifier should also be used when running the
+finished classifier.
+.PP
+.RS
+.B Default settings in \fIpcasys/parms/oas.prs\fR
+.TP
+.I Used in the segmentation routine:
+.TP
+.B sgmnt_fac_n \fI5\fR
+How many threshold-making factors to try.
+.TP
+.B sgmnt_min_fg \fI2000\fR
+Minimum allowed number of foreground (true) pixels.
+.TP
+.B sgmnt_max_fg \fI8000\fR
+Maximum allowed number of foreground (true) pixels.
+.TP
+.B sgmnt_nerode \fI3\fR
+Do this many erosions in foreground cleanup.
+.TP
+.B sgmnt_rsblobs \fI1\fR
+If 1, remove small blobs in foreground cleanup.
+.TP
+.B sgmnt_fill \fI1\fR
+If 1, fill holes in rows, columns in foreground cleanup.
+.TP
+.B sgmnt_min_n \fI25\fR
+Cutting angle becomes zero if any foreground edge has fewer than
+this many pixels.
+.TP
+.B sgmnt_hist_thresh \fI20\fR
+Threshold that tilted-rows-histogram must meet to find top-location
+for cutting.
+.TP
+.B sgmnt_origras_wmax \fI2000\fR
+Maximum allowed width of original raster.
+.TP
+.B sgmnt_origras_hmax \fI2000\fR
+Maximum allowed height of original raster.
+.TP
+.B sgmnt_fac_min \fI0.75\fR
+Minimum threshold-making factor value.
+.TP
+.B sgmnt_fac_del \fI0.05\fR
+Delta of threshold-making factor value.
+.TP
+.B sgmnt_slope_thresh \fI0.90\fR
+If any of the three edges has slope differing by more than
+this from the average of the slopes, then cutting angle is set to zero.
+
+.TP
+.I Used in the FFT image enhancer:
+.TP
+.B enhnc_rr1 \fI150\fR
+High-frequency elements of FFT whose filter plane value is less than this
+value are discarded.
+.TP
+.B enhnc_rr2 \fI449\fR
+Low-frequency elements of FFT whose filter plane number is greater than this
+value are discarded.
+.TP
+.B enhnc_pow \fI0.3\fR
+Power spectrum is raised to this power before it is multiplied by
+the FFT output.
+
+.TP
+.I Used in the ridge-valley orientation finder:
+.TP
+.B rors_slit_range_thresh \fI10\fR
+If the difference between the maximum and minimum slit-sums at a pixel
+is less than this, then this pixel makes no contribution to the
+histogram used to make the local average orientation.
+           
+.TP
+.I Used in the r92a wrapper for r92 registration program:
+.TP
+.B r92a_discard_thresh \fI0.01\fR
+If squared-length of a local-average orientation vector is less than this,
+then conversion of this vector to an angle for use by r92 just produces
+the special value 100., which means an undefined angle.
+
+.TP
+.I Used in the registering pixelwise-orientations-reaverager:
+.TP
+.B rgar_std_corepixel_x \fI245\fR
+X coordinate of standard (median) core position.
+.TP
+.B rgar_std_corepixel_y \fI189\fR
+Y coordinate of standard (median) core position.
+This is the standard registration point, to which the particular
+core point gets translated to implement registration.
+.RE
+
+.TP
+.I pcasys/parms/mkoas.prs
+Contains default values of additional parameters needed by  mkoas,
+besides those appearing in \fIpcasys/parms/oas.prs\fR. Parameters without
+defaults values must appear in the users \fIprsfile\fR.
+.PP
+.RS
+.B Default settings in \fIpcasys/parms/mkoas.prs\fR
+.TP
+\fBascii_oas \fIn\fR
+Ascii (y) or binary (n) output?
+.TP
+.B update_freq \fI1\fR
+Frequency of progress messages.
+.TP
+.B clobber_oas_file \fIn\fR
+Overwrite an oas_file if it already exists?
+.TP
+.B proc_images_list \fI(no default, user must set)\fR
+The list of fingerprint images to make orientation arrays from.
+.TP
+.B oas_file \fI(no default, user must set)\fR
+The output file that is to be produced containing orientation arrays.
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/mkoas/mkoas.src\fR:
+.PP
+.RS
+.B % mkoas sv10.prs
+.br
+Creates a set of orientation arrays based on the file list
+given in the parameters file \fIsv10.prs\fR.
+.SH "SEE ALSO"
+bin2asc (1B), asc2bin (1B), chgdesc (1B), stackms (1B)
+
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

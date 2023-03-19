@@ -1,0 +1,63 @@
+.\" @(#)iaf2an2k.1 2008/10/02 NIST
+.\" I Image Group
+.\" Michael D. Garris
+.\"
+.TH IAF2AN2K 1F "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+iaf2an2k \- Takes an ANSI/NIST file conforming to FBI/IAFIS specifications
+and modifies minutiae and fingerprint image records in support of the
+new 2007 standard.
+.SH SYNOPSIS
+.B iaf2an2k
+.I <file in>
+.I <file out>
+.SH DESCRIPTION
+.B Iaf2an2k
+parses an ANSI/NIST file conforming to the FBI/IAFIS (EFTS V7)
+specifications and, if necessary, converts specific records and
+fields to take advantage of the ANSI/NIST-ITL 1-2007 standard.
+This utility focuses on the format of minutiae and image records.
+
+Minutiae fields:
+.br
+When a Type-9 record is encountered in the input file,
+this utility checks to see which fields are populated.
+If the NIST-assigned fields 5-12 are empty, but the
+FBI/IAFIS-assigned fields 13-23 are populated, then the
+NIST fields are populated by translating the data
+recorded in the FBI/IAFIS fields, and the FBI/IAFIS fields are
+removed.
+
+Image records:
+.br
+FBI/IAFIS specifications (EFTS V7) require binary field
+images, but the ANSI/NIST 2007 standard introduces tagged
+field image records.  To support these new image records,
+this utility looks for binary field fingerprint records
+and converts them appropriately.  If a Type-4 or Type-6
+record is encountered, it is inspected to
+determine the impression type of the fingerprint.
+Latent fingerprints are converted to Type-13 records,
+while all others are converted to Type-14 records.
+
+.SH OPTIONS
+.TP
+.I <file in>
+the ANSI/NIST file to be converted
+.TP
+.I <file out>
+the resulting ANSI/NIST file
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/an2k/execs/iaf2an2k/iaf2an2k.src\fR:
+.PP
+.RS
+.B % iaf2an2k ../../data/iafis.an2 nist.an2
+.SH SEE ALSO
+.BR an2k2iaf (1F)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

@@ -1,0 +1,43 @@
+.\" @(#)imgcmp.1 2010/05/02 NIST
+.\" I Image Group
+.\"
+.TH IMGINFO 1G "02 May 2010" "NIST" "NBIS Reference Manual"
+.SH NAME
+imginfo \- takes a single file and provides basic information about the image.
+.SH SYNOPSIS
+.B imginfo
+\fB-f\fR <file1>
+
+.SH DESCRIPTION
+.B Imginfo
+takes as input a single binary file.  It provides the following image information:
+file type (pnm, jp2, etc.), number of components, width, height, bits per pixel, and
+file size in bytes.
+
+.SH OPTIONS
+
+.TP
+\fB--help
+.br    
+\fRPrint software version, copyright, and usage options.
+.TP
+\fB--version
+\fRPrint \fBimginfo\fR, ANSI/NIST stardard, and NBIS software versions.
+.TP
+\fB-f\fR <file1>
+Read, from the file named \fIfile1\fR, and output the image info.
+
+.SH EXAMPLES
+.PP
+.RS
+.B % imginfo -f image.pnm
+.br
+Genrates the following output:  pnm 1 949 955 8 906295
+
+.SH SEE ALSO
+.BR nfiq (1F),
+.BR mindtct(1F),
+.B JasPer Software Reference Manual
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

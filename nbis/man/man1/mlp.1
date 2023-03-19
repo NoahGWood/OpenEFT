@@ -1,0 +1,680 @@
+.\" @(#)mlp.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela, Craig I. Watson & C. L. Wilson
+.\"
+.TH MLP 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+mlp \- Does training and testing runs using a 3-layer feed-forward
+linear perceptron Neural Network.
+.SH SYNOPSIS
+.B mlp
+.I [-c] [specfile]
+.SH DESCRIPTION
+.B Mlp
+trains a 3-layer feed-forward linear perceptron
+using novel methods of machine learning that help control the
+learning dynamics of the network. As a result, the derived minima
+are superior, the decision surfaces of the trained network are
+well-formed, the information content of confidence values is increased,
+and generalization is enhanced.  The theory behind the machine learning
+techniques used in this program is discussed in the following reference:
+.PP
+[C. L. Wilson, J. L. Blue, O. M. Omidvar, "The Effect of Training
+Dynamics on Neural Network Performance," NIST Internal Report 5696,
+August 1995.]
+.PP
+Machine learning is controlled through a batch-oriented iterative
+process of training the MLP on a set of prototype feature vectors,
+and then evaluating the progress made by running the MLP (in its
+current state) on a separate set of testing feature vectors. Training on
+the first set of patterns then resumes for a predetermined number
+of passes through the training data, and then the MLP is tested again
+on the evaluation set. This process of training and then testing
+continues until the MLP has been determined to have satisfactorily
+converged.
+
+The MLP neural network is suitable for use as a classifier or as a
+function-approximator. The network has an input layer, a hidden layer,
+and an output layer, each layer comprising a set of nodes. The 
+input nodes are feed-forwardly connected to the hidden nodes, and
+the hidden nodes to the output nodes, by connections whose weights
+(strengths) are trainable. The activation function used for the
+hidden nodes can be chosen to be sinusoid, sigmoid (logistic), or
+linear, as can the activation function for the output nodes. Training
+(optimization) of the weights is done using either a Scaled Conjugate
+Gradient (SCG) algorithm [1], or by starting out with SCG and 
+then switching to a Limited Memory Broyden Fletcher Goldfarb
+Shanno (LBFGS) algorithm [2]. Boltzmann pruning [3], i.e. dynamic
+removal of connections, can be performed during training if desired.
+Prior weights can be attached to the patterns (feature vectors) in
+various ways.
+.PP
+[1] J. L. Blue and P. J. Grother, "Training Feed Forward Networks Using
+Conjugate Gradients," NIST Internal Report 4776, February 1992, and
+in Conference on Character Recognition and Digitizer Technologies,
+Vol. 1661, pp.  179-190, SPIE, San Jose, February 1992.
+.PP
+[2] D. Liu and J. Nocedal, "On the Limited Memory BFGS Method for
+Large Scale Optimization," IMathematical Programming B, Vol. 45,
+503-528, 1989.
+.PP
+[3] O. M. Omidvar and C. L. Wilson, "Information Content in Neural Net
+Optimization," NIST Internal Report 4766, February 1992, and in \fIJournal
+of Connection Science\fR, 6:91-103, 1993.
+.PP
+.B Training and Testing Runs
+
+When mlp is invoked, it performs a sequence of runs. Each run does
+either training, or testing:
+
+.B training run:
+A set of patterns is used to train (optimize) the weights
+of the network. Each pattern consists of a feature vector, along with
+either a class or a target vector. A feature vector is a tuple of
+floating-point numbers, which typically has been extracted from some
+natural object such as a handwritten character. A class denotes the actual 
+class to which the object belongs, for example the character which a
+handwritten mark is an instance of. The network can be trained to become
+a classifier: it trains using a set of feature vectors extracted from
+objects of known classes.  Or, more generally, the network can be
+trained to learn, again from example input-output pairs, a function
+whose output is a vector of floating-point numbers, rather than a class;
+if this is done, the network is a sort of interpolator or
+function-fitter. A training run finishes by writing the final values of
+the network weights as a file. It also produces a summary file showing
+various information about the run, and optionally produces a longer
+file that shows the results the final (trained) network produced for
+each individual pattern.  
+
+.B testing run:
+A set of patterns is sent through a network, after the
+network weights are read from a file. The output values, i.e. the
+hypothetical classes (for a classifier network) or the produced output
+vectors (for a fitter network), are compared with target classes or
+vectors, and the resulting error rate is computed. The program can
+produce a table showing the correct classification rate as a function
+of the rejection rate.
+
+.SH OPTIONS
+.TP
+.I [-c]
+Only do error checking on the specfile parameters and print any
+warnings or errors that occur in the specfile format.
+.TP
+.I [specfile]
+Specfile to be used by mlp. The default is a specfile
+named "spec" located in the current working directory.
+
+This is a file produced by the user, which sets the parameters
+(henceforth "parms") of the run(s) that mlp is to perform. It consists
+of one or more blocks, each of which sets the parms for one run. Each
+block is separated from the next one by the word "newrun" or "NEWRUN".
+Parms are set using name-value pairs, with the name and value separated
+by non-newline white space characters (blanks or tabs). Each name-value
+pair is separated from the next pair by newline(s) or semicolon(s).
+Since each parm value is labeled by its parm name, the name-value
+pairs can occur in any order. Comments are allowed; they are delimited
+the same way as in C language programs, with /* and */. Extraneous
+white space characters are ignored.
+
+When mlp is run, it first scans the entire specfile, to find and report
+any (fatal) errors (e.g. omitting to set a necessary parm, or using an
+illegal parm name or value) and also any conditions in the specfile
+which, although not fatally erroneous, are worthy of warnings
+(e.g. setting a superfluous parm). Mlp writes any applicable warning
+or error messages; then, if there are no errors in the specfile, it
+starts to perform the first run. Warnings do not prevent mlp from
+starting to run. The motivation for having mlp check the entire
+specfile before it starts to perform even the first run, is that
+this will prevent an mlp instance that runs a multi-run specfile from
+failing, perhaps many hours, or days, after it was started, because
+of an error in a block far into the specfile: such errors will be
+detected up front and presumably fixed by the user, because that is
+the only way to cause mlp to get past its checking phase. To cause
+mlp only to check the specfile without running it, use the -c option.
+
+The following listing describes all the parms that can be set in a
+specfile. There are four types of parms: string (value is a filename),
+integer, floating-point, and switch (value must be one of a set of
+defined names, or may be specified as a code number). A block of the
+specfile, which sets the parms for one run, often can omit to set the
+values of several of the parms, either because the parm is unneeded
+(e.g., a training "stopping condition" when the run is a test run;
+or, \fBtemperature\fR when boltzmann is \fIno_prune\fR), or because it is an
+architecture parm (\fBpurpose, ninps, nhids, nouts, acfunc_hids, or
+acfunc_outs\fR), whose value will be read from \fBwts_infile\fR. The
+descriptions below indicate which of the parms are needed only for
+training runs (in particular, those described as stopping conditions).
+Architecture parms should be set in a specfile block only if its run is
+to be a training run that generates random initial network weights: a
+training run that reads initial weights from a file (typically, final
+weights produced by a previous training session), or a test run (must
+read the network weights from a file), does not need to set any of the
+architecture parms in its specfile block, because their values are
+stored in the weights file that it will read. (Architecture parms
+are ones whose values it would not make sense to change between
+training runs of a single network that together comprise a training
+"meta-run", nor between a training run for a network and a test run
+of the finished network.) Setting unneeded parms in a specfile block
+will result in warning messages when mlp is run, but not fatal
+errors; the unneeded values will be ignored.
+
+If a parm-name/parm-value pair occurring in a specfile has just its
+value deleted, i.e. leaving just a parm name, then the name is ignored
+by mlp; this is a way to temporarily unset a parm while leaving its
+name visible for possible future use.
+
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.B String Parms (Filename)
+
+.RS
+.TP
+.B short_outfile
+.br
+This file will contain summary information about the run, including a
+history of the training process if a training run. The set of information
+to be written is controlled, to some extent, by the switch parms
+\fBdo_confuse\fR and \fBdo_cvr\fR.
+
+.TP
+.B long_outfile
+.br
+This optionally produced file will have two lines of header information
+followed by a line for each pattern. The line will show: the sequence
+number of the pattern; the correct class of the pattern (as a number
+in the range 1 through \fBnouts\fR); whether the hypothetical class the
+network produced for this pattern was right (R) or wrong (W); the
+hypothetical class (number); and the \fBnouts\fR output-node activations the
+network produced for the pattern. (See the switch parm
+\fBshow_acs_times_1000\fR below, which controls the formatting of the
+activations.) In a testing run, mlp produces this file for the result
+of running the patterns through the network whose weights are read from
+\fBwts_infile\fR; in a training run, mlp produces this file only for the
+final network weights resulting from the training session. This is often
+a large file; to save disk space by not producing it, just leave the
+parm unset.
+
+.TP
+.B patterns_infile
+.br
+This file contains patterns upon which mlp is to train or test a network.
+A pattern is either a feature-vector and an associated class, or a
+feature-vector and an associated target-vector. The file must be in
+one of the two supported patterns-file formats, i.e. ASCII and
+(FORTRAN-style) binary; the switch parm \fBpatsfile_ascii_or_binary\fR
+must be set to tell mlp which of these formats is being used.
+
+.TP
+.B wts_infile
+.br
+This optional file contains a set of network weights. Mlp can read such
+a file at the start of a training run - e.g., final weights from a
+preceding training run, if one is training a network using a sequence of
+runs with different parameter settings (e.g., decreasing values of
+\fBregfac\fR) - or, in a testing run, it can read the final weights
+resulting from a training run. This parm should be left unset if
+random initial weights are to be generated for a training run (see the
+integer parm \fBseed\fR).
+
+.TP
+.B wts_outfile
+.br
+This file is produced only for a training run; it contains the final
+network weights resulting from the run.
+
+.TP
+.B lcn_scn_infile
+.br
+Each line of this optional file should consist of a long class-name
+(as shown at the top of \fBpatterns_infile\fR) and a corresponding short
+class-name (1 or 2 characters), with the two names separated by white
+space; the lines can be in any order. This file is required only for
+a run that requires short class-names, i.e. only if \fBpurpose\fR is
+\fIclassifier\fR and (1) \fBpriors\fR is \fIclass\fR or \fIboth\fR
+(these settings of \fBpriors\fR require class-weights to be read
+from \fBclass_wts_infile\fR, and that type of file can be read only
+if the short class-names are known) or (2) \fBdo_confuse\fR is
+\fItrue\fR (proper output of confusion matrices requires the short
+class-names, which are used as labels).
+
+.TP
+.B class_wts_infile
+.br
+This optional file contains class-weights, i.e. a "prior weight" for
+each class. (See switch \fBparm\fR priors to find out how mlp can use these
+weights.) Each line should consist of a short class-name (as shown in
+\fBlcn_scn_infile\fR) and the weight for the class, separated by white
+space; the order of the lines does not matter.
+
+.TP
+.B pattern_wts_infile
+.br
+This optional file contains pattern-weights, i.e. a "prior weight" for
+each pattern. (See switch parm \fBpriors\fR to find out how mlp can use
+these weights.) The file should be just a sequence of floating-point numbers 
+(ascii) separated from each other by white space, with the numbers in
+the same order as the patterns they are to be associated with.
+
+.PP
+.B Integer Parms
+
+.TP
+.B npats
+.br
+Number of (first) patterns from \fBpatterns_infile\fR to use.
+
+.TP
+.B ninps, nhids, nouts
+.br
+Specify the number of input, hidden, and output nodes in the network.
+If \fBninps\fR is smaller than the number of components in the
+feature-vectors of the patterns, then the first \fBninps\fR components of
+each feature-vector are used. If the network is a \fIclassifier\fR
+(see \fBpurpose\fR), then \fBnouts\fR is the number of classes, since there is
+one output node for each class. If the network is a \fIfitter\fR, then
+\fBninps\fR and \fBnouts\fR are the dimensionalities of the input and
+output real vector spaces. These are architecture parms, so they should
+be left unset for a run that is to read a network weights file.
+
+.TP
+.B seed
+.br
+For the UNI random number generator, if initial weights for a training run
+are to be randomly generated. Its values must be positive. Random weights
+are generated only if \fBwts_infile\fR is not set. (Of course, the
+\fBseed\fR value can be reused to generate identical initial weights in
+different training runs; or, it can be varied in order to do several
+training runs using the same values for the other parameters. It is
+often advisable to try several seeds, since any particular \fBseed\fR
+may produce atypically bad results (training may fail). However, the
+effect of varying the \fBseed\fR is minimal if Boltzmann pruning is used.)
+
+.TP
+.B niter_max
+.br
+\fBA stopping condition:\fR maximum number of iterations a training run
+will be allowed to use.
+
+.TP
+.B nfreq
+.br
+At every nfreq'th iteration during a training run, the \fBerrdel\fR and
+\fBnokdel\fR stopping conditions are checked and a pair of status lines
+is written to the standard error output and to \fBshort_outfile\fR.
+
+.TP
+.B nokdel
+.br
+\fBA stopping condition:\fR stop if the number of iterations used so far is
+at least kmin and, for each of the most recent NNOT (defined in
+\fIsrc/lib/mlp/optchk.c\fR) sequences of \fBnfreq\fR iterations, the number
+right and the number right minus number wrong have both failed to increase
+by at least \fBnokdel\fR during the sequence.
+
+
+.TP
+.B lbfgs_mem
+.br
+This value is used for the m argument of the LBFGS optimizer (if that
+optimizer is used, i.e. only if there is no Boltzmann pruning). This is
+the number of corrections used in the bfgs update. Values less than 3 are
+not recommended; large values will result in excessive computing time, as
+well as increased memory usage.  Values in the range 3 through 7 are
+recommended; value must be positive.
+
+.PP
+.B Floating-Point Parms
+
+.TP
+.B regfac
+.br
+Regularization factor. The error value that a training run attempts
+to minimize, contains a term consisting of regfac times half the average
+of the squares of the network weights. (The use of a regularization
+factor often improves the generalization performance of a neural network,
+by keeping the size of the weights under control.) This parm must always
+be set, even for test runs (since they also compute the error value,
+which always uses \fBregfac\fR); however, its effect can be nullified by
+just setting it to 0.
+
+.TP
+.B alpha
+.br
+A parm required by the \fBtype_1\fR error function.
+
+.TP
+.B temperature
+.br
+For Boltzmann pruning: see the switch parm \fBboltzmann\fR. A higher
+temperature causes more severe pruning.
+
+.TP
+.B egoal
+.br
+\fBA stopping condition:\fR stop when error becomes less than or
+equal to \fBegoal\fR.
+
+.TP
+.B gwgoal
+.br
+\fBA stopping condition:\fR stop when | \fBg\fR | / | \fBw\fR | becomes
+less than or equal to \fBgwgoal\fR, where \fBw\fR is the vector of
+network weights and \fBg\fR is the gradient vector of the error with
+respect to \fBw\fR.
+
+.TP
+.B errdel
+.br
+\fBA stopping condition:\fR stop if the number of iterations used so far
+is at least kmin and the error has not decreased by at least a
+factor of \fBerrdel\fR over the most recent block of \fBnfreq\fR iterations.
+
+.TP
+.B oklvl
+.br
+The value of the highest network output activation produced when the
+network is run on a pattern (the position of this highest activation
+among the output nodes is the hypothetical class) can be thought of as
+a measure of confidence. This confidence value is compared with the
+threshold \fBoklvl\fR, in order to decide whether to classify the
+pattern as belonging to the hypothetical class, or to reject it,
+i.e. to consider its class to be unknown because of insufficient
+confidence that the hypothetical class is the correct class. The
+numbers and percentages of the patterns that \fImlp\fR reports as
+\fIcorrect\fR, \fIwrong\fR, and \fIunknown\fR, are affected by
+\fBoklvl\fR: a high value of \fBoklvl\fR generally increases the number
+of unknowns (a bad thing) but also increases the percentage of the
+accepted patterns that are classified correctly (a good thing). If
+no rejection is desired, set \fBoklvl\fR to 0. (\fIMlp\fR uses the single
+\fBoklvl\fR value specified for a run; but if the switch parm \fBdo_cvr\fR
+is set to \fItrue\fR, then \fImlp\fR also makes a full
+\fIcorrect vs. rejected\fR table for the network (for the
+finished network if a training run). This table shows the (number
+correct) / (number accepted) and (number unknown) / (total number)
+percentages for each of several standard \fBoklvl\fR values.)
+
+.TP
+.B trgoff
+.br
+This number sets how mildly the target values for network output
+activations vary between their "low" and "high" values. If \fBtrgoff\fR is
+0 (least mild, i.e. most extreme, effect), then the low target value
+is 0 and the high, 1; if \fBtrgoff\fR is 1 (most mild effect), then low
+and high targets are both (1 / \fBnouts\fR); if \fBtrgoff\fR has an
+intermediate value between 0 and 1, then the low and high targets
+have intermediately mild values accordingly.
+
+.TP
+.B scg_earlystop_pct
+.br
+This is a percentage that controls how soon a hybrid SCG/LBFGS training
+run (hybrid training can be used only if there is to be no
+Boltzmann pruning) switches from SCG to LBFGS. The switch is done the
+first time a check (checking every nfreq'th iteration) of the network
+results finds that every class-subset of the patterns has at least
+\fBscg_earlystop_pct\fR percent of its patterns classified correctly.
+A suggested value for this parm is 60.0.
+
+.TP
+.B lbfgs_gtol
+.br
+This value is used for the gtol argument of the LBFGS optimizer. It
+controls the accuracy of the line search routine mcsrch. If the function
+and gradient evaluations are inexpensive with respect to the cost of
+the iteration (which is sometimes the case when solving very large
+problems) it may be advantageous to set \fBlbfgs_gtol\fR to a small
+value. A typical small value is 0.1. \fBLbfgs_gtol\fR must be greater
+than 1.e-04.
+
+.PP
+.B Switch Parms
+.PP
+Each of these parms has a small set of allowed values; the value is
+specified as a string, or less verbosely, as a code number (shown
+in parentheses after string form):
+
+.TP
+.B train_or_test
+.br
+.RS
+.TP
+.B train \fI0\fR
+.br
+Train a network, i.e. optimize its weights in the sense of minimizing
+an error function, using a training set of patterns.
+.TP
+.B test \fI1\fR
+.br
+Test a network, i.e. read in its weights and other parms from a file,
+run it on a test set of patterns, and measure the quality of the
+resulting performance.
+.RE
+
+.TP
+.B purpose
+.br
+Which of two possible kinds of engine the network is to be. This is
+an architecture parm, so it should be left unset for a run that is to
+read a network weights file. The allowed values are:
+
+.RS
+.TP
+.B classifier \fI0\fR
+.br
+The network is to be trained to map any feature vector to one of a
+small number of classes. It is to be trained using a set of
+feature vectors and their associated correct classes.
+.TP
+.B fitter \fI1\fR
+.br
+The network is to be trained to approximate an unknown function that
+maps any input real vector to an output real vector. It is to be
+trained using a set of input-vector/output-vector pairs of the
+function. \fBNOTE: this is not currently supported.\fR
+.RE
+
+.TP
+.B errfunc
+.br
+Type of error function to use (always with the addition of a
+regularization term, consisting of \fBregfac\fR times half the average
+of the squares of the network weights).
+
+.RS
+.TP
+.B mse \fI0\fR
+.br
+Mean-squared-error between output activations and target values, or its
+equivalent computed using classes instead of target vectors. This is the
+recommended error function.
+
+.TP
+.B type_1 \fI1\fR
+.br
+Type 1 error function; requires floating-point parm \fBalpha\fR be set.
+(Not recommended.)
+
+.TP
+.B pos_sum \fI2\fR
+.br
+Positive sum error function. (Not recommended.)
+.RE
+
+.TP
+.B boltzmann
+.br
+Controls whether Boltzmann pruning of network weights is to be done
+and, if so, the type of threshold to use:
+
+.RS
+.TP
+.B no_prune \fI0\fR
+.br
+Do no Boltzmann pruning.
+
+.TP
+.B abs_prune \fI2\fR
+.br
+Do Boltzmann pruning using threshold exp(- |\fBw\fR| / \fBT\fR), where
+\fBw\fR is a network weight being considered for possible pruning and
+\fBT\fR is the Boltzmann \fBtemperature\fR.
+
+.TP
+.B square_prune \fI3\fR
+.br
+Do Boltzmann pruning using threshold exp(- \fBw^2\fR / \fBT\fR), where
+\fBw\fR and \fBT\fR are as above.
+.RE
+
+.TP
+.B acfunc_hids, acfunc_outs
+.br
+The types of \fIactivation functions\fR to be used on the hidden nodes and
+on the output nodes (separately settable for each layer). These are
+architecture parms, so they should be left unset for a run that is to
+read a network weights file. The allowed values are:
+
+.RS
+.TP
+.B sinusoid \fI0\fR
+.br
+f(x) = 0.5 * (1 + sin(0.5 * x))
+.TP
+.B sigmoid \fI1\fR
+.br
+f(x) = 1 / (1 + exp(-x)) (Also called logistic function.)
+.TP
+.B linear \fI2\fR
+.br
+f(x) = 0.25 * x
+.RE
+
+.TP
+.B priors
+.br
+What kind of prior weighting to use to set the final pattern-weights,
+which control the relative amounts of impact the various patterns have
+when doing the computations. These final pattern-weights remain fixed
+for the duration of a training run, but of course they can be changed
+between training runs.
+
+.RS
+.TP
+.B allsame \fI0\fR
+.br
+Set each final pattern-weight to (1 / \fBnpats\fR). (The simplest thing
+to do; appropriate if the set of patterns has a natural distribution.)
+.TP
+.B class \fI1\fR
+.br
+Set each final pattern-weight to the class-weight of the class of the
+pattern concerned divided by \fBnpats\fR. The class-weights are derived
+by dividing the given-class-weights, read from the \fBclass_wts_infile\fR,
+by the derived-class-weights, computed for the current data set and
+the normalize them to sum to 1.0.  (Appropriate if the frequencies of
+the several classes, in the set of patterns, are not approximately equal
+to the natural frequencies (prior probabilities), so as to compensate for
+that situation.)
+.TP
+.B pattern \fI2\fR
+.br
+Set the final pattern-weights to values read from \fBpattern_wts_infile\fR
+divided by \fBnpats\fR. (Appropriate if none of the other settings of
+priors does satisfactory calculations (one can do whatever calculations
+one desires), or if one wants to dynamically change these weights between
+sessions of training.)
+.TP
+.B both \fI3\fR
+.br
+Set each final pattern-weight to the class-weight of the class of the
+pattern concerned, times the provided pattern-weight, and divided by
+\fBnpats\fR; compute the class-weights as previously described in
+\fBclass priors\fR and read pattern-weights from file
+\fBpattern_wts_infile\fR. (Appropriate if one wants to both adjust
+for unnatural frequencies, and dynamically change the pattern weights.)
+.RE
+
+.TP
+.B patsfile_ascii_or_binary
+.br
+Tells mlp which of two supported formats to expect for the patterns file
+that it will read at the start of a run.  (If much compute time is being
+spent reading ascii patsfiles, it may be worthwhile to convert them to
+binary format: that causes faster reading, and the binary-format files
+are considerably smaller.)
+.RS
+.TP
+.B ascii \fI0\fR
+.br
+\fBpatterns_infile\fR is in ascii format.
+.TP
+.B binary \fI1\fR
+.br
+\fBpatterns_infile\fR is in binary (FORTRAN-style binary) format.
+.RE
+
+.TP
+.B do_confuse
+.br
+.RS
+.TP
+.B true \fI1\fR
+.br
+Compute the confusion matrices and miscellaneous information and include
+them in \fBshort_outfile\fR.
+.TP
+.B false \fI0\fR
+.br
+Do not compute the confusion matrices and miscellaneous information.
+.RE
+
+.TP
+.B show_acs_times_1000
+.br
+This parm need be set only if the run is to produce a \fBlong_outfile\fR.
+.RS
+.TP
+.B true \fI1\fR
+.br
+Before recording the network output activations in \fBlong_outfile\fR,
+multiply them by 1000 and round to integers.
+.TP
+.B false \fI0\fR
+.br
+Record the activations as their original floating-point values.
+.RE
+
+.TP
+.B do_cvr \fI(See the notes on \fBoklvl\fI.)\fR
+.br
+.RS
+.TP
+.B true \fI1\fR
+.br
+Produce a correct-vs.-rejected table and include it in \fBshort_outfile\fR.
+.TP
+.B false \fI0\fR
+.br
+Do not produce a correct-vs.-rejected table.
+.RE
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/mlp/mlp.src\fR:
+.PP
+.RS
+.B % mlp
+.br
+Runs mlp assuming the default specfile ("spec") in the local directory.
+.PP
+.B % mlp myspecfile
+.br
+Runs mlp using the specfile "myspecfile".
+.SH "SEE ALSO"
+fixwts (1B), mlpfeats (1B)
+
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

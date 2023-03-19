@@ -1,0 +1,92 @@
+.\" @(#)kltran.1 2001/04/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH KLTRAN 1B "02 April 2001" "NIST" "NBIS Reference Manual"
+.SH NAME
+kltran \- runs a Karhunen-Loeve transform on a set of vectors.
+.SH SYNOPSIS
+.B kltran
+.I <vecsfile_in[vecsfile_in...]> <mean file> <tranmat_file>
+.I <nrows_use> <vecsfile_out> <vecsfile_out_desc> <ascii_outfile>
+.I <message_freq>
+.SH DESCRIPTION
+.B Kltran
+runs a Karhunen-Loeve transform on a set of vectors and reduces the
+dimensionality of the feature vectors using the given basis
+set \fItranmat_file\fR.
+
+If several processors are available, it may be possible to save time,
+when transforming a large set of vectors.  First, run
+several simultaneous instances of kltran, each instance transforming
+a subset of the vectors.  Then, use stackms to combine the resulting
+output files, in the sense of stacking together the matrices.  See the
+stackms man page.
+.SH OPTIONS
+.TP
+.I <vecsfile_in[vecsfile_in...]>
+Input data file(s) in PCASYS "matrix" format, each consisting of a
+block of the vectors that are to be transformed.  The input vectors
+are the rows.  All input vectors must have the same number of elements,
+so the second dimensions of these files (if more than one file) must
+all be equal. (Usually the output of the \fBmkoas\fR command.)
+.TP
+.I <mean file>
+Input mean vector that gets subtracted from all the input
+feature vectors before using the transform matrix. (Usually
+the output of \fBmeancov\fR command.)
+.TP
+.I <tranmat_file>
+A PCASYS "matrix" file containing a transform matrix, some of whose
+rows are to be used (see next argument).  The second dimension of
+the transform matrix must equal the second dimension of the file(s)
+of input vectors. (Usually the output of the \fBeva_evt\fR or
+\fBmktran\fR commands.)
+.TP
+.I <nrows_use>
+How many (first) rows of the transform matrix are to be used.
+This is how many elements each output vector will have.
+.TP
+.I <vecsfile_out>
+The output vectors, stacked together as a PCASYS "matrix" file, each
+vector being one row of the matrix.
+.TP
+.I <vecsfile_out_desc>
+A string to be written into the output file as its description string.
+This string can be of any length, but must not contain embedded
+newline characters.  If it contains spaces, tabs, or shell
+metacharacters that are not to be expanded, then it should be quoted.
+To leave the description empty, use '' (two single quotes, i.e.
+single\-quoted empty string).  To let kltran make a description
+(indicating that kltran was used, and listing the names of the
+file(s) of input vectors and of the transform matrix file), use \-
+(hyphen).
+.TP
+.I <ascii_outfile>
+If y, makes an ascii output file; if n, binary.  Binary is
+recommended, unless the output file must be portable across different
+byte orders or floating\-point formats.
+.TP
+.I <message_freq>
+If a positive integer, then every this many vectors through each input
+file kltran writes a progress message to the standard output.  If
+zero, no messages.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/kltran/kltran.src\fR:
+.PP
+.RS
+.B % kltran ../mkoas/sv10.oas ../meancov/fv1-9.men ../eva_evt/fv1-9.evt
+.B 128 sv10.kls - n 100
+.br
+Does transformation using a eigen-vector set made by the
+\fBeva_evt\fR command.
+.SH "SEE ALSO"
+lintran (1B), asc2bin (1B), bin2asc (1B), eva_evt (1B), mkoas (1B),
+mktran (1B), stackms (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

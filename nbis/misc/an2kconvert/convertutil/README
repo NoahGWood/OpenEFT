@@ -1,0 +1,119 @@
+This is a C++ version of ANSI-NIST ITL Part 1 and Part 2 (XML) data conversion tool. 
+
+LINUX Build Requirements and Installation
+-----------------------------------------
+Requirements:
+
+    * Linux Ubuntu 9.10 (beta testing was done under this system)
+    * The latest version of Xerces-C++ (3.0.1 or higher)
+    * The latest version of Boost Regex library (1.40.0 or higher)
+    * The latest version of the g++ compiler
+
+In Ubuntu 9.10, the following packages are required to run the converter:
+
+    * libxerces-c3.0
+    * libboost-regex1.40.0
+
+In Ubuntu 9.10, the following packages are required to build the converter:
+
+    * libxerces-c-dev
+    * libboost-regex1.40-dev
+
+
+Installation (Build)
+
+To compile the converter, run "make" in the top-level directory.  This will create an executable called "an2kconvert".
+
+
+Windows 32- and 64-bit Build Requirements and Installation
+----------------------------------------------------------
+*an2ktool has `xerces-c' and `regex boost' as library dependencies; these libs MUST be built
+ from source in order for the an2kconvert build to successfully complete.
+
+*Modify the an2ktool windows.mak file to use correct architecture and include paths as parameters to g++:
+ -ARCH=-m64 or ARCH=-m32
+ -LOCAL_INC = /<BOOST_INSTALL_ROOT_DRIVE>/boost_1_40_0 -I/usr/local/include
+
+
+BUILD the xerces-c library from source code:
+Download from http://packages.ubuntu.com/lucid/libxerces-c-dev.
+Click on link [xerces-c_3.1.0.orig.tar.gz] found on right-side of page under Ubuntu Resources:.
+
+1) Extract xerces-c_3.0.1.orig.tar from xerces-c_3.0.1.orig.tar.gz 
+2) Unzip xerces-c_3.0.1.orig.tar into <ROOT-DRIVE>, eg, D:\
+3) Build using MSYS:
+   cd /d/xerces-c-3.0.1
+   ./configure
+   make
+   make install  - see file /d/xerces-c-3.0.1/install.log upon completion for details
+
+Upon successful build and install, the libraries are located in dir
+/<ROOT_DRIVE>/MinGW/msys/1.0/local/lib
+
+Note: the install directory above will vary if you did not use the automated installer for
+MinGw and MSYS.
+
+
+BUILD the boost_regex library from source code:
+Download from http://packages.ubuntu.com/lucid/libboost-regex1.40-dev.
+Click on link [boost1.40_1.40.0.orig.tar.gz] found on rigth-side of page under Ubuntu Resources:.
+     
+1) Extract boost1.40_1.40.0.orig.tar from boost1.40_1.40.0.orig.tar.gz
+2) Unzip boost1.40_1.40.0.orig.tar <ROOT-DRIVE>, eg, D:\
+3) Build (static library) using MSYS:
+   cd /d/boost_1_40_0/libs/regex/build 
+   make -fgcc.mak
+
+At the end of the build process you should have a /gcc sub-directory containing release and debug
+ versions of the library (libboost_regex-gcc-1_40.a and llibboost_regex-gcc-d-1_40.a).
+        
+Copy and rename libboost_regex-gcc-1_40.a:
+   cp gcc/libboost_regex-gcc-1_40.a /usr/local/lib/libboost_regex.a
+	
+
+BUILD the an2kconvert tool:
+In MSYS window,
+cd /<NBIS_SOURCE_DIR>/NBIS/Main/misc/an2kconvert/convertutil
+make -f windows.mak
+
+
+
+Running the converter
+---------------------
+
+The converter is command-line driven. Its usage is as follows:
+
+ an2kconvert -h
+ an2kconvert -c [-o] [-s|-r] [--ebts] INPUTFILE OUTPUTFILE
+ an2kconvert -v [-s|-r] [--ebts] INPUTFILE
+Options
+ -h, --help
+  prints help message
+ -v, --validate
+  validates the INPUTFILE
+ -c, --convert
+  converts the INPUTFILE and outputs it to OUTPUTFILE
+  If INPUTFILE is a Part 1 file, it will be converted to a Part 2 file and written to OUTPUTFILE.
+  If INPUTFILE is a Part 2 file, it will be converted to a Part 1 file and written to OUTPUTFILE.
+ -o, --overwrite
+  overwrites the OUTPUTFILE if it exists, by default the OUTPUTFILE will not be overwritten
+ -s, --strict
+  enables strict validation of the INPUTFILE, relaxed validation is enabled by default
+ -r, --relaxed
+  enables relaxed validation of the INPUTFILE, relaxed validation is enabled by default
+ -ebts
+  enables support for records with EBTS data
+
+To convert a file from Part 1 to Part 2, here's an example command:
+
+    ./an2kconvert -c nbis320_input_data/nist_jp2.an2 nbis320_output_data/nist_jp2.xml
+
+Here's an example to convert a file from Part 2 to Part 1:   
+
+    ./an2kconvert -c part2_input_data/sample.xml part1_output_data/sample.an2
+
+To force overwriting of an existing output file, specify the '-o' option as follows:
+
+    an2kconvert -co part2_input_data/sample.xml part1_output_data/sample.an2
+
+

@@ -1,0 +1,426 @@
+.\" @(#)chkan2k.1 2009/06/02 NIST
+.\" I Image Group
+.\" Joseph C. Konczal
+.\"
+.\" License: 
+.\" This software was developed at the National Institute of Standards and
+.\" Technology (NIST) by employees of the Federal Government in the course 
+.\" of their official duties. Pursuant to title 17 Section 105 of the
+.\" United States Code, this software is not subject to copyright protection 
+.\" and is in the public domain. It has been determined that the export control 
+.\" restriction did not apply to the NFSEG and BOZORTH3 software, due to both
+.\" being outside the scope of EAR(see Part 734.3 of the EAR for exact details); 
+.\" they are freely distributed and considered public domain. NIST assumes no 
+.\" responsibility  whatsoever for its use by other parties, and makes no 
+.\" guarantees, expressed or implied, about its quality, reliability, or any 
+.\" other characteristic. 
+.\" 
+.\" Disclaimer: 
+.\" This software was developed to promote biometric standards and biometric
+.\" technology testing for the Federal Government in accordance with the USA
+.\" PATRIOT Act and the Enhanced Border Security and Visa Entry Reform Act.
+.\" Specific hardware and software products identified in this software were used
+.\" in order to perform the software development.  In no case does such
+.\" identification imply recommendation or endorsement by the National Institute
+.\" of Standards and Technology, nor does it imply that the products and equipment
+.\" identified are necessarily the best available for the purpose.
+.\"
+.TH CHKAN2K 1F "02 June 2009" "NIST" "NBIS Reference Manual"
+.SH NAME
+chkan2k \- check the contents of an ANSI/NIST file.
+.SH SYNOPSIS
+.B chkan2k
+.RB [ -b
+.IR base-config-file ]
+.RB [ -c
+.IR extra-config-file ]
+.RB [ -h ]
+.RB [ -l
+.IR log-level ]
+.RB [ -version ]
+.I ANSI/NIST-file ...
+
+.SH DESCRIPTION
+\fBChkan2k\fR examines the contents of ANSI/NIST files and reports any
+problems parsing the files or any contents that do not conform to the
+requirements specified in the configuration file.
+.P
+If multiple input files are specified, \fIchkan2k\fP reads each ANSI/NIST
+file into memory and analyzes its contents in sequence.
+
+.SH OPTIONS
+.TP
+\fB-b \fIbase-config-file\fR
+Specify the base configuration file to use, instead of the default 
+\fI<NBIS_INSTALLATION_DIRECTORY>/nbis/an2k/chkan2k/default.conf.\fR
+.TP
+\fB-c \fIextra-config-file\fR
+Add the contents of a supplemental configuration file to the base
+configuration.  A new specification for an object that was specified in
+another configuration file will override the previous specification.
+.TP
+\fB-h\fR
+Display a brief usage description and exit.
+.TP
+\fB-l \fI[ DEBUG | INFO | WARNING | ERROR | FATAL ]\fR Set the minimum
+severity of messages that will be logged to standard error.  The default is
+WARNING.
+.TP
+\fB-version\fR 
+Print ANSI/NIST stardand and NBIS software version.
+
+.SH CONFIGURATION FILES
+\fBChkan2k\fR determines the details of what to check by reading one or
+more configuration files.  A default base configuration file,
+\fI<NBIS_INSTALLATION_DIRECTORY>/nbis/an2k/chkan2k/default.conf,\fR provides
+definitions for most of the things in versions 200, 201, 300, and 400, of
+the ANSI/NIST standard, and some things from EBTS.  The base configuration
+file typically should not need to be changed.  However, putting these
+things into a configuration file makes it easier to verify exactly what is
+being checked, to correct any misunderstanding of the standards, to
+accomodate new versions of standards, and to allow the user to override
+certain settings, for example, to accomodate quirks in an existing large
+data set.
+.P
+Extra configuration files may be specified, using the -c option, and may
+contain additional specifications, and may override specifications from the
+previously processed configuration files.  An alternate base configuration
+file may be specified, using the -b option, in order to use an entirely
+different configuration than the default.
+.P
+A \fBchkan2k\fR configuration file contains five kinds of specifications in
+sections introduced by one of the following keywords, on a line by itself:
+standards, records, lists, items, fields, and options.  The order of the
+sections is not constrained, except by the need for things to be defined
+before they are used.  Multiple instances of a section are allowed, and the
+result is the same as if all the contents appeared within a single instance
+of the section.
+.P
+The different fields of the specification entries are given names for
+convenience in referring to them.  Reuse of the same name imples certain
+common characteristics of the field.  Optional fields and values may
+contain an asterisk (*), indicating that there is no value specified, or
+may be omitted at the end of an entry.
+.P
+List values are allowed in some fields of configuration file entries.
+Named lists may be referenced by their tags.  Lists may be also specified
+inline where they are used by enclosing the list of values in square
+brackets, e.g., \fI[1 2 3].\fR Multiple list elements may be specified
+using ranges, but very large lists defined this way could be inefficient.
+.P
+Ranges may be specified, in fields where they are allowed, by two numbers
+with a dash between them.  When a range starts and ends at the same value,
+that single value may be used by itself, instead of appearing at both ends
+of a dash, e.g., \fI1\fR instead of \fI1\-1.\fR Open ended ranges may be
+specified using an asterisk for the unspecified endpoint, e.g, \fIat least
+three\fR could be written as \fI3\-*.\fR
+.P
+Item values are allowed in field specifications.  They may be either the
+tags from previously defined items, or anonymous items specified inside
+curly brackets, \fI{ }.\fR
+
+.SS standards
+Specifies the standards from which some of the other specifications are
+derived.  These should typically not need to be modified, but new ones
+could be added.
+
+.TP
+.B tag
+Used in other entries to specify a preceeding version of a standard, or to
+specify the minimum version of a standard required by a certain record,
+field, or item.
+
+.TP
+.B prev
+The optional tag of the previous version of a standard.
+
+.TP
+.B name
+A short name for the standard, e.g., ANSI/NIST.  This should typically be
+the same for all versions of the standard.  (Currently, the ANSI/NIST value
+is treated specially and should not be changed.)
+
+.TP
+.B version
+An integer or floating point number indicating the version of a standard.
+
+.TP
+.B reference
+The full name of a standard, or some other way of uniquely referring to a
+particular version of a particular standard.
+
+.TP
+.B date
+The optional date of issue or ratification of a standard.  The format is
+YYYYMMDD, e.g., 19931122, for a standard issued on November 22, 1993.  (It
+was imagined that this could be used to verify that an instance of a
+conformant file or record was not older than the standard itself, but that
+has not yet been implemented.)
+
+.SS records
+The record specifications are derived from the ANSI/NIST standards.  They
+typically should not need to be changed, but they are specified here so
+that new record types can easily be added in the future.
+
+.TP
+.B id
+The numerical ID of a record type.
+
+.TP
+.B standard
+The tag from an entry in the "standards" section identifying the version of
+the standard where the field is first defined.
+
+.TP
+.B type
+The record type from the standard: ASCII, Binary, or ASCII/Binary.
+
+.TP
+.B name
+The name of the field.
+
+.SS lists
+The ability to define named lists allows the user to avoid the tedious and
+error-prone need to repeatedly specify the same lists of values in many
+places.  For example, the lists of codes from various tables in the standards
+can be defined once and then used several times.
+
+.TP
+.B tag
+An identifier used later to refer to the list.
+
+.TP
+.B list
+The values in the list, all enclosed by a set of square brackets, \fI[ ].\fR
+
+
+.SS items
+These items correspond to the kind of items defined in the ANSI/NIST
+standards.  Typically, the items are described in the prose describing the
+fields in the ANSI/NIST standard, but in EBTS items are described precicely
+and uniformly in the tables where the 
+containing fields appear.
+
+.TP
+.B tag
+An identifier used later to refer to the item.
+
+.TP
+.B standard
+The tag from an entry in the "standards" section identifying the version of
+the standard where the item is first defined.  This value is optional.
+
+.TP
+.B occurrences
+A range specifying how many times this item may occur within a field.
+
+.TP
+.B size
+A range specifying the number of bytes in the value of this item, not
+counting the separator character that might follow.
+
+.TP
+.B type
+An indication of the type of value, which is used to determine what kind of
+validation should be performed on the value.  (Extreme numerical values are
+limited by the C implementation to INT_MIN and INT_MAX, typically
+-2147483646 and 2147483647 on a 32-bit system.)  In addition, specific
+values are checked if specified at the end of the item entry.
+
+.TS
+allbox;
+cb cb cb , l l l .
+Type	Description	Check
+num	T{
+positive integer
+T}	T{
+valid integer greater than 0
+T}
+cnum	T{
+combined numbers
+T}	T{
+all digits, no range check
+T}
+snum	T{
+signed integer
+T}	valid integer
+hex	T{
+hexadecimal number
+T}	valid integer
+str	T{
+string of characters
+T}	none
+date	date	T{
+format YYYYMMDD, neither too old nor in the future
+T}
+image	image	T{
+width, height, and pixel depth agree with values in the record
+T}
+bin	binary data	none
+fp	T{
+floating point number
+T}	T{
+valid floating point number (format checking not yet implemented)
+T}
+.TE
+
+.TP
+.B values
+A range or list of acceptable values for the item, depending on the type.
+Numeric values, for example can be specified either by a range or a list,
+but string values must be listed.  (A range within a list of numbers will
+be interpolated into the list, so you might run out of memory if you put a
+huge range inside a list.)
+
+.SS fields
+These fields correspond to the kind of fields defined in the ANSI/NIST
+standards.
+
+.TP
+.B tag
+An identifier used later to refer to this field.  It is recommended to use
+the same tag as assigned the standards.
+
+.TP
+.B record types
+The types of records where this field may occur.
+
+.TP
+.B ID
+The ID number of the field, from the standards.
+
+.TP
+.B standard
+The tag from an entry in the "standards" section identifying the version of
+the standard where the field is first defined.
+
+.TP
+.B occurrences  
+A range specifying how many subfields are allowed in the field.
+
+.TP
+.B size
+The total number of bytes allowed in the field, including terminators.
+
+.TP
+.B items
+The items that appear in the field.  If not specified, no checking of item
+values will be done.
+
+.SS options
+These are ad hoc specifications of various options that modify the behavior
+of \fBchkan2k\fR.  Unlike the previous sections, where the fields and their
+descriptions were listed, the options and their possible values are listed
+below.  There is currently one option defined, with four possible values.
+
+.TP
+.B image-sets
+Specifies an typical expected set of fingerprint impression types and
+finger numbers for a certain class of ANSI/NIST file.  A warning will be
+generated if the expected set of images is not complete, or if extraneous
+fingerprint images are also present.
+.RS
+.TP
+.B twoindex
+Expect two rolled index finger images, one each of the right and left index
+fingers.
+
+.TP
+.B tenprint
+Expect all fourteen impressions from a typical "tenprint" card, i.e., ten
+rolled images: one of each finger; and four plain images: one of each
+thumb, and one of each set of four fingers (FGPs 11-14).
+
+.TP
+.B segmented
+Expect twenty two images in all, i.e., the fourteen "tenprint" images, and
+eight additional plain images of each of the fingers in the four-finger
+slaps, resulting from the segmentation of those images.
+
+.TP
+.B auto
+Attempt to determine which of the preceeding categories the set of images
+is closest to.  When a set of images is close, but not exactly the same as
+one of the categories, a warning is issued.
+
+.TP
+.B none
+Do not check the types, contents, and numbers of images.
+.RE
+
+.SH OUTPUT
+The \fIchkan2k\fR program prints out several kinds of messages.  Messages
+produced by the an2k library when it encounters trouble parsing
+particularly bad data files are formatted differently than the messages
+produced by the application code.
+.P
+The application messages begin with an indication of the severity of the
+issue: FATAL, ERROR, WARNING, INFO, or DEBUG.  Errors are used to indicate
+failure of a data file to comform to the required specification, while
+warnings indicate things that are allowed, but are suspect, for example, a
+fingerprint collection date in the 17th century.  Next is an indication of
+the phase of operation where the error occurred: CONFIG, CHECK, and EXEC,
+corresponding respectively to issues with the parsing of a configuration
+file, verifying the data in an ANSI/NIST file, and the execution
+environment, e.g., not enough memory.  Next is the file name, followed by
+line number or record index and type, and finally the details of the issue.
+.P
+Error messages from the an2k library also begin with "ERROR" or "WARNING"
+but do not indicate any phase;  instead they indicate the function where the
+error occurred, details of what is wrong, and finally the data file name and
+line numnber.
+
+.SS Sample Messages
+These messages were issued by the application code during the configuration
+parsing phase, when an extraneous 'x' was encountered in the record type
+number.
+.P
+.RS
+ERROR CONFIG: config:285: Unknown record type specifier, neither number nor list: "14x".
+.br
+ERROR CONFIG: config:285: Cannot parse fields: FGP    14x     13  an3	1-6    *    {1 1-2 num fgp_codes}.
+.RE
+.P
+This message was issued by the application code during the checking phase
+when a finger position number of 12 was encountered in an ASEG field, where
+only 0\-10 are acceptable.
+.P
+.RS
+ERROR CHECK: data/bad/a001-aseg.an2: [13.14.1.1] [Type-14.025] 
+ASEGa unexpected numerical item value: 12.
+.RE
+.P
+These messages were produced by the an2k library when the field ID could
+not be properly parsed, and subsequently the rest of the file could not be
+parsed either.
+.P
+.RS
+ERROR : read_ANSI_NIST_field_ID : field integer not found in field ID, at data/bad/vxt1-len-id-too-big.an2:12
+.br
+ERROR : read_ANSI_NIST_record_length : record length not parsed, at data/bad/vxt1-len-id-too-big.an2:12
+.RE
+.P
+.SH EXAMPLES
+
+.B % chkan2k nist.an2
+.br
+ERROR CHECK: nist.an2: [1.4.1.1] [Type-1.004] TOTa item size 8 bytes, not 3 to 4 as required: 'NISTDATA<GS>'
+.br
+
+.B % chkan2k face.an2
+.br
+ERROR CHECK: face.an2: [1.4.1.1] [Type-1.004] TOTa item size 8 bytes, not 3 to 4 as required: 'NISTDATA<GS>'
+.br
+ERROR CHECK: face.an2: [2.4.1.1] [Type-10.004] SRCa item size 8 bytes, not 9 to 35 as required: 'MDNISTIG<GS>'
+.br
+
+.B % chkan2k -c <AN2K_RUNTIME_DATA_DIR>/chkan2k/nist-samples.conf nist.an2
+.br
+[no errors reported]
+
+
+.SH "SEE ALSO"
+.BR rdimgwh (1B).
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

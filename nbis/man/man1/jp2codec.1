@@ -1,0 +1,240 @@
+.\" @(#)jp2codec.1 2010/05/02 NIST
+.\" I Image Group
+.\"
+.TH JP2CODEC 1G "02 May 2010" "NIST" "NBIS Reference Manual"
+.SH NAME
+jp2codec \- compresses and decompress images to/from JPEG2000 format.
+.SH SYNOPSIS
+.B jp2codec
+.R [ options ]
+
+.SH DESCRIPTION
+The JP2CODEC converts image data to/from JPEG2000 format. The following formats are supported:
+  mif    My Image Format (MIF)
+  pnm    Portable Graymap/Pixmap (PNM)
+  bmp    Microsoft Bitmap (BMP)
+  ras    Sun Rasterfile (RAS)
+  jp2    JPEG-2000 JP2 File Format Syntax (ISO/IEC 15444-1)
+  jpc    JPEG-2000 Code Stream Syntax (ISO/IEC 15444-1)
+  pgx    JPEG-2000 VM Format (PGX)
+
+.SH OPTIONS
+The following options are supported for encoding and decoding JPEG2000 images:
+
+.TP
+\fB--help
+.br    
+\fRPrint software version, copyright, and usage options.
+.TP
+\fB--version
+\fRPrint \fBjp2codec\fR, ANSI/NIST standard, and NBIS software versions.
+.TP
+\fB--verbose
+\fREnable verbose mode.
+.TP
+\fB--debug-level \fIlev\fR
+\fRSet the debug level to \fIlev\fR.
+.TP
+\fB-f \fI<file1>\fR
+Read the input image from the file named \fI<file1>\fR instead of standard input.
+.TP
+\fB-t \fIfmt\fR
+.br
+Specify the format of the input image as \fIfmt\fR.
+.TP
+\fB-F \fI<file2>\fR
+Write the output image to the file named \fI<file2>\fR instead of standard output.
+.TP
+\fB-T \fIfmt\fR
+.br
+Specify the format of the output image as \fIfmt\fR.
+.TP
+\fB--force-srgb
+Force conversion to the sRGB color space before encoding.
+.TP
+\fB-o \fIdec_opt\fR
+.br 
+Provide the option \fIdec_opt\fR to the decoder.
+.TP
+\fB-O \fIenc_opt\fR
+.br 
+Provide the option \fIenc_opt\fR to the encoder. The following options \fIenc_opt\fR are supported by the encoder:
+.RS
+.TP
+\fBimgareatlx=\fIx\fR
+Set the x-coordinate of the top-left corner of the image area to \fIx\fR.
+.TP
+\fBimgareatly=\fIy\fR
+Set the y-coordinate of the top-left corner of the image area to \fIy\fR.
+.TP
+\fBtilegrdtlx=\fIx\fR
+Set the x-coordinate of the top-left corner of the tiling grid to \fIx\fR.
+.TP
+\fBtilegrdtly=\fIy\fR
+Set the y-coordinate of the top-left corner of the tiling grid to \fIy\fR.
+.TP
+\fBtilewidth=\fIw\fR
+Set the nominal tile width to \fIw\fR.
+.TP
+\fBtileheight=\fIh\fR
+Set the nominal tile height to \fIh\fR.
+.TP
+\fBprcwidth=\fIw\fR
+Set the precinct width to \fIw\fR. The argument \fIw\fR must be an integer power of two. The default value is 32768.
+.TP
+\fBprcheight=\fIh\fR
+Set the precinct height to \fIh\fR. The argument \fIh\fR must be an integer power of two. The default value is 32768.
+.TP
+\fBcblkwidth=\fIw\fR
+Set the nominal code block width to \fIw\fR. The argument \fIw\fR must be an integer power of two. The default value is 64.
+.TP
+\fBcblkheight=\fIh\fR
+Set the nominal code block height to \fIh\fR. The argument \fIh\fR must be an integer power of two. The default value is 64.
+.TP
+\fBmode=\fIm\fR
+.br
+Set the coding mode to \fIm\fR. The argument \fIm\fR must have one of the following values:
+.br
+value     description
+.br
+---------------------------------
+.br
+int       integer mode (lossless)
+.br
+real      real mode (lossy)
+.br
+---------------------------------
+.br
+If lossless coding is desired, the integer mode must be used. By default, the integer mode is employed. The choice of mode also determines which multicomponent and wavelet transforms (if any) are employed.
+.TP
+\fBrates=\fIr0[,r1,. . . ,rN-1]\fR
+.br
+Specify the target rate with r0. The argument \fIr0\fR is a positive real number that are greater than one.
+.br 
+Specify the rates for any intermediate layers from r1 to rN-1. The argument to this option is a comma separated list of N rates. Each rate is a positive real number. The rates must increase monotonically. The last rate in the list should be less than or equal to the overall rate (as specified with the rate option).
+.TP
+\fBprg=\fIp\fR
+.br
+Set the progression order to \fIp\fR. The argument \fIp\fR must have one of the following values:
+.br
+value
+.br
+------------------------------------
+.br
+lrcp or rlcp or rpcl or pcrl or cprl
+.br
+------------------------------------
+.br
+By default, LRCP progressive ordering is employed. Note that the RPCL and PCRL progressions are not valid for all possible image geometries.
+.TP
+\fBnomct
+.br
+Disallow the use of any multicomponent transform.
+.TP
+\fBnumdecomlvls=\fIn\fR
+Set the number of decomposition levels to \fIn\fR. The argument \fIn\fR must be an integer that is greater than or equal to zero. The default value is 6.
+.TP
+\fBsop
+.br
+Generate SOP marker segments.
+.TP
+\fBeph
+.br
+Generate EPH marker segments.
+.TP
+\fBlazy
+.br
+Enable lazy coding mode (a.k.a. arithmetic coding bypass).
+.TP
+\fBtermall
+Terminate all coding passes.
+.TP
+\fBsegsym
+.br
+Use segmentation symbols.
+.TP
+\fBvcausal
+Use vertically stripe causal contexts.
+.TP
+\fBpterm
+.br
+Use predictable termination.
+.TP
+\fBresetprob
+Reset the probability models after each coding pass.
+.TP
+\fBnumgbits=\fIn\fR
+Set the number of guard bits to \fIn\fR.
+
+.SH DEFAULT FINGERPRINT COMPRESSION OPTIONS
+.PP
+The following options are supported for encoding only JPEG2000 images and which is customized for grayscale fingerprint encoding:
+.TP
+\fB--fing-1000-lossy
+Lossy compression using fingerprint default output options for 1000ppi input image.
+
+.RS
+The default compression (target) rate for lossy compression of fingerprint images at 1000ppi resolution is 14:1 (0.071428 bpp). The default intermediate layer rates are:
+   23:1 (0.043478 bpp)
+   32:1 (0.03125)
+   53:1 (0.018868)
+   80:1 (0.0125)
+  133:1 (0.007519)
+  200:1 (0.005)
+  320:1 (0.003125)
+  533:1 (0.001876)
+
+Other default encoder (lossy compression) values:
+  progression order: RPCL
+  Vertical Capture grid resolution for 1000ppi:   39370
+  Horizontal Capture grid resolution for 1000ppi: 39370
+  precinct width:    32768
+  precinct height:   32768
+  code block width:  64
+  code block height: 64
+  number of decomposition levels: 6
+  number of guard bits: 2
+  mode: real
+.RE
+.TP
+\fB--fing-1000-lossless
+Lossless compression using fingerprint default output options for 1000ppi input image.
+
+.RS
+Default encoder (lossless compression) values:
+  progression order: RPCL
+  Vertical Capture grid resolution for 1000ppi:   39370
+  Horizontal Capture grid resolution for 1000ppi: 39370
+  precinct width:    32768
+  precinct height:   32768
+  code block width:  64
+  code block height: 64
+  number of decomposition levels: 6
+  number of guard bits: 2
+  mode: int
+
+
+.SH EXAMPLES
+.TP
+\fB % jp2codec -f in_file.pnm -F out_file.jp2 --fing-1000-lossy
+\fRTo compress a pnm fingerprint image file at 1000ppi resolution, using lossy compression with all default values, into a jp2 image file.
+.TP
+\fB % jp2codec -f in_file.pnm -F out_file.jp2 --fing-1000-lossless
+\fRTo compress a pnm fingerprint image file at 1000ppi resolution, using lossless compression with all default values, into a jp2 image file.
+.TP
+\fB % jp2codec -f in_file.pnm -t pnm -F out_file.jp2 -T jp2 -O mode=real
+.RE
+\fB   -O numdecomlvls=6 -O prg=rpcl -O rates=14,23,32,53,80,133,200,320,533
+.RE
+.RS
+\fRTo compress a pnm fingerprint image file, using lossy compression options, into a jp2 image file.
+.RE
+.TP
+\fB % jp2codec -f in_file.jp2 -F out_file.pnm 
+\fRTo decompress a JP2 fingerprint image file.
+
+.SH SEE ALSO
+.B dpyimage(1G), dwsq(1G), rdwsqcom(1G), wrwsqcom(1G)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

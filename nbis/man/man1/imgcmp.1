@@ -1,0 +1,66 @@
+.\" @(#)imgcmp.1 2010/05/02 NIST
+.\" I Image Group
+.\"
+.TH IMGCMP 1G "02 May 2010" "NIST" "NBIS Reference Manual"
+.SH NAME
+imgcmp \- takes two binary data files and compares them generating metric data.
+.SH SYNOPSIS
+.B imgcmp
+\fB-f\fI <file1>
+\fB-F\fI <file2>
+.RB [ \-m
+.IR metric ]
+
+.SH DESCRIPTION
+.B Imgcmp
+takes as input two binary files of equal geometry and compares the
+contents between the two files.  Equal geometry means that the images
+have the same width, height, number of components, component
+subsampling factors, etc.
+
+.SH OPTIONS
+
+.TP
+\fB--help
+.br    
+\fRPrint software version, copyright, and usage options.
+.TP
+\fB--version
+\fRPrint \fBimgcmp\fR, ANSI/NIST stardard, and NBIS software versions.
+
+.PP
+The \fB-f \fRand \fB-F \fRoptions must always be specified. There is no option
+for explicit specification of the image format; if the format of either image
+cannot be auto-detected, the command will exit with an error.
+
+.TP
+\fB-f\fI <file1>
+Read, from the file named \fIfile1\fR, the primary (i.e. reference) file to be compared against \fIfile2\fR.
+.TP
+\fB-F\fI <file2>
+A binary file to be compared to \fIfile1\fR.
+
+.TP
+\fB-m \fImetric\fR
+Specify images differences per metric.
+
+.RS
+\fBpsnr\fR - peak signal to noise ratio (PSNR).
+.br
+\fBmse\fR - mean squared error (MSE).
+.br
+\fBrmse\fR - root mean squared error (RMSE).
+.br
+\fBpae\fR - peak absolute error (PAE).
+.br
+\fBmae\fR - mean absolute error (MAE).
+.br
+\fBequal\fR - equality.
+.RE
+
+.SH SEE ALSO
+.BR diffbyts (1F),
+.B JasPer Software Reference Manual
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

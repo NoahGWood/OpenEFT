@@ -1,0 +1,59 @@
+.\" @(#)datainfo.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH DATAINFO 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+datainfo \- shows the header information of a PCASYS data file.
+.SH SYNOPSIS
+.B datainfo
+.I <datafile>
+.SH DESCRIPTION
+.B Datainfo
+reads the header information from a PCASYS data file and writes a
+short report of this information to the standard output.
+
+The file must be in one of the official PCASYS
+data file formats, which are "matrix" (matrix of floating point
+numbers), "covariance" (covariance matrix of floating point numbers,
+with only the nonstrict lower triangle stored since a covariance
+matrix is symmetric), and "classes" (classes, represented as
+unsigned characters, which are thought of as being integers in the
+range 0 through 255).  PCASYS data files come in these three types,
+and can be either "ascii" or "binary", so there are really 6 types
+in all.
+
+Datainfo reports the description string of the data file,
+its type (matrix, etc.), whether it is ascii or binary, and then
+some final information specific to the file type: if matrix,
+the two dimensions; if covariance, the order (of the symmetric
+covariance matrix, i.e. the number that both dimensions equal) and
+the number of input vectors used to make the covariance; if classes,
+the number of elements.
+
+.SH OPTIONS
+.TP
+.I <datafile>
+Data file whose header information is to be reported.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/datainfo/datainfo.src\fR:
+.PP
+.RS
+.B % datainfo ../../data/oas/fv1-9.cls >& fv1-9cls.dat
+.PP
+.B % datainfo ../../data/oas/fv1.oas >& fv1oas.dat
+.PP
+.B % datainfo ../meancov/fv1-9.cov >& fv1-9cov.dat
+.br
+Prints out the file header information for the various types
+of files, class (fv1-9.cls), orientation arrays (fv1.oas),
+and covariance (fv1-9.cov).
+.SH "SEE ALSO"
+chgdesc (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

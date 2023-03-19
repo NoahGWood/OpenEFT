@@ -1,0 +1,54 @@
+.\" @(#)chgdesc.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH CHGDESC 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+chgdesc \- changes the description string of a PCASYS data file.
+.SH SYNOPSIS
+.B chgdesc
+.I <datafile> <new_desc>
+.SH DESCRIPTION
+.B Chgdesc
+replaces the existing description string of a PCASYS data file with
+the provided string.
+
+The new description can be of any length, but it must not contain
+embedded newline characters.  If it contains spaces, tabs, or shell
+metacharacters that are not to be expanded, then it should be quoted.
+To delete a file's description string, i.e. to replace it with the
+empty string, use '' (quoted empty string) as the string argument.
+
+The command makes, and then removes, a temporary version of the data
+file, in the same directory as the original file; its filename is the
+original filename with _chgdesc<pid> appended, where <pid> is the
+process id of the chgdesc command instance.  (In the unlikely event
+that a file of this name already exists, chgdesc exits with an error
+message, rather than replacing that file.)  If the original data file
+is large, then make sure, before running chgdesc, that the disk
+partition where the original file lives has enough room for the
+temporary copy.
+.SH OPTIONS
+.TP
+.I <datafile>
+Data file whose description field is to be changed.
+.TP
+.I <new_desc>
+The new description string.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/chgdesc/chgdesc.src\fR:
+.PP
+.RS
+.B % chgdesc fv1.acl 'fv1.cls'
+.br
+Puts the string fv1.cls in the description field of the
+file fv1.acl.
+.SH "SEE ALSO"
+datainfo (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

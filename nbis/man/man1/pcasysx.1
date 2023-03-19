@@ -1,0 +1,149 @@
+.\" @(#)pcasysx.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH PCASYSX 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+pcasysx \- fingerprint classifier demo, graphical version
+.SH SYNOPSIS
+.B pcasysx
+.I [prsfile]
+.SH DESCRIPTION
+.B Pcasysx
+is the graphical fingerprint classifier demo program.  It reads a
+sequence of image files, each depicting one box as scanned from a
+fingerprint card, and classifies each fingerprint, using a Multi-Layer
+Perceptron (MLP) or Probabilistic (PNN) Neural Network, to one of six
+pattern\-level classes: Arch, Left loop, Right loop, Scar, Tented
+arch, and Whorl. The type of classifier MLP or PNN is chosen in the
+parameters file \fIpcasys/parms/pcasys.prs\fR.  Additional
+parameters specific to pcasysx are in \fIpcasys/parms/pcasysx.prs\fR.
+
+Pcasysx produces screen graphics illustrating the results of the
+processing phases (requires X Windows).  It optionally makes an
+output file, containing a results line for each fingerprint and
+a summary at the end showing the error rate and the "confusion matrix",
+and it optionally writes progress messages to the standard output.
+
+Pcasysx will look in the default location \fIpcasys/parms\fR
+for the default parameter files it needs.  There are prototype
+and weights files in \fIpcasys/weights/{mlp|pnn}\fR that are needed
+by the MLP and PNN classifiers and images needed for the graphics
+display in \fIpcasys/images\fR. Also, the current default location
+for the 2700 sample fingerprint images is
+\fI/NBIS/Test/pcasys/data/images\fR.
+.SH OPTIONS
+.TP
+.I [prsfile]
+A file containing one or more parameter values that are to override
+the default values.  To find out what the parameters are, and as
+examples of the format of a parameters file, consult the default
+parameters files that pcasysx reads, namely \fIpcasys/parms/oas.prs\fR,
+\fIpcasys/parms/pcasys.prs\fR, and \fIpcasys/parms/pcasysx.prs\fR,
+which are described in the section PARAMETER FILES. Each line, in
+the parms file consists of a parameter name followed by a value; a
+pound sign indicates that the rest of its line is a comment.  If
+pcasysx is run with no argument, i.e. not specifying a user
+parameters file, then it uses the default values of all parameters.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH PARAMETER FILES
+.TP
+.I pcasys/parms/oas.prs
+Contains default values of the parameters that affect the making of
+orientation arrays (oas): these are the parms of the segmentor
+(sgmnt), the image enhancer (enhnc), the ridge-valley orientation
+finder (rors), the registration program (r92a), and the
+registration-implementing pixelwise orientations reaverager (rgar).
+The values used for these parms when making the oas used in
+optimizing the classifier should also be used when running the
+finished classifier.
+\fBSee the \fImkoas\fB man page for more information about the parameters
+in this file.\fR
+.TP
+.I pcasys/parms/pcasys.prs
+Contains default values of the parameters for \fBpcasysx\fR.
+Also look at \fIpcasys.mlp\fR and \fIpcasys.pnn\fR for examples on
+using each classifier.
+\fBSee the \fIpcasys\fB man page for more information about
+the parameters in this file.\fR
+.TP
+.I pcasys/parms/pcasysx.prs
+Contains default values of parameters, in addition to
+\fIpcasys/parms/pcasys.prs\fR, that are specific to \fBpcasysx\fR.
+.PP
+.RS
+.B Default settings in \fIpcasys/parms/pcasysx.prs\fR
+.PP
+\fIParameters for the graphical demo, pcasysx, that control sleeping
+(pausing) after displaying various intermediate results.  Value -1
+is also allowed: that means wait for user to type enter key before
+continuing.\fR
+.TP
+.B sleeps_titlepage \fI0\fR
+after title page
+.TP
+.B sleeps_sgmntwork \fI1\fR
+intermediate results of segmentor
+.TP
+.B sleeps_segras \fI0\fR
+segmented image
+.TP
+.B sleeps_enhnc \fI1\fR
+enhanced image
+.TP
+.B sleeps_core_medcore \fI3\fR
+ridge-orientation bars, core, standard core
+.TP
+.B sleeps_regbars \fI2\fR
+registered ridge-orientation bars
+.TP
+.B sleeps_featvec \fI1\fR
+bar graph of feature vector input to PNN
+.TP
+.B sleeps_normacs \fI2\fR
+bar graph of normalized PNN outputs
+.TP
+.B sleeps_foundconup \fI1\fR
+found a concave-upward pseudoridge (conup)
+.TP
+.B sleeps_noconup \fI0\fR
+all pseudoridges, if no conup is found
+.TP
+.B sleeps_lastdisp \fI2\fR
+results display for the fingerprint
+
+.PP
+\fIMouse control parameter:\fR
+.TP
+.B warp_mouse \fIn\fR
+If y (yes), then warp the mouse pointer into graphical window so
+its colormap takes effect.  If n (no), no warping.
+
+.PP
+\fIPCASYS I/O parameters.\fR
+.TP
+.B outfile \fIpcasysx.out\fR
+Output file to be produced.  If no output file is wanted, set
+this to /dev/null.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/pcasys/pcasys.src\fR:
+.PP
+.RS
+.B % pcasysx
+Runs the pcasysx demo using the default settings found in
+\fI pcasys/parms/pcasysx.prs\fR.
+.PP
+.B % pcasysx myprsfile
+.br
+Runs the pcasysx demo using parameters set in \fImyprsfile\fR
+to change the value of the default settings.
+.SH "SEE ALSO"
+pcasys (1B)
+
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

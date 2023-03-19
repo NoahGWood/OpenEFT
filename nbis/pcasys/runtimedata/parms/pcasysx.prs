@@ -1,0 +1,25 @@
+# Default values of the additional parms needed by pcasysx (graphical
+# demo), besides those shown in oas.prs and pcasys.prs.
+
+# These control how many seconds the graphical demo pcasysx sleeps
+# after displaying various intermediate results.  Value -1 is also
+# allowed: that means wait for user to type enter key before
+# continuing.
+sleeps_titlepage     0  # after title page
+sleeps_sgmntwork     2  # intermediate results of segmentor
+sleeps_segras        0  # segmented image
+sleeps_enhnc         1  # enhanced image
+sleeps_core_medcore  3  # ridge-orientation bars, core, standard core
+sleeps_regbars       2  # registered ridge-orientation bars
+sleeps_featvec       1  # bar graph of feature vector input to PNN
+sleeps_normacs       2  # bar graph of normalized PNN outputs
+sleeps_foundconup    5  # found a concave-upward pseudoridge (conup)
+sleeps_noconup       5  # all pseudoridges, if no conup is found
+sleeps_lastdisp      2  # results display for the fingerprint
+
+# If y (yes), then warp the mouse pointer into graphical window so
+# its colormap takes effect.  If n (no), no warping.
+warp_mouse n
+
+outfile pcasysx.out  # Output file to be produced.  If no output
+  # file is wanted, set this to /dev/null.

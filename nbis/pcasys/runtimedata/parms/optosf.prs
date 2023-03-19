@@ -1,0 +1,29 @@
+# Default values of the parameters of optosf (optimize overall
+# smoothing factor command).  This file also shows, as comments,
+# the remaining optosf parms, which do not have defaults.
+
+n_feats_use 64   # how many (first) features of the feature vecs to use
+osf_init .1      # initial value for osf (overall smoothing factor)
+osf_initstep .2  # initial step size for osf
+osf_stepthr .01  # program stops when step size becomes <= this value
+tablesize 1000   # size of the table used to avoid redundant computing
+verbose y        # if y, write progress messages to stdout
+outfile_desc -   # - (hyphen) means let optosf make the description;
+                 #   otherwise, value is the description
+
+# No default for: fvs_file, the "matrix" format file containing the
+#   prototype feature vectors, each vector stored as one row of the
+#   matrix.
+
+# No default for: classes_file, the "classes" format file containing
+#   the classes of the prototype feature vectors.
+
+# No default for: n_fvs_use_as_protos_set, the number of first
+#   feature vectors from fvs_file to use as the PNN prototypes
+#   when optimizing osf.
+
+# No default for: n_fvs_use_as_tuning_set, the number of first
+#   feature vectors from fvs_file to run the PNN on to optimize
+#   osf.
+
+# No default for: outfile, the output file.

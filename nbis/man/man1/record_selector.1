@@ -1,0 +1,386 @@
+.\" t
+.\" Joseph C. Konczal
+.\"
+.\" License: 
+.\" This software was developed at the National Institute of Standards and
+.\" Technology (NIST) by employees of the Federal Government in the course 
+.\" of their official duties. Pursuant to title 17 Section 105 of the
+.\" United States Code, this software is not subject to copyright protection 
+.\" and is in the public domain. It has been determined that the export control 
+.\" restriction did not apply to the NFSEG and BOZORTH3 software, due to both
+.\" being outside the scope of EAR(see Part 734.3 of the EAR for exact details); 
+.\" they are freely distributed and considered public domain. NIST assumes no 
+.\" responsibility  whatsoever for its use by other parties, and makes no 
+.\" guarantees, expressed or implied, about its quality, reliability, or any 
+.\" other characteristic. 
+.\" 
+.\" Disclaimer: 
+.\" This software was developed to promote biometric standards and biometric
+.\" technology testing for the Federal Government in accordance with the USA
+.\" PATRIOT Act and the Enhanced Border Security and Visa Entry Reform Act.
+.\" Specific hardware and software products identified in this software were used
+.\" in order to perform the software development.  In no case does such
+.\" identification imply recommendation or endorsement by the National Institute
+.\" of Standards and Technology, nor does it imply that the products and equipment
+.\" identified are necessarily the best available for the purpose.
+.\"
+.TH "AN2K RECORD SELECTOR" 1F "13 March 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+AN2K Record Selector \- Select particular records from ANSI/NIST
+data files using metadata in the records.
+.SH SYNOPSIS
+.B command
+.RB [ \-f
+.IR FGP[:IMP]
+.RB [ \-p
+.IR PLP ]
+.RB [ \-e
+.IR FGP or PLP ]
+.RB [ \-i
+.IR IMP ]
+.RB [ \-n
+.IR IDC ]
+.RB [ \-t
+.IR LRT ]
+.RB [ \-q
+.IR NQM ]
+.RB [ \-r
+.IR rec-sel-in-file ]
+.RB [ \-w
+.IR rec-sel-out-file ]
+.P
+Check the manual pages for individual commands to determine exactly
+which options are supported and what letters are used to specify them,
+since these suggested letters might have already been used for
+something else.  Substitute the word \fI'help'\fR for the parameter to
+see a listing of possible values.
+
+.SH DESCRIPTION
+Record selectors, consisting of various criteria for matching metadata
+associated with the individual records in ANSI/NIST data files, can be
+used to specify the records that various commands will act upon.
+Records that are not selected will be ignored.
+Record selectors can be specified by command line arguments, or record
+selector files, which are more difficult to construct but provide more
+flexibility.
+.SS Command Line Syntax
+The names and numbers used in the command line arguments to select
+specific records are taken from ANSI/NIST-ITL\~1-2007.
+Full names from the standard may be used, but they need to be quoted
+if they contain spaces.
+Other named sets of values are also recognized, like the finger
+position value \fIindex finger\fR, which selects both left and right
+index fingers.
+For convenience, abbreviations consisting of the first letter of each
+word in the name are typically accepted, and any unique initial
+substring of a name or abbreviation is also allowed, for example, the
+finger position specifications \fIif\fR, \fIin\fR, and \fIind\fR are
+all equivalent to \fIindex finger\fR, or \fI2,7\fR.
+Case is ignored, so capital and small letters may be used
+interchangeably, for example, \fIeji\fR is equivalent to \fIEJI\fR,
+and even \fIEjI\fR.
+.P
+Multiple values of one selector type are implicitly combined using
+Boolean \fIor\fR, so \fI-f1,2,3\fR, for example, would select
+records containing either finger position 1, finger position 2, or
+finger position 3.
+Sets of different types of selectors are combined with Boolean
+\fIand\fR, so \fI-f1,2 -i3\fR would match a record where the finger
+position is 1 or 2 and the impression type is 3.
+.P
+Because finger position and impression type are expected to be
+frequently used together, a means has been developed to specify them
+within a single option arguemnt, separated by a colon.  For example,
+the finger position and impression type selectors in the previous
+example could have been specified as \fI-f1,2:3\fR instead of
+\fI-f1,2\~-i3\fR.
+.P
+Use of this mechanism is at the discression of the programmer of an
+application, and it could be applied to other kinds of selectors as
+well, so check the individual manual page for each application.
+.SS File Syntax
+A record selector file consists of one top-level selector, which might
+be an \fIand\fR or \fIor\fR item containing a number of nested items.
+Items are specified by a short item name or mnemonic followed by the
+item value or a list of nested items enclosed within curly brackets.
+For example, the command line option \fI-fthumb:rolled\fR would be
+equivalent to:
+.P
+.\" .ne is used to keep the following 16 lines on one page.
+.ne 16v
+.RS 
+.nf
+and {
+      or {
+           fgp   1
+           fgp   6
+           fgp  11
+           fgp  12
+         }
+      or {
+           imp   1
+           imp   3
+           imp  21
+           imp  23
+           imp  25
+           imp  27
+         }
+    }
+.fi
+.RE
+.P
+.ne 16v
+The first \fIor\fR selects any of the four thumb positions.
+The second \fIor\fR selects any of the rolled impression types.
+The and requires a match in both categories, so that only the rolled
+thumb impressions will be selected.
+The selector types allowed in the file are shown in the table below.
+.TS
+allbox;
+ cb cb , l l .
+Abbreviation	Full Name
+and	Boolean AND
+or	Boolean OR
+fgp	Finger Position
+plp	Palm Position
+fgplp	Finger or Palm Position
+imp	Impression Type
+idc	Image Designation Character
+lrt	Logical Record Type
+nqm	NIST Quality Metric
+.TE
+.P
+.SS Table Syntax
+The following tables show the full names of the metadata values that
+are named in the standard, additional named sets of values, explicitly
+defined alternatves and abbreviations, and the numeric equivalents.
+.\" The tables below were generated from select.c. by
+.\" gen-select-man-tbls.pl, then copied and pasted in.  Please update
+.\" them if you change the source data structures in select.c.
+.fl
+.ne 40v
+.SS -f \(em Finger Position (FGP)
+Finger positions are defined in ANSI/NIST-ITL\~1-2007, Table\~12 \fIFinger
+position code & maximum image dimensions\fR, page\~31.
+Some named sets of finger positions, appear at the beginning of the
+following table, followed by the individual types listed in the
+standard.
+.P
+Some extra thumb positions are defined in the standard.
+Positions 1 and 6 are like all the other individual fingers, but
+positions 11 and 12 indicate plain individual thumbs, and position 15
+specifies both thumbs together.
+The names \fIthumb\fR, \fIright thumb\fR, and \fIleft thumb\fR refer
+to the relevant subsets of the four individual thumb positions.
+In order to retrieve only rolled thumbs in positions 1 and 6, one may
+specify a rolled impression type, e.g., \fI-f\~thumb:rolled\fR or,
+more concisely, \fI-ft:r\fR.
+.TS
+allbox, tab(:);
+ cb cb cb , l l l .
+Full Name:Alternatives:Values
+thumb:t:1, 6, 11, 12
+index finger:i, if:2, 7
+middle finger:m, mf:3, 8
+ring finger:r, rf:4, 9
+little finger:l, lf:5, 10
+right hand finger:rhf:1, 2, 3, 4,  5, 11, 13
+left hand finger:lhf:6, 7, 8, 9, 10, 12, 14
+unknown finger:uf:0
+right thumb:rt:1, 11
+right index finger:rif, ri:2
+right middle finger:rmf:3
+right ring finger:rrf:4
+right little finger:rlf, rl:5
+left thumb:lt:6, 12
+left index finger:lif:7
+left middle finger:lmf:8
+left ring finger:lrf:9
+left little finger:llf:10
+plain right thumb:prt:11
+plain left thumb:plt:12
+plain right four fingers:prff, r4:13
+plain left four fingers:plff, l4:14
+eji:tip:19
+.TE
+.P
+.ne 40v
+.SS -p \(em Palm Position (PLP)
+Palm positions are defined in ANSI/NIST-ITL\~1-2007, Table\~35 \fIPalm
+codes and dimensions\fR, page\~84.
+.TS
+allbox, tab(:);
+ cb cb cb , l l l .
+Full Name:Alternatives:Values
+interdigital::31, 34
+thenar::32, 35
+hypothenar::33, 36
+right palm:rp:T{
+21, 22, 25, 26, 29, 31, 32, 33
+T}
+left palm:lp:T{
+23, 24, 27, 28, 30, 34, 35, 36
+T}
+unknown palm:up:20
+right full palm:rfp:21
+right writer's palm:rwp:22
+left full palm:lfp:23
+left writer's palm:lwp:24
+full palm:fp:21, 23
+writer's palm:wp:22, 24
+right lower palm:rlp:25
+right upper palm:rup:26
+left lower palm:llp:27
+left upper palm:lup:28
+lower palm:lp:25, 27
+upper palm:up:26, 28
+right other:ro:29
+left other:lo:30
+other palm:op:29, 30
+right interdigital:rin:31
+right thenar:rthe:32
+right hypothenar:rhy:33
+left interdigital:lin:34
+left thenar:lthe:35
+left hypothenar:lhy:36
+.TE
+.P
+.SS -e \(em Either Finger or Palm Position (FGPLP)
+Type-13 records accept both finger and palm positions in the FGP
+field, so they are combined in this type of selector.
+Notice that prefixes that work for the finger or palm positions
+separately might not be sufficient for this combined set.
+For example, \fIth\fR matches either \fIthumb\fR or \fIthenar\fR when
+the lists are separate.  
+When they are combined \fIth\fR no longer matches only one
+possiblilty, so either a \fIu\fR or \fIe\fR needs to be added to
+distinguish between \fIthumb\fR and \fIthenar\fR.
+In this case, \fIthumb\fR could be specified more concisely using the
+explicitly defined abbreviation \fIt\fR.
+.fl
+.ne 50v
+.SS -i \(em Impression Types (IMP)
+Impression Types are defined in ANSI/NIST-ITL\~1-2007, Table\~11
+\fIFinger & palm impression types\fR, page\~30.
+.TS
+allbox, tab(:);
+ cb cb cb , l l l .
+Full Name:Alternatives:Values
+rolled:r:1, 3, 21, 23, 25, 27
+plain:p:0, 2, 20, 22, 24, 26
+latent:lat:T{
+4, 5, 6, 7, 12, 13, 14, 15
+T}
+live-scan:live:T{
+0, 1, 8, 10, 20, 21, 22, 23, 24, 25, 26, 27
+T}
+nonlive-scan:nonlive:2, 3, 11
+palm::12, 13, 14, 15
+live-scan plain:lsp, lspl:0
+live-scan rolled:lsr, lsro:1
+nonlive-scan plain:nsp, nspl:2
+nonlive-scan rolled:nsr, nsro:3
+latent impression:li:4
+latent tracing:lt:5
+latent photo:lp:6
+latent lift:ll:7
+live-scan vertical swipe:lsvs:8
+live-scan palm:lspa:10
+nonlive-scan palm:nspa:11
+latent palm impression:lpi:12
+latent palm tracing:lpt:13
+latent palm photo:lpp:14
+latent palm lift:lpl:15
+T{
+live-scan optical contact plain
+T}:lsocp:20
+T{
+live-scan optical contact rolled
+T}:lsocr:21
+T{
+live-scan non-optical contact plain
+T}:lsnocp:22
+T{
+live-scan non-optical contact rolled
+T}:lsnocr:23
+T{
+live-scan optical contactless plain
+T}:lsoclp:24
+T{
+live-scan optical contactless rolled
+T}:lsoclr:25
+T{
+live-scan non-optical contactless plain
+T}:lsnoclp:26
+T{
+live-scan non-optical contactless rolled
+T}:lsnoclr:27
+other::28
+unknown::29
+.TE
+.P
+.ne 35v
+.SS -t \(em Logical Record Type (LRT)
+Logical record types are defined in ANSI/NIST, Table\~4 \fILogical
+record types\fR, page\~13.
+.TS 
+allbox, tab(:);
+ cb cb cb , l l l .
+Full Name:Alternatives:Values
+grey print:gp:4, 13, 14
+Transaction information:ti:1
+T{
+User-defined descriptive text
+T}:udt:2
+T{
+Low-resolution grayscale fingerprint image
+T}:lrgsfi:3
+T{
+High-resolution grayscale fingerprint image
+T}:hrgsfi:4
+T{
+Low-resolution binary fingerprint image
+T}:lrbfi:5
+T{
+High-resolution binary fingerprint image
+T}:hrbfi:6
+User-defined image:udi:7
+Signature image:si:8
+Minutiae data:md:9
+Facial & SMT image:fsmti:10
+T{
+Variable-resolution latent image
+T}:vrli:13
+T{
+Variable-resolution fingerprint image
+T}:vrfi:14
+T{
+Variable-resolution palmprint image
+T}:vrpi:15
+Iris image:ii:17
+T{
+CBEFF Biometric data record
+T}:cbdr:99
+.TE
+.P
+.ne 15v
+.SS -q \(em NIST Fingerprint Quality Metric (NQM)
+The NIST Fingerprint Quality Metrics values are defined in
+NIST\~IR\~7151, \fINIST Fingerprint Image Quality\fR, Table\~2,
+page\~12.
+.TS
+allbox, tab(:);
+ cb cb cb , l l l .
+Full Name:Alternatives:Values
+excellent::1
+very good:vg:2 
+good::3 
+fair::4 
+poor::5 
+.TE
+.P
+.SH SEE ALSO
+.BR dpyan2k (1F),
+.BR nfiq (1D)
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

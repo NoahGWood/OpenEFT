@@ -1,0 +1,131 @@
+.\" @(#)optosf.1 2008/10/02 NIST
+.\" I Image Group
+.\" G. T. Candela & Craig I. Watson
+.\"
+.TH OPTOSF 1B "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+optosf \- optimizes the overall smoothing factor for the PNN classifier.
+.SH SYNOPSIS
+.B optosf
+.I <prsfile>
+.SH DESCRIPTION
+.B Optosf
+optimizes the overall smoothing factor (osf) for the Probabilistic
+Neural Network (PNN) classifier.
+
+The regional weights are optimized using the \fBoptrws\fR command.  To
+save optrws runtime, it is suggested that optrws be run using the K-L
+feature vectors of only a reasonably small set of fingerprints,
+perhaps a small subset of the full prototype set that will be used in
+the finished classifier.  But then, after the full prototype set of
+feature vectors is made by transforming previously made orientation
+arrays using the transform matrix incorporating the optimized regional
+weights, one can expect that the classifier that uses these feature
+vectors will be slightly more accurate if it uses an overall smoothing
+factor slightly larger than 1, to compensate for the fact that the
+prototype set is larger than it was during optimization of the
+regional weights.  During optimization of the regional weights, no
+explicit overall smoothing factor is used, since any effect such a
+factor would have had could equally well be produced by just using
+different values of the regional weights; so, optrws in effect fixes
+the overall smoothing factor at 1.
+
+The optosf command is provided to optimize the overall smoothing factor
+for best results on the full set of prototypes.  It optimizes osf
+by attempting to find a minimum (or at least a local minimum)
+of an activation error rate that results when a set of finished
+feature vectors is classified by PNN.  The set of prototypes
+used by the PNN, during this optimization, is a superset of the
+set on which the activation error rate is computed: both sets
+start at the beginning of the provided data, but they are of different
+lengths.  Whichever fingerprint the classifier is running on is
+temporarily left out of the prototypes set, i.e. a leave-one-out method
+is used in order to simulate a realistic situation.
+
+The optimization method used is a very simple one, consisting of
+taking steps of an initial size, then halving the stepsize and
+reversing direction if the error rates ceases to decrease, etc.  This
+method, while obviously not sufficient for the general problem of
+minimizing a real function of one real variable, appears to be
+sufficient for this particular problem, since the activation error
+rate as a function of the osf seems to always have a unimodal form.
+.SH OPTIONS
+.TP
+.I <prsfile>
+A file specifying values of some or all of the parameters.  Parameters
+not specified in this file assume default values.  To find out what
+the parameters are, and as an example of the format of a parameters
+file, see the file \fIpcasys/parms/optosf.prs\fR in the PARAMETER
+FILES section below.  The user's \fIprsfile\fR must specify values
+for those parameters that \fIoptosf.prs\fR indicates have no defaults;
+it can also specify default-overriding values for one or more of
+the parameters that have defaults.
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH PARAMETER FILES
+.TP
+.I pcasys/parms/optosf.prs
+Contains default values of the parameters for optosf (optimize overall
+smoothing factor command).  Parameters with no defaults must be set in
+the users \fIprsfile\fR.
+.PP
+.RS
+.B Default settings in \fIpcasys/parms/optosf.prs\fR
+.TP
+.B n_feats_use \fI64\fR
+How many (first) features of the feature vectors to use.
+.TP
+.B osf_init \fI.1\fR
+Initial value for osf (overall smoothing factor).
+.TP
+.B osf_initstep \fI.2\fR
+Initial step size for osf.
+.TP
+.B osf_stepthr \fI.01\fR
+Program stops when step size becomes <= this value.
+.TP
+.B tablesize \fI1000\fR
+Size of the table used to avoid redundant computing.
+.TP
+.B verbose \fIy\fR
+If y, write progress messages to stdout.
+.TP
+.B outfile_desc \fI-\fR
+A \- (hyphen) means let optosf make the description; otherwise,
+value is the description.
+
+.TP
+.B fvs_file \fI(no default, user must set)\fR
+The file containing the prototype feature vectors, each vector
+stored as one row of the matrix.
+.TP
+.B classes_file \fI(no default, user must set)\fR
+The file containing the classes of the prototype feature vectors.
+.TP
+.B n_fvs_use_as_protos_set \fI(no default, user must set)\fR
+The number of first feature vectors from fvs_file to use as the
+PNN prototypes when optimizing osf.
+.TP
+.B n_fvs_use_as_tuning_set \fI(no default, user must set)\fR
+The number of first feature vectors from fvs_file to run the
+PNN on to optimize osf.
+.TP
+.B outfile \fI(no default, user must set)\fR
+The results output file.
+
+.SH EXAMPLE(S)
+From \fItest/pcasys/execs/optosf/optosf.src\fR:
+.PP
+.RS
+.B % optosf optosf.prs
+.br
+Optimize the overall smoothing factor based on the parameters
+set in the file \fIoptosf.prs\fR.
+.SH "SEE ALSO"
+optrws (1B)
+
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

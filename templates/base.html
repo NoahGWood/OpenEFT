@@ -1,0 +1,13 @@
+{% include 'partials/header.html' %}
+    {% include 'partials/navbar.html' %}
+
+    <body class="text-white">
+    {% block content %}
+    {% endblock %}
+    </body>
+<style>
+    body{
+    background-color: black !important;
+}
+</style>
+{% include 'partials/footer.html' %}

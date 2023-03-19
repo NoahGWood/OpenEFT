@@ -1,0 +1,130 @@
+.\" @(#)sivv.1 2010/09/03 NIST
+.\" I Image Group
+.\" John Grantham
+.\"
+.TH SIVV "3 September 2010" "NIST" "NBIS Reference Manual"
+.SH NAME
+sivv \- processes an image, using the algorithm described in
+NISTIR 7599, "A 1D Spectral Image Validation/Verification Metric for
+Fingerprints", in order to determine the presence of a fingerprint
+within the image. 
+.SH SYNOPSIS
+.B sivv
+.I input-image
+.RB [ \-nowindow ]
+.RB [ \-smooth
+.IR value ]
+.RB [ \-verbose ]
+.RB [ \-nocenter ]
+.RB [ \-textonly ]
+.RB [ \-ROI
+.IR X1 
+.IR Y1
+.IR X2
+.IR Y2 ]
+.RB [ \-signaltofile
+.IR FILE ]
+.RB [ \-graphtofile
+.IR FILE ]
+.RB [ \-histtofile
+.IR FILE ]
+
+.SH DESCRIPTION
+.B SIVV
+requires an image file as input. Since SIVV utilizes the Open Computer 
+Vision (OpenCV) library, the image file must be in a format supported 
+by OpenCV. As of the writing of this man page, these formats are limited 
+to: Windows bitmaps (BMP, DIB), JPEG files (JPEG, JPG, JPE), Portable 
+Network Graphics (PNG), Portable image format (PBM, PGM, PPM), Sun rasters
+(SR, RAS), and TIFF files (TIFF, TIF). \fBSIVV\fR returns results in the 
+form of image statistics indicitive of the presence (or absense) of a 
+fingerprint within the image, as well as a graph representing the 1D 
+spectral summary signal (in graphical mode only).
+.SH OPTIONS
+.TP
+.I input-image
+The image file to be processed.
+.TP
+\fB-h \fR(OR)\fB -help \fR(OR)\fB ?\fR
+Prints an abridged set of usage instructions for SIVV.
+.TP
+\fB-nowindow\fR
+Turn windowing off (on by default). Windowing refers to the application of the Blackman Window function in the processing of the input image. See NISTIR 7599 for a detailed explanation the windowing function.
+.TP
+\fB-windowtype [name]\fR
+Set window type to either "blackman" or "tukey" (default is blackman
+.TP
+\fB-smooth \fIvalue\fR
+Turn smoothing off (value <= 1) or set width of moving average (value > 1). The width of the moving averages determines the extent to which the signal representing the image will be smoothed before analysis. The smoothing value default is 7 points.
+.TP
+\fB-verbose\fR
+Turn verbose mode on (off by default). This mode prints additional and more detailed information at various stages of image processing. This mode is intended primarily for troubleshooting purposes.
+.TP
+\fB-nocenter\fR
+Turn autocentering feature off (on by default). Autocentering uses a Canny edge detector (from the OpenCV library) to determine the region of highest edge density in an image and then crops and centers this region before processing. For images that do contain fingerprints but also contain a significant amount of whitespace or noise, this has been found to improve detection results. See NISTIR 7599 for more information.
+.TP
+\fB-textonly\fR
+Turns on text-only output (off by default). This mode produces no graphical output and requires on user interaction to complete execution and is intended for batch processing or redirecting the results to another application or a file.
+.TP
+\fB-ROI \fIX1 Y1 X2 Y2\fR
+Set Region Of Interest to a rectangular area of the image as specified by the points (X1,Y1) and (X2,Y2). These points can be any two diagonally opposite corners of the rectangular area of interest. A point-coordinate system where the origin (0,0) appears in the upper-left of the image is assumed. Also, setting the ROI flag implies the \fB-nocenter\fR flag, as these two options are logically incompatible. 
+.TP
+\fB-signaltofile \fIFILE\fR
+Write full 1D signal to specified file (comma-separated values)
+.TP
+\fB-graphtofile \fIFILE\fR
+= Save graph of 1D signal to specified file (must be BMP, TIFF, PNG, or JPEG -- PNG recommended)
+.TP
+\fB-histtofile \fIFILE\fR
+= Write full histogram of image to specified file (comma-separated values with header row)
+\fB-faildir \fI"DIRECTORY"\fR
+= Path to directory in which to place copies of images which produce no peaks in SIVV signal (annotated with box indicating ROI processed) NOTE: Path should be placed inside quotes ("")
+.TP
+
+.SH RESULTS / OUTPUT
+.B SIVV 
+returns results in the form of a string (or vector) of image statistics which indicate the presence or absence of a fingerprint in the input image. These statistics consist of the following, in order:
+.B image file name
+.B ordinal location of the maximum peak among the array of peaks returned by the peak finder
+.B number of peaks returned by the peak detector
+.B power difference (dy) between the maximum peak and the signal minimum (valley) immediately preceding it
+.B frequency difference (dx) between the valley and peak
+.B slope between the valley and peak (dy/dx)
+.B frequency of the midpoint between the valley and the peak
+.B frequency of the peak only
+
+.SH EXAMPLES
+.B $ sivv image001.bmp
+.br
+Runs the full SIVV process using the default values and prints a vector of image statistics indicitive of the presence (or absense) of a fingerprint within the image, as well as a graph representing the 1D spectral summary signal.
+
+.B $ sivv image001.bmp -textonly
+.br
+Runs the full SIVV process using the default values and prints a vector of image statistics indicitive of the presence (or absense) of a fingerprint within the image.
+
+.B $ sivv image001.bmp -nowindow -verbose -ROI 150 100 500 400
+.br
+Runs the SIVV process without autocentering or the application of the window function only on the rectangular portion of the image within the coordinates of (150, 100) and (500, 400). 
+
+.B $ sivv image001.bmp -smooth 1
+.br
+Runs the SIVV process without any smoothing applied to the image signal
+
+.B sivv image001.bmp -signaltofile sivv_output.txt
+.br
+Runs the SIVV process and writes the signal values to sivv_output.txt.
+
+.B sivv image001.bmp -histtofile sivv_histogram.txt
+.br
+Runs the SIVV process and writes the signal values to sivv_histrogram.txt.
+
+.B $ sivv -h
+.br
+Prints the usage instructions for SIVV
+
+.SH SEE ALSO
+.BR nfiq (1D),
+.BR mindtct (1C),
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

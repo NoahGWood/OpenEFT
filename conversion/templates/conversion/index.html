@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+{% block Title %}OpenEFT | Home{% endblock %}
+{% block content %}
+<br />
+<div class="content" id="main-content">
+    <div class="row">
+        <div class="col">
+            <div class="card bg-dark text-white">
+                <div class="card-header text-center">
+                    <h2>Discussions</h2>
+                </div>
+                <div class="card-body" style="overflow-y:scroll; height: 400px;">
+                    <ul class="list-group bg-dark" id="discussions-body">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card bg-dark text-white">
+                <div class="card-header text-center">
+                    <h2>Releases</h2>
+                </div>
+                <div class="card-body" style="overflow-y:scroll; height: 400px;">
+                    <ul class="list-group bg-dark" id="release-body">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card bg-dark text-white">
+                <div class="card-header text-center">
+                    <h2>Latest Updates</h2>
+                </div>
+                <div class="card-body" style="overflow-y:scroll; height: 400px;">
+                    <ul class="list-group" id="commit-body">
+                        <li class="list-group-item bg-secondary text-white">
+                            <div class="row">
+                                <div class="col">
+                                    Author                        
+                                </div>|
+                                <div class="col">
+                                    Title
+                                </div>|
+                                <div class="col">
+                                    Commit Message
+                                </div>|                    
+                                <div class="col">
+                                    Date
+                                </div>
+                            </div>    
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script>
+function t(entry, tname){
+    return entry.getElementsByTagName(tname)[0];
+}
+function date(entry){
+    d = new Date(t(entry, 'updated').textContent)
+    year = d.getFullYear();
+    month = d.getMonth();
+    day = d.getDay();
+    time = d.toLocaleTimeString();
+    datestring = month + "/" + day + "/" + year + " @ " + time.split(":")[0] + ":" + time.split(":")[1] + " " + time.split(" ")[1];
+    return datestring;
+}
+function html2txt(html){
+    return html.replace(/<(?:.|\n)*?>/gm, '');
+}
+function author(entry){
+    return t(entry,"name").textContent;
+}
+function authorUrl(entry){
+    return t(entry,"uri").textContent;
+}
+function authorThumb(entry){
+    return t(entry,"media:thumbnail").getAttribute("url");
+}
+function content(entry){
+    return html2txt(t(entry,'content').textContent).slice(0,200);
+}
+function link(entry){
+    return t(entry,"link").getAttribute("href");
+}
+fetch("/static/commits.xml")
+    .then(response => response.text())
+    .then(xml => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xml,"text/xml");
+        const all = xmlDoc.getElementsByTagName("entry");
+        let out = "";
+        for (i=0; i<all.length; i++){
+            let current = all[i];
+            let a = `<li class="list-group-item">
+                <div class="row">
+                    <div class="col" href="${authorUrl(current)}" style="border-right: 1px solid #000;">
+                        <img height="30" width="30" src="${authorThumb(current)}">
+                        ${author(current)}
+                    </div>
+                    <div class="col" style="border-right: 1px solid #000;">
+                        ${t(current,"title").textContent}                
+                    </div>
+                    <div class="col" href${link(current)} style="border-right: 1px solid #000;">
+                        ${content(current)}
+                    </div>
+                    <div class="col">
+                        ${date(current)}
+                    </div>
+                </div>
+            </li>`;
+            out += a;
+        }
+
+        let x = document.getElementById("commit-body");
+        x.innerHTML += out;
+    })
+    fetch("/static/discussions.xml")
+    .then(response => response.text())
+    .then(xml => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xml,"text/xml");
+        const all = xmlDoc.getElementsByTagName("entry");
+        let out = "";
+        for (i=0; i<all.length; i++){
+            let current = all[i];
+            let a = `<li class="list-group-item bg-dark">
+                            <div class="card bg-secondary text-white">
+                                <div class="card-header">
+                                    <a class="text-decoration-none text-white" href="${authorUrl(current)}">
+                                        <img height="30" width="30" src="${authorThumb(current)}"></img>
+                                        ${author(current)}
+                                    </a> posted in <a class="text-white" href="${link(current)}">${t(current,"title").textContent}</a>
+                                    on ${date(current)}
+                                 </div>
+                                <div class="card-body bg-light text-black">
+                                    ${content(current)}
+                                </div>
+                            </div>    
+                        </li>`;
+            out += a;
+        }
+
+        let x = document.getElementById("discussions-body");
+        x.innerHTML += out;
+    })
+    fetch("/static/releases.xml")
+    .then(response => response.text())
+    .then(xml => {
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xml,"text/xml");
+        const all = xmlDoc.getElementsByTagName("entry");
+        let out = "";
+        if (all.length==0){
+            out += `<li class="list-group-item bg-dark text-white>No Releases Found.</li>`;
+        }
+        for (i=0; i<all.length; i++){
+            let current = all[i];
+            let a = `<li class="list-group-item bg-dark">
+                            <div class="card bg-secondary text-white">
+                                <div class="card-header">
+                                    <a class="text-white" href="${link(current)}">${t(current,"title").textContent}</a>
+                                 </div>
+                                <div class="card-body bg-light text-black">
+                                    Date: ${date(current)}<br />
+                                    Info: ${content(current)}
+                                </div>
+                            </div>    
+                        </li>`;
+            out += a;
+        }
+
+        let x = document.getElementById("release-body");
+        x.innerHTML += out;
+    })
+</script>
+    {% endblock %}

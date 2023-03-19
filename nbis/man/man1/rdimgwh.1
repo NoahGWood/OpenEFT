@@ -1,0 +1,74 @@
+.\" @(#)rwpics.1 2008/10/02 NIST
+.\" I Image Group
+.\" Joseph C. Konczal & Craig I. Watson
+.\"
+.TH RWPICS 1B "03 October 2008" "NIST" "NBIS Reference Manual"
+
+.SH NAME
+rdimgwh \- read image width and height directly from within the image
+data and print them on the standard output
+
+.SH SYNOPSIS
+.B rdimgwh 
+.RB [ \-f
+.IR FGP[:IMP] ]
+.RB [ \-i
+.IR IMP ]
+.RB [ \-t
+.IR LRT ]
+.RB [ \-n
+.IR IDC ]
+.RB [ \-t
+.IR LRT ]
+.RB [ \-q
+.IR NQM ]
+.RB [ -version ]
+.I imgfile ...
+
+.SH DESCRIPTION
+.B rdimgwh
+reads one or more specified image files and prints the image width and
+height.  Particular records may be selected from ANSI/NIST files using
+the relevant metadata selection options described in
+record_selector(1F), otherwise all the images are processed.  One line
+of results is printed for each image.  The file name, and the record
+number of an image in an ANSI/NIST file, are printed before the
+corresponding width and height, i.e., \fI"file[:rec] width height"\fR.
+
+.SH OPTIONS
+\fB-f \fIfinger position (FGP)\fR
+.br
+\fB-i \fIimpression type (IMP)\fR
+.br
+\fB-n \fIimage designation character (IDC) \fR(actually a number from 0 to 255)
+.br
+\fB-t \fIlogical record type (LRT)\fR
+.br
+\fB-q \fINIST fingerprint image quality metric (NQM)\fR
+.br
+\fB-r \fIread record selector from a file\fR
+.br
+\fB-w \fIwrite record selector to a file\fR
+.RS
+See
+.BR record_selector (1F)
+for details on these record selector options.
+.RE
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLE(S)
+.PP
+.B $ rdimgwh nist_jp2.an2
+.nf
+nist_jp2.an2:3 800 768
+nist_jp2.an2:5 800 768
+$
+.RE
+
+.SH "SEE ALSO"
+.BR record_selector (1F)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group

@@ -1,0 +1,99 @@
+{% load static %}
+<div class="error">
+    <div class="row">
+        <div class="col"></div>
+        <!-- TITLE -->
+        <div class="col-lg-4 offset-lg-1 mx-0 px-0">
+            <h2>File Upload</h2>
+         </div>
+         <div class="col"></div>
+        </div>
+    <div class="row">
+        <!-- FORMS -->
+        <div class="col"></div>
+        <div class="col">
+            <canvas width="800" height="1100" id="canvas" >
+                Your browser does not support the canvas element
+            </canvas>
+          </div>
+         <div class="col"></div>
+    </div>
+</div>
+<img src="{% static 'bg_test2.png' %}" hidden="hidden" id="sourceImage"/>
+
+<script>
+    var prevX, prevY, currX, currY = 0;
+    var p1,p2,p3,p4;
+    var clicked = false;
+    var img = document.getElementById("sourceImage");
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    clearCanvas();
+    canvas.addEventListener("mousemove", function(e){
+        findxy('move', e)
+    }, false);
+    canvas.addEventListener("mousedown", function(e) {
+        findxy('down',e)
+    }, false);
+    canvas.addEventListener("mouseup", function(e) {
+        findxy("up", e)
+    }, false);
+    canvas.addEventListener("mouseout", function(e) {
+        findxy("out", e)
+    }, false);
+
+    function findxy(res, e) {
+        if (res == 'down') {
+            prevX = currX;
+            prevY = currY;
+            currX = e.pageX - canvas.offsetLeft;
+            currY = e.pageY - canvas.offsetTop;
+            clicked = true;
+        }
+
+        if (res == 'up' && clicked === true) {
+            if (!p1){
+                p1 = [currX, currY];   
+                draw();
+                clicked = false;
+                alert("Select the upper right corner of document.");
+            } else if (!p2) {
+                p2 = [currX, currY];
+                draw();
+                clicked = false;
+                alert("Select the lower left corner of document.");
+            } else if (!p3){
+                p3 = [currX, currY];
+                draw();
+                clicked = false;
+                alert("Select the lower right corner of document.");
+            } else if (!p4){
+                p4 = [currX, currY];
+                draw();
+                console.log("POINTS!")
+                clicked = false;
+                if (confirm('Did you check all corners?')) {
+                  // Save it!
+                  console.log(p1, p2, p3, p4);
+                  console.log('Thing was saved to the database.');
+                } else {
+                    clearCanvas();
+                }
+            }
+        }
+    }
+
+    function draw() {
+        ctx.beginPath();
+        ctx.arc(currX, currY, 10,0,2*Math.PI);
+        ctx.stroke();
+    }
+
+    function clearCanvas() {
+        p1=null;p2=null;p3=null;p4=null;
+        alert("Select the upper left corner of document.");
+        ctx.clearRect(0,0,img.width,img.height);
+        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, canvas.width, canvas.height);
+    }
+//    canvas.style="background-size: 100% 100%;"
+</script>

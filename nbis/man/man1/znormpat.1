@@ -1,0 +1,51 @@
+.\" @(#)znormpat.1 2008/10/02 NIST
+.\" I Image Group
+.\" Michael Garris
+.\" Elham Tabassi
+.\"
+.TH ZNORMPAT 1D "02 October 2008" "NIST" "NBIS Reference Manual"
+.SH NAME
+nzormpat \- Takes a patterns file of (un-normalized) feature vectors
+and ZNormalizes its feature vectors based on global statistics provided.
+
+.SH SYNOPSIS
+.B znormpat
+.I <znormfile>
+.I <binpats in>
+.I <binpats out>
+
+.SH DESCRIPTION
+.B Znormpat
+takes a patterns file of (un-normalized) feature vectors and performs
+ZNormalization based on the global statistics provided in <znormfile>.
+The znormalized feature vectors are written to the <binpats out> file.
+The statistics in <znormfile> are computed using \fBznormdat\fR.
+.SH OPTIONS
+.TP
+.I <znormfile>
+file containing the global statistics used to perform ZNormalization
+.TP
+.I <binpats in>
+input patterns file containing un-normalized feature vectors
+.TP
+.I <binpats out>
+ouptut patterns file containing ZNormalized feature vectors
+.TP
+\fB-version
+\fRPrint ANSI/NIST stardand and NBIS software version.
+
+.SH EXAMPLES
+From \fItest/nfiq/execs/znormpat/znormpat.src\fR:
+.PP
+.RS
+.B znormpat ../../../../nfiq/znorm.dat ../fing2pat/nonorm.bin norm.bin
+.br
+
+.SH SEE ALSO
+.BR feats2pat (1D),
+.BR znormdat (1D),
+.BR nfiq (1D),
+.BR mlp (1B)
+
+.SH AUTHOR
+NIST/ITL/DIV894/Image Group
