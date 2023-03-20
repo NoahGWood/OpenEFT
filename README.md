@@ -55,8 +55,10 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 
    ```sh
    # If Windows
+   wsl cd OpenEFT
    wsl ./build_windows.sh
    # If Linux
+   cd OpenEFT
    ./build_linux.sh
    ```
 
