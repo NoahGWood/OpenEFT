@@ -77,6 +77,7 @@ If you mess up on a fingerprint, you can use a white address label within the bl
    make install LIBBNIS=no
    cd ../
    echo 'export PATH="$PWD/build/bin:$PATH" > ~/.bashrc
+   mkdir browser
    cd browser
    wget "https://github.com/clickot/ungoogled-chromium-binaries/releases/download/111.0.5563.65-1/ungoogled-chromium_111.0.5563.65-1.1.AppImage"
    mkdir linux
