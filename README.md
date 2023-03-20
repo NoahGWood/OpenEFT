@@ -49,53 +49,15 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 
    ```sh
    git clone --recurse-submodules https://github.com/NoahGWood/OpenEFT.git
-   mkdir build
-   cd nbis
-   # If Windows
-   # If python3 not installed
-   python3
-   # If WSL not installed, get privileged shell
-   powershell -Command "Start-Process cmd -Verb RunAs"
-   # In privileged shell
-   wsl --install -d Ubuntu
-   exit
-   # In normal shel
-   ./setup ../build --MSYS [--32 | --64]
-   make config
-   make it
-   make install
-   cd ../
-   echo 'export PATH="$PWD/build/bin:$PATH" > ~/.bashrc
-   cd browser
-   wget "https://github.com/ungoogled-software/ungoogled-chromium-windows/releases/download/111.0.5563.65-1.1/ungoogled-chromium_111.0.5563.65-1.1_windows_x64.zip"
-   unzip ungoogled-chromium_111.0.5563.65-1.1_windows_x64.zip
-   mv ungoogled-chromium_111.0.5563.65-1.1_windows windows
-   # If Linux
-   ./setup.sh ../build/
-   make config
-   make it
-   make install LIBBNIS=no
-   cd ../
-   echo 'export PATH="$PWD/build/bin:$PATH" > ~/.bashrc
-   mkdir browser
-   cd browser
-   wget "https://github.com/clickot/ungoogled-chromium-binaries/releases/download/111.0.5563.65-1/ungoogled-chromium_111.0.5563.65-1.1.AppImage"
-   mkdir linux
-   mv ungoogled-chromium_111.0.5563.65-1.1.AppImage linux/chrome.AppImage
-   # Finally
-   cd ../
    ```
 
-2. Install requirements:
+2. Build & Install
 
    ```sh
-   pip install -r requirements.txt
-   ```
-
-3. Install libopenjp2:
-
-   ```bash
-   sudo apt install libopenjp2-tools
+   # If Windows
+   wsl ./build_windows.sh
+   # If Linux
+   ./build_linux.sh
    ```
 
 5. Run the program!
