@@ -65,7 +65,7 @@ def an2ktool(fname):
 
 # Create your views here.
 def viewer(request):
-    fname = None
+    fname = ""
     data = None
     if request.method == "POST":
         file = request.FILES.get("eft")
