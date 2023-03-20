@@ -21,13 +21,10 @@
 <form id="resection">
 {% csrf_token %}
 </form>
-<img src="/static/input.png" hidden="hidden" id="sourceImage"/>
-
 <script>
     var prevX, prevY, currX, currY = 0;
     var p1,p2,p3,p4;
     var clicked = false;
-    var img = document.getElementById("sourceImage");
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext("2d");
 
@@ -167,6 +164,8 @@
     }
 
     function clearCanvas() {
+        img = new Image();
+        img.onload = function() {
         p1=null;p2=null;p3=null;p4=null;
         prevX=null;prevY=null;
         hratio = canvas.width / img.width;
@@ -175,6 +174,9 @@
         alert("Select the upper left corner of document.");
         ctx.clearRect(0,0,canvas.width,canvas.height);
         ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0, img.width*ratio, img.height*ratio);
+        }
+        img.src = "/static/input.png?t="+new Date().getTime();
+
     }
     
     async function postPoints() {

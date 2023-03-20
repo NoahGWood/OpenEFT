@@ -1,2 +1,2 @@
-ARCH_FLAG = 
-ARCH_FLAG =  -fPIC
+ARCH_FLAG = -m64
+ARCH_FLAG = -m64 -fPIC

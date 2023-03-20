@@ -65,7 +65,7 @@ of the software.
 #include <stdarg.h> /* Added by JCK on 03-06-08 - for varargs macros */
 #include <errno.h>  /* Added by JCK on 01-22-09 */
 
-#define AN2K_RUNTIME_DATA_DIR	"../build//nbis/an2k"
+#define AN2K_RUNTIME_DATA_DIR	"/home/noah/Desktop/OpenEFT/nbis/../build/nbis/an2k"
 
 #define SHORT_READ_ERR_MSG(fp) ((ferror(fp) != 0) ? strerror(errno) : "premature EOF")
 

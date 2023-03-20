@@ -86,11 +86,6 @@ If you mess up on a fingerprint, you can use a white address label within the bl
    cd ../
    ```
 
-2. ```shell
-   # Start server
-   python3 openeft.py
-   ```
-
 2. Install requirements:
 
    ```sh
@@ -99,24 +94,14 @@ If you mess up on a fingerprint, you can use a white address label within the bl
 
 3. Install libopenjp2:
 
-   ```sh
+   ```bash
    sudo apt install libopenjp2-tools
    ```
 
 5. Run the program!
 
-   ```sh
+   ```bash
    python3 openeft.py
-3. Install libopenjp2:
-
-   ```bash
-   sudo apt install libopenjp2-tools
-   ```
-
-5. Run the program!
-
-   ```bash
-   ./eft.py /path/to/your/tenprint/scan.png
 
 ## Requirements
 

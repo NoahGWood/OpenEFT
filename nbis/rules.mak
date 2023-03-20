@@ -73,7 +73,7 @@ PROJ_NAME	:= nbis
 PACKAGES			:= ijg png openjp2 commonnbis an2k bozorth3 imgtools mindtct nfseg nfiq pcasys
 #
 DIR_ROOT			:= /home/noah/Desktop/OpenEFT/nbis
-FINAL_INSTALLATION_DIR 		:= ../build/
+FINAL_INSTALLATION_DIR 		:= /home/noah/Desktop/OpenEFT/nbis/../build
 X11_FLAG			:= 1
 X11_INC				:= /usr
 X11_LIB				:= /usr
@@ -83,7 +83,7 @@ NBIS_JASPER_FLAG		:=
 NBIS_OPENJP2_FLAG		:= -D__NBIS_OPENJP2__
 NBIS_PNG_FLAG			:= -D__NBIS_PNG__
 
-ARCH_FLAG			:=  -fPIC
+ARCH_FLAG			:= -m64 -fPIC
 
 MSYS_FLAG			:= 
 CYGWIN_FLAG			:= 

@@ -118,6 +118,8 @@ class Fingerprint:
 
     def segment(self):
         x=""
+        if 'nt' in os.name:
+            x += "wsl "
         x += "nfseg {} 1 1 1 0 {}".format(self.fgp, self.converted)
         a = check_output(x, shell=True, text=True).split('\n')
         for each in a:
@@ -141,6 +143,8 @@ class Fingerprint:
         o = i + '.' + encoding
         i = i + '.' + self.encoding
         x = ""
+        if 'nt' in os.name:
+            x += "wsl "
         if encoding == 'jp2':
             self.cga = "JP2" # COMPRESSION ALGORITHM [242-HQ-A6687913-SYSDOCU 3.82 value (ASCII)]
             x += "opj_compress -i {} -o {} -r {} -n 2".format(i,o, ratio)

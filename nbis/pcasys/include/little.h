@@ -50,7 +50,7 @@ non-int return values (including, void return value).  Stdio.h is
 needed for FILE. */
 
 #define INSTALL_DIR "/home/noah/Desktop/OpenEFT/nbis"
-#define INSTALL_DATA_DIR "../build//nbis"
+#define INSTALL_DATA_DIR "/home/noah/Desktop/OpenEFT/nbis/../build/nbis"
 #define INSTALL_NBIS_DIR "/home/noah/Desktop/OpenEFT"
 
 extern int creat_ch(char *);
