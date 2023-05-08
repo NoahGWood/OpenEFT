@@ -1,2 +1,0 @@
-This dir contains ihead rasters of various titles, letters, etc. that
-are needed by the graphical version of the demo.
