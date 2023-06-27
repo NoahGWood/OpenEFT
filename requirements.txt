@@ -1,6 +1,6 @@
 asgiref==3.6.0
 attrs==22.2.0
-backports.zoneinfo==0.2.1
+backports.zoneinfo;python_version<"3.9"
 cattrs==22.2.0
 certifi==2022.12.7
 charset-normalizer==3.1.0
