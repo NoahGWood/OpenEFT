@@ -23,7 +23,7 @@ If you're not up for compiling and installing software to DIY, I have created a 
 
    ```bash
    docker build -t openeft:latest .
-   docker run -p 8080:8080 kouroshmobl/openeft
+   docker run -p 8080:8080 openeft
    ```
    OR
    ```bash
