@@ -29,13 +29,6 @@ esac
 #source ~/.bashrc doesn't work in .sh in Ubuntu since scripts run in their own session. Need to run post build OR run the script with 'source'
 source ~/.bashrc
 
-echo "Installing UnGoogled Chromium"
-cd ../browser/linux
-wget "https://github.com/clickot/ungoogled-chromium-binaries/releases/download/111.0.5563.65-1/ungoogled-chromium_111.0.5563.65-1.1.AppImage"
-mv ungoogled-chromium_111.0.5563.65-1.1.AppImage chrome.AppImage
-chmod +x chrome.AppImage
-cd ../../
-
 echo "Installing LibOpenJP2-Tools"
 sudo apt-get install libopenjp2-tools -y
 
