@@ -6,6 +6,7 @@ EXPOSE 8080
 
 # Set environment variables
 ENV PATH="/root/OpenEFT/nbis/nfseg/bin:/root/OpenEFT/nbis/nfiq/bin:$PATH"
+ENV TZ="America/Denver"
 
 # Update and install required packages, including cmake, X11 development libraries, and openjpeg
 RUN apt-get update && apt-get install -y \
