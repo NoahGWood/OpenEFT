@@ -23,7 +23,8 @@ If you're not up for compiling and installing software to DIY, I have created a 
 
 5. Run the docker build program from the command line like so:
 
-    *PREFERRED*```bash
+    *preferred method*
+   ```bash
    docker pull kouroshmobl/openeft
    docker run -p 8080:8080 kouroshmobl/openeft
    ```
