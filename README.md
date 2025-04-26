@@ -19,7 +19,9 @@ If you're not up for compiling and installing software to DIY, I have created a 
 
 3. Take a high-resolution **1:1** scan or picture of the completed FD-258 card.
 
-4. Run the docker build program from the command line like so:
+4. If you don't have it installed, install [Docker Desktop](https://docs.docker.com/desktop/)
+
+5. Run the docker build program from the command line like so:
 
    ```bash
    docker build -t openeft:latest .
