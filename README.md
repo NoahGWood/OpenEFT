@@ -23,23 +23,24 @@ If you're not up for compiling and installing software to DIY, I have created a 
 
 5. Run the docker build program from the command line like so:
 
+    *PREFERRED*```bash
+   docker pull kouroshmobl/openeft
+   docker run -p 8080:8080 kouroshmobl/openeft
+   ```
+   OR
    ```bash
    docker build -t openeft:latest .
    docker run -p 8080:8080 openeft
    ```
-   OR
-   ```bash
-   docker pull kouroshmobl/openeft
-   docker run -p 8080:8080 kouroshmobl/openeft
-   ```
-
-6. Browse to http://localhost:8080
   
-7. Follow the instructions the program provides and respond to the prompts with your info.
 
-8. ??? (programming magic happens here, just relax)
+7. Browse to http://localhost:8080
+  
+8. Follow the instructions the program provides and respond to the prompts with your info.
 
-9. Congratulations! You now have an EFT!
+9. ??? (programming magic happens here, just relax)
+
+10. Congratulations! You now have an EFT!
 
 ## Tips
 
