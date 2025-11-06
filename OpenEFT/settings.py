@@ -142,7 +142,7 @@ features = requests.get("https://raw.githubusercontent.com/NoahGWood/OpenEFT/mai
 donate = requests.get("https://raw.githubusercontent.com/NoahGWood/OpenEFT/main/docs/donate.md")
 commits = requests.get("https://github.com/NoahGWood/OpenEFT/commits.atom")
 discussions = requests.get("https://github.com/NoahGWood/OpenEFT/discussions.atom")
-releases = requests.get("https://github.com/NoahGWood/OpenEFT/releases.atom")
+releases = requests.get("https://github.com/kourosh-forti-hands/OpenEFT/releases.atom")
 with open(os.path.join(TMP_DIR, "about.md"),'wb') as f:
     f.write(about.content)
 with open(os.path.join(TMP_DIR, "features.md"),'wb') as f:

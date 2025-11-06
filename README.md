@@ -19,17 +19,29 @@ If you're not up for compiling and installing software to DIY, I have created a 
 
 3. Take a high-resolution **1:1** scan or picture of the completed FD-258 card.
 
-4. Run the python program from the command line like so:
+4. If you don't have it installed, install [Docker Desktop](https://docs.docker.com/desktop/)
 
+5. Run the docker build program from the command line like so:
+
+    *preferred method*
    ```bash
-   python3 openeft.py
+   docker pull kouroshmobl/openeft
+   docker run -p 8080:8080 kouroshmobl/openeft
    ```
+   OR
+   ```bash
+   docker build -t openeft:latest .
+   docker run -p 8080:8080 openeft
+   ```
+  
 
-5. Follow the instructions the program provides and respond to the prompts with your info.
+7. Browse to http://localhost:8080
+  
+8. Follow the instructions the program provides and respond to the prompts with your info.
 
-6. ??? (programming magic happens here, just relax)
+9. ??? (programming magic happens here, just relax)
 
-7. Congratulations! You now have an EFT!
+10. Congratulations! You now have an EFT!
 
 ## Tips
 
@@ -42,36 +54,6 @@ If you've never had your fingerprints taken, you definitely need to know how to 
 #### Bad Fingerprints
 
 If you mess up on a fingerprint, you can use a white address label within the blue or black bounding boxes to re-ink that specific finger so you don't need to waste multiple cards. You're not *supposed* to use white out, it could be rejected by the ATF/FBI, but if you're willing to try it let us know if it works! 
-
-## Installing
-
-1. Clone the repo:
-
-   ```sh
-   git clone --recurse-submodules https://github.com/NoahGWood/OpenEFT.git
-   ```
-
-2. Build & Install
-
-   ```sh
-   # If Windows
-   wsl cd OpenEFT
-   wsl ./build_windows.sh
-   # If Linux
-   cd OpenEFT
-   ./build_linux.sh
-   ```
-
-5. Run the program!
-
-   ```bash
-   python3 openeft.py
-
-## Requirements
-
-#### Operating Systems
-
-* Linux Only (maybe, I have no idea tbh.)
 
 #### External Libraries
 
