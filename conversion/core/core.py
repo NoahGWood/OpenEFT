@@ -41,11 +41,17 @@ def generate_eft(data):
     t2.hair = data.get("hair")
     t2.rsn = data.get("rsn")
     t2.amp = data.get("missing")
-    t2.name = "{}, {} {}".format(t2.lname, t2.fname, t2.mname[0])
+    if t2.mname is not None and len(t2.mname) > 0:
+        t2.name = "{}, {} {}".format(t2.lname, t2.fname, t2.mname[0])
+    else:
+        t2.name = "{}, {}".format(t2.lname, t2.fname)
     # Attach
     t1.add_record(t2)
     # Generate tx number
-    n = "{}-{}-{}-".format(t2.fname, t2.mname, t2.lname) + str(uuid.uuid1())[0:10]
+    if t2.mname is not None and len(t2.mname) > 0:
+        n = "{}-{}-{}-".format(t2.fname, t2.mname, t2.lname) + str(uuid.uuid1())[0:10]
+    else:
+        n = "{}-{}-".format(t2.fname, t2.lname) + str(uuid.uuid1())[0:10]
     t1.set_tcn(n)
     # Get a file name
     fname = n+'.eft'
