@@ -139,6 +139,7 @@ class Type2(Record):
         super().__init__("2", idc)
         self.aka = ""
         self.pob = ""
+        self.ctz = ""
         self.dob = ""
         self.race = ""
         self.eye = ""
@@ -160,7 +161,8 @@ class Type2(Record):
         self.name = "{}, {} {}".format(self.lname, self.fname, self.mname[0])
         self.aka = input("Aliases (comma separated): ")
         self.stateCurrent = input("Current State 2-Letter Code (e.g. AZ, NY): ")
-        self.stateBorn = input("Start Born 2-Letter Code (e.g. AZ, NY): ")
+        self.pob = input("Start Born 2-Letter Code (e.g. AZ, NY): ")
+        self.ctz = input("Country Code (e.g. US, CA, MM): ")
         self.ssn = input("Social Security Number (no dashes): ")
         self.addr = input("Address: ")
         self.dob = input("Date of birth (YYYmmdd): ")
@@ -199,7 +201,8 @@ class Type2(Record):
             "2.016": self.ssn,
             "2.018": self.name,
             "2.019": self.aka,
-            "2.020": self.stateBorn,
+            "2.020": self.pob,
+            "2.021": self.ctz,
             "2.022": self.dob,
             "2.024": self.sex,
             "2.025": self.race,
