@@ -1,0 +1,69 @@
+Checks: >
+  -*,
+  bugprone-*,
+  clang-analyzer-*,
+  performance-*,
+  readability-*,
+  modernize-*,
+  cppcoreguidelines-*,
+  cert-*,
+  portability-*,
+  misc-*,
+
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-avoid-c-arrays,
+  -cppcoreguidelines-special-member-functions,
+  -readability-named-parameter
+
+WarningsAsErrors: '*'
+HeaderFilterRegex: '^(include|src)/'
+
+CheckOptions:
+  # ---------------------------
+  # Type naming
+  # ---------------------------
+  - { key: readability-identifier-naming.ClassCase, value: CamelCase }
+  - { key: readability-identifier-naming.StructCase, value: CamelCase }
+  - { key: readability-identifier-naming.NamespaceCase, value: lower_case }
+
+  # ---------------------------
+  # stdlib-style function naming
+  # ---------------------------
+  - { key: readability-identifier-naming.FunctionCase, value: lower_case }
+  - { key: readability-identifier-naming.MethodCase, value: lower_case }
+
+  # ---------------------------
+  # Variables
+  # ---------------------------
+  - { key: readability-identifier-naming.VariableCase, value: lower_case }
+  - { key: readability-identifier-naming.ParameterCase, value: lower_case }
+  - { key: readability-identifier-naming.MemberVariablePrefix, value: 'm_' }
+
+  # ---------------------------
+  # Globals MUST SHOUT
+  # ---------------------------
+  - { key: readability-identifier-naming.GlobalVariableCase, value: UPPER_CASE }
+  - { key: readability-identifier-naming.GlobalFunctionCase, value: UPPER_CASE }
+  - { key: readability-identifier-naming.GlobalConstantCase, value: UPPER_CASE }
+  - { key: readability-identifier-naming.StaticConstantCase, value: UPPER_CASE }
+
+  # ---------------------------
+  # Macros & enums MUST SHOUT
+  # ---------------------------
+  - { key: readability-identifier-naming.MacroDefinitionCase, value: UPPER_CASE }
+  - { key: readability-identifier-naming.EnumCase, value: UPPER_CASE }
+  - { key: readability-identifier-naming.EnumConstantCase, value: UPPER_CASE }
+
+  # ---------------------------
+  # Allow stdlib-style short names
+  # ---------------------------
+  - key: readability-identifier-naming.IgnoredRegexp
+    value: '^(begin|end|size|empty|data|at|value|error|has_value|push_back|pop_back|clear|capacity)$'
+
+  # ---------------------------
+  # Allow common magic numbers
+  # ---------------------------
+  - key: readability-magic-numbers.IgnoredIntegerValues
+    value: '0;1;2;4;8;16;32;64;128;256;512'

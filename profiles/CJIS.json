@@ -1,0 +1,91 @@
+{
+    "enums": {
+        "DOM": [
+            "",
+            "FBI",
+            "ANSI"
+        ],
+        "TOT": [
+            "",
+            "FAUF",
+            "CAR"
+        ],
+        "TestEnum": [
+            "TestValue",
+            "TestValue2"
+        ]
+    },
+    "name": "CJIS",
+    "transactions": {
+        "Test": {
+            "conditional_constraints": [],
+            "domain_id": "FBI",
+            "field_groups": [],
+            "link_rules": [],
+            "name": "Test",
+            "record_sets": [],
+            "records": [
+                {
+                    "applies_when": [],
+                    "dependencies": [],
+                    "fields": [
+                        {
+                            "constraints": [],
+                            "encoding": "UNKNOWN",
+                            "field_id": 1,
+                            "field_name": "Test Field",
+                            "field_short": "Field Short",
+                            "max_length": 1,
+                            "max_occurs": 1,
+                            "min_length": 1,
+                            "min_occurs": 1,
+                            "presence": "UNKNOWN",
+                            "presence_conditions": [],
+                            "record_type": 0,
+                            "subfields": [
+                                {
+                                    "items": [
+                                        {
+                                            "constraints": [
+                                                {
+                                                    "enum_name": "TestEnum",
+                                                    "enum_value": "TestValue2",
+                                                    "numeric_value": 0,
+                                                    "op": "EQUAL",
+                                                    "pattern": "",
+                                                    "type": "ENUM"
+                                                }
+                                            ],
+                                            "item_name": "name",
+                                            "item_short": "short",
+                                            "max_length": 1,
+                                            "min_length": 1,
+                                            "presence": "MANDATORY",
+                                            "type": "ENUM"
+                                        }
+                                    ],
+                                    "max_occurs": 1,
+                                    "min_occurs": 1,
+                                    "presence": "UNKNOWN",
+                                    "subfield_id": 1,
+                                    "subfield_name": "Name",
+                                    "subfield_short": "short"
+                                }
+                            ],
+                            "type": "UNKNOWN"
+                        }
+                    ],
+                    "max_occurs": 1,
+                    "min_occurs": 1,
+                    "record_name": "Test Name",
+                    "record_short": "Test Short",
+                    "record_type": 1
+                }
+            ],
+            "semantic_rules": [],
+            "transaction_type": "CAR",
+            "unknown_field_policy": "ERROR"
+        }
+    },
+    "version": 1
+}

@@ -1,0 +1,443 @@
+#pragma once
+#include <NMTK/NMTK.h>
+#include <OpenEFT/rules/Rules.h>
+#include <OpenEFT/rules/RulesUI.h>
+#include <OpenEFT/UI/widgets/ListEditor.h>
+#include <math.h>
+namespace OpenEFT {
+
+    inline static std::vector<TransactionRule> transactions = {
+        {"Federal Applicant User Fee", "FAUF", "CJIS"},
+        {"Criminal Tenprint Submission", "CAR", "CJIS"}};
+
+    struct RuleEditorPanel : NMTK::IPanel {
+        RuleEditorPanel(std::shared_ptr<NMTK::AppContext> ctx)
+            : NMTK::IPanel(std::move(ctx)) {
+            m_Name = "Rule Editor";
+        }
+        TransactionRule* selected_tx = nullptr;
+        RecordRule* selected_record = nullptr;
+        FieldRule* selected_field = nullptr;
+        SubfieldRule* selected_subfield = nullptr;
+        ItemRule* selected_item = nullptr;
+        ValueConstraint* selected_constraint = nullptr;
+
+        inline static int delete_index = -1;
+        inline static int selected_index = -1;
+        void RenderTX() {
+            for (int i = 0; i < transactions.size(); ++i) {
+                auto& tx = transactions[i];
+                bool is_select =
+                    (selected_tx != nullptr && selected_tx == &transactions[i]);
+                if (ImGui::Selectable(tx.transaction_type.c_str(), is_select)) {
+                    selected_tx = &transactions[i];
+                    selected_record = nullptr;
+                    selected_field = nullptr;
+                    selected_subfield = nullptr;
+                    selected_item = nullptr;
+                }
+                if (ImGui::IsItemHovered()) {
+                    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+                        selected_index = i;
+                        ImGui::OpenPopup("EditTxWizard");
+                    }
+                }
+            }
+            if (ImGui::BeginPopup("EditTxWizard")) {
+                if (ImGui::Button("Delete")) {
+                    delete_index = selected_index;
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+            if (delete_index != -1 && delete_index < transactions.size()) {
+                if (&transactions[delete_index] == selected_tx) {
+                    selected_tx = nullptr;
+                }
+                transactions.erase(transactions.begin() + delete_index);
+                delete_index = -1;
+            }
+            if (ImGui::Button("+ Add Transaction")) {
+                ImGui::OpenPopup("NewTxWizard");
+            }
+
+            if (ImGui::BeginPopup("NewTxWizard")) {
+                static TransactionRule tx;
+                ImGui::InputText("Name", &tx.name);
+                ImGui::InputText("TOT", &tx.transaction_type);
+                ImGui::InputText("Domain", &tx.domain_id);
+                if (ImGui::Button("Add")) {
+                    if (tx.name.empty() || tx.transaction_type.empty() ||
+                        tx.domain_id.empty()) {
+                        CORE_ERROR("Missing information");
+                        ImGui::EndPopup();
+                        return;
+                    } else {
+                        transactions.push_back(tx);
+                        tx = {};
+                        ImGui::CloseCurrentPopup();
+                    }
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+
+                ImGui::EndPopup();
+            }
+        }
+
+        void RenderRules() {
+            if (selected_tx == nullptr) {
+                ImGui::TextDisabled("No transaction selected.");
+                return;
+            }
+            for (int i = 0; i < selected_tx->records.size(); ++i) {
+                bool is_selected = selected_record == &selected_tx->records[i];
+                const auto& rr = selected_tx->records[i];
+                if (ImGui::Selectable(rr.record_name.c_str(), is_selected)) {
+                    selected_record = &selected_tx->records[i];
+                    selected_field = nullptr;
+                    selected_subfield = nullptr;
+                    selected_item = nullptr;
+                }
+                if (ImGui::IsItemHovered()) {
+                    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+                        selected_index = i;
+                        ImGui::OpenPopup("EditRecordWizard");
+                    }
+                }
+            }
+            if (ImGui::BeginPopup("EditRecordWizard")) {
+                auto& record = selected_tx->records[selected_index];
+                DrawFieldUI("Edit Record", record);
+                if (ImGui::Button("Delete")) {
+                    delete_index = selected_index;
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+            if (delete_index != -1 &&
+                delete_index < selected_tx->records.size()) {
+                if (selected_record == &selected_tx->records[delete_index]) {
+                    selected_record = nullptr;
+                }
+                selected_tx->records.erase(selected_tx->records.begin() +
+                                           delete_index);
+                delete_index = -1;
+            }
+            if (ImGui::Button("+ Add Record")) {
+                ImGui::OpenPopup("AddRecordWizard");
+            }
+            if (ImGui::BeginPopup("AddRecordWizard")) {
+                static RecordRule rr;
+                DrawFieldUI("Edit Record", rr);
+                if (ImGui::Button("Add Record")) {
+                    selected_tx->records.push_back(rr);
+                    rr = {};
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    rr = {};
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+        }
+
+        void RenderFields() {
+            if (selected_record == nullptr) {
+                ImGui::TextDisabled("No record selected.");
+                return;
+            }
+            for (int i = 0; i < selected_record->fields.size(); ++i) {
+                bool is_selected =
+                    selected_field == &selected_record->fields[i];
+                if (ImGui::Selectable(
+                        selected_record->fields[i].field_name.c_str(),
+                        is_selected)) {
+                    selected_field = &selected_record->fields[i];
+                    selected_subfield = nullptr;
+                    selected_item = nullptr;
+                }
+                if (ImGui::IsItemHovered()) {
+                    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+                        selected_index = i;
+                        ImGui::OpenPopup("EditFieldWizard");
+                    }
+                }
+            }
+            if (ImGui::BeginPopup("EditFieldWizard")) {
+                auto& field = selected_record->fields[selected_index];
+                DrawFieldUI("Edit Field", field);
+                if (ImGui::Button("Delete")) {
+                    delete_index = selected_index;
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+            if (delete_index != -1 &&
+                delete_index < selected_record->fields.size()) {
+                if (selected_field == &selected_record->fields[delete_index]) {
+                    selected_field = nullptr;
+                }
+                selected_record->fields.erase(selected_record->fields.begin() +
+                                              delete_index);
+                delete_index = -1;
+            }
+            if (ImGui::Button("+ Add Field")) {
+                ImGui::OpenPopup("AddFieldWizard");
+            }
+            if (ImGui::BeginPopup("AddFieldWizard")) {
+                static FieldRule fr{.record_type =
+                                        selected_record->record_type};
+                DrawFieldUI("Edit Field", fr);
+                if (ImGui::Button("Add Field")) {
+                    selected_record->fields.push_back(fr);
+                    fr = {.record_type = selected_record->record_type};
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+        }
+
+        void RenderSubfields() {
+            if (selected_field == nullptr) {
+                ImGui::TextDisabled("No field selected.");
+                return;
+            }
+            for (int i = 0; i < selected_field->subfields.size(); ++i) {
+                bool selected =
+                    selected_subfield == &selected_field->subfields[i];
+                if (ImGui::Selectable(
+                        selected_field->subfields[i].subfield_name.c_str(),
+                        selected)) {
+                    selected_subfield = &selected_field->subfields[i];
+                    selected_item = nullptr;
+                }
+
+                if (ImGui::IsItemHovered()) {
+                    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+                        selected_index = i;
+                        ImGui::OpenPopup("EditSubfieldWizard");
+                    }
+                }
+            }
+            if (ImGui::BeginPopup("EditSubfieldWizard")) {
+                auto& sf = selected_field->subfields[selected_index];
+                DrawFieldUI("Subfield Editor", sf);
+                if (ImGui::Button("Delete")) {
+                    delete_index = selected_index;
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+            if (delete_index != -1 &&
+                delete_index < selected_field->subfields.size()) {
+                if (selected_subfield ==
+                    &selected_field->subfields[delete_index]) {
+                    selected_subfield = nullptr;
+                }
+                selected_field->subfields.erase(
+                    selected_field->subfields.begin() + delete_index);
+                delete_index = -1;
+            }
+            if (ImGui::Button("+ Add SubField")) {
+                ImGui::OpenPopup("AddSubFieldWizard");
+            }
+            if (ImGui::BeginPopup("AddSubFieldWizard")) {
+                static SubfieldRule sfr;
+                DrawFieldUI("Subfield Editor", sfr);
+                if (ImGui::Button("Add Field")) {
+                    selected_field->subfields.push_back(sfr);
+                    sfr = {};
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+        }
+
+        void RenderItems() {
+            if (selected_subfield == nullptr) {
+                ImGui::TextDisabled("No subfield selected.");
+                return;
+            }
+            for (int i = 0; i < selected_subfield->items.size(); ++i) {
+                bool selected = selected_item == &selected_subfield->items[i];
+                if (ImGui::Selectable(
+                        selected_subfield->items[i].item_name.c_str(),
+                        selected)) {
+                    selected_item = &selected_subfield->items[i];
+                }
+                if (ImGui::IsItemHovered()) {
+                    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+                        selected_index = i;
+                        ImGui::OpenPopup("EditItemWizard");
+                    }
+                }
+            }
+            if (ImGui::BeginPopup("EditItemWizard")) {
+                auto& ir = selected_subfield->items[selected_index];
+                DrawFieldUI("Edit Item", ir);
+                if (ImGui::Button("Delete")) {
+                    delete_index = selected_index;
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+            if (delete_index != -1 &&
+                delete_index < selected_subfield->items.size()) {
+                if (selected_item == &selected_subfield->items[delete_index]) {
+                    selected_item = nullptr;
+                }
+                selected_subfield->items.erase(
+                    selected_subfield->items.begin() + delete_index);
+                delete_index = -1;
+            }
+            if (ImGui::Button("+ Add Item")) {
+                ImGui::OpenPopup("AddItemWizard");
+            }
+            if (ImGui::BeginPopup("AddItemWizard")) {
+                static ItemRule ir;
+                DrawFieldUI("Item Editor", ir);
+                if (ImGui::Button("Add Item")) {
+                    selected_subfield->items.push_back(ir);
+                    ir = {};
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+        }
+        void RenderConstraints() {
+            if (selected_item == nullptr) {
+                ImGui::TextDisabled("No item selected.");
+                return;
+            }
+            for (int i = 0; i < selected_item->constraints.size(); ++i) {
+                bool selected =
+                    selected_constraint == &selected_item->constraints[i];
+                std::string label = "Constraint-" + std::to_string(i + 1);
+                if (ImGui::Selectable(label.c_str(), selected)) {
+                    selected_constraint = &selected_item->constraints[i];
+                }
+                if (ImGui::IsItemHovered()) {
+                    if (ImGui::IsMouseReleased(ImGuiMouseButton_Right)) {
+                        selected_index = i;
+                        ImGui::OpenPopup("EditConstraintWizard");
+                    }
+                }
+            }
+            if (ImGui::BeginPopup("EditConstraintWizard")) {
+                auto& cr = selected_item->constraints[selected_index];
+                DrawFieldUI("Constraint Editor", cr);
+                if (ImGui::Button("Delete")) {
+                    delete_index = selected_index;
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+            if (delete_index != -1 &&
+                delete_index < selected_item->constraints.size()) {
+                if (selected_constraint ==
+                    &selected_item->constraints[delete_index]) {
+                    selected_constraint = nullptr;
+                }
+                selected_item->constraints.erase(
+                    selected_item->constraints.begin() + delete_index);
+                delete_index = -1;
+            }
+            if (ImGui::Button("+ Add Constraint")) {
+                ImGui::OpenPopup("AddConstraintWizard");
+            }
+            if (ImGui::BeginPopup("AddConstraintWizard")) {
+                static ValueConstraint vc;
+                DrawFieldUI("Constraint Editor", vc);
+                if (ImGui::Button("Add Constraint")) {
+                    selected_item->constraints.push_back(vc);
+                    vc = {};
+                    ImGui::CloseCurrentPopup();
+                }
+                if (ImGui::Button("Cancel")) {
+                    ImGui::CloseCurrentPopup();
+                }
+                ImGui::EndPopup();
+            }
+        }
+        void Render() override {
+            ImGui::Begin(m_Name.c_str(), &m_IsOpen);
+            if (ImGui::BeginTable("Rules Editor", 6)) {
+                ImGui::TableNextColumn();
+                ImGui::Text("Transactions");
+                RenderTX();
+                ImGui::TableNextColumn();
+                ImGui::Text("Records");
+                RenderRules();
+                ImGui::TableNextColumn();
+                ImGui::Text("Fields");
+                RenderFields();
+                ImGui::TableNextColumn();
+                ImGui::Text("Subfields");
+                RenderSubfields();
+                ImGui::TableNextColumn();
+                ImGui::Text("Items");
+                RenderItems();
+                ImGui::TableNextColumn();
+                ImGui::Text("Constraints");
+                RenderConstraints();
+                ImGui::EndTable();
+            }
+            // static char* column_labels[] = {
+            //     "Record","Field","Subfield","Item","Constraints","6"
+            // };
+            // static int column_count = 5;
+            // static int row_count = 300;
+            // if(ImGui::BeginTable("Spreadsheet", column_count,
+            // ImGuiTableFlags_Borders | ImGuiTableFlags_ScrollY)) {
+            //     for(int i=0; i< column_count; ++i){
+            //         ImGui::TableSetupColumn(column_labels[i]);
+            //     }
+            //     ImGui::TableHeadersRow();
+            //     ImGuiListClipper clipper;
+            //     clipper.Begin(row_count);
+            //     while(clipper.Step()){
+            //         for(int row = clipper.DisplayStart; row <
+            //         clipper.DisplayEnd; row++){
+            //             ImGui::TableNextRow();
+            //             for(int col=0; col<column_count; col++){
+            //                 ImGui::TableSetColumnIndex(col);
+            //                 ImGui::Text("Cell");
+            //             }
+            //         }
+            //     }
+            //     ImGui::EndTable();
+            ImGui::End();
+        }
+        RULE_TYPE m_Type = RULE_TYPE::TX;
+    };
+}  // namespace OpenEFT
