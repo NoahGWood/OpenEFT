@@ -1,4 +1,24 @@
-[submodule "nbis"]
-	path = nbis
-	url = https://github.com/lessandro/nbis.git
-	ignore = dirty
+[submodule "vendor/NNIST"]
+	path = vendor/NNIST
+	url = https://github.com/NoahGWood/NNIST
+[submodule "vendor/NMTK"]
+	path = vendor/NMTK
+	url = https://github.com/NoahGWood/NMTK
+[submodule "vendor/json"]
+	path = vendor/json
+	url = https://github.com/nlohmann/json
+[submodule "vendor/tinyfd"]
+	path = vendor/tinyfd
+	url = https://git.code.sf.net/p/tinyfiledialogs/code
+[submodule "vendor/stb"]
+	path = vendor/stb
+	url = https://github.com/nothings/stb.git
+[submodule "vendor/libtiff"]
+	path = vendor/libtiff
+	url = https://github.com/libsdl-org/libtiff
+[submodule "vendor/NBIS"]
+	path = vendor/NBIS
+	url = https://github.com/NoahGWood/NBIS
+[submodule "vendor/openjpeg"]
+	path = vendor/openjpeg
+	url = https://github.com/uclouvain/openjpeg.git
