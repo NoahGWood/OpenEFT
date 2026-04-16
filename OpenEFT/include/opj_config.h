@@ -1,3 +1,8 @@
+// Copyright (c) 2026 Noah G. Wood
+// SPDX-License-Identifier: LicenseRef-OpenEFT
+//
+// This file is part of OpenEFT.
+// OpenEFT is source-available software. See LICENSE file for details.
 /**
  * @file opj_config.h
  * @brief This file exists because we're mixing old C & new C++, just don't worry about it.

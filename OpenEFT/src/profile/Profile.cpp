@@ -1,3 +1,8 @@
+// Copyright (c) 2026 Noah G. Wood
+// SPDX-License-Identifier: LicenseRef-OpenEFT
+//
+// This file is part of OpenEFT.
+// OpenEFT is source-available software. See LICENSE file for details.
 #include <OpenEFT/profile/Profile.h>
 
 #include <fstream>

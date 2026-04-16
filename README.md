@@ -1,18 +1,28 @@
 # OpenEFT v2.0
-OpenEFT is a cross-platform desktop application for viewing, editing, and validating ANSI/NIST (EBTS) biometric transactions.
+OpenEFT is a cross-platform desktop application for viewing, editing, and validating ANSI/NIST (EBTS) biometric transactions. Built for real-world workflows involving law-enforcement, government agencies, and biometric data processing.
 
-Built for real-world workflows involving law-enforcement, government agencies, and biometric data processing.
+## License
+
+OpenEFT v2 is source-available software.
+
+- Free for personal use, research, and local in-person services
+- Not permitted for SaaS, hosted tools, or commercial products without a license
+- Full license available at [./LICENSE.md](LICENSE.md)
+
+If you're unsure whether your use case requires a license, feel free to reach out.
+
+## Screenshot
+
+![Preview Image](./imgs/preview.png)
 
 ## Features
+
 - Open & Inspect `.an2`/`.eft` files
 - Rules-based validator (EBTS constraints)
 - Structured record/field/subfield inspection
 - Binary data rendering (works for most fingerprints/images/signatures, including legacy formats)
 - Extensible rules engine (agency specific profiles, a great spot to contribute!)
 - Native performance (Built on top of NMTK, a high-performance app platform)
-## Screenshot
-
-![Preview Image](./imgs/preview.png)
 
 ## Architecture
 
@@ -72,6 +82,3 @@ Current capabilities:
 
 ## Disclaimer
 This tool is intended for development, research, and operational support workflows involving biometric data. Ensure compliance with applicable laws and regulations when handling biometric information.
-
-## License
-TBD

@@ -1,3 +1,9 @@
+# Copyright (c) 2026 Noah G. Wood
+# SPDX-License-Identifier: LicenseRef-OpenEFT
+#
+# This file is part of OpenEFT.
+# See LICENSE for details.
+
 file(GLOB_RECURSE SOURCES src/*.cpp)
 # NBIS libs
 # Keeping separate for now just in case we need other libs later

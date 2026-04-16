@@ -1,3 +1,11 @@
+#!/bin/bash
+
+# Copyright (c) 2026 Noah G. Wood
+# SPDX-License-Identifier: LicenseRef-OpenEFT
+#
+# This file is part of OpenEFT.
+# See LICENSE for details.
+
 set -e
 
 LINUX_BUILD="build-linux"

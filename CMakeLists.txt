@@ -1,3 +1,9 @@
+# Copyright (c) 2026 Noah G. Wood
+# SPDX-License-Identifier: LicenseRef-OpenEFT
+#
+# This file is part of OpenEFT.
+# See LICENSE for details.
+
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
