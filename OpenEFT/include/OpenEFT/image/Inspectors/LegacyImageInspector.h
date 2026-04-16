@@ -2,6 +2,7 @@
 #include <OpenEFT/image/ImageInspector.h>
 #include <OpenEFT/image/Types.h>
 #include <OpenEFT/image/decoders/TIFFDecoder.h>
+#include <OpenEFT/image/decoders/WSQDecoder.h>
 #include <OpenEFT/nist/Helpers.h>
 #include <OpenEFT/nist/NBISWrapper.h>
 
@@ -87,7 +88,7 @@ namespace OpenEFT {
             // ---- 2) WSQ (Type-3/4)
             if ((record.type == 3 || record.type == 4) && payload_size >= 2 &&
                 payload[0] == 0xFF && payload[1] == 0xA0) {
-                return DecodeWsq(payload, payload_size, out);
+                return DecodeWSQ(payload, payload_size, out);
             }
 
             // ---- 3) Legacy fallback
@@ -113,34 +114,6 @@ namespace OpenEFT {
         }
 
       private:
-        static bool DecodeWsq(const uint8_t* payload, size_t payload_size,
-                              Image& out) {
-            int w = 0, h = 0, d = 0, ppi = 0, lossy = 0;
-            unsigned char* decoded = nullptr;
-
-            const int ret = wsq_decode_mem(&decoded, &w, &h, &d, &ppi, &lossy,
-                                           const_cast<unsigned char*>(payload),
-                                           static_cast<int>(payload_size));
-
-            if (ret != 0 || !decoded) {
-                out.info.error = "WSQ decode failed.";
-                out.info.valid = false;
-                return false;
-            }
-
-            out.info.width = w;
-            out.info.height = h;
-            out.info.bit_depth = d;
-            out.info.ppi = ppi;
-            out.info.channels = 1;
-            out.info.format = FORMAT::WSQ;
-            out.info.valid = true;
-
-            out.pixels.assign(decoded, decoded + (static_cast<size_t>(w) * h));
-            free(decoded);
-            return true;
-        }
-
         static bool DecodeRaw8(const uint8_t* payload, size_t payload_size,
                                int width, int height, Image& out) {
             const size_t expected = static_cast<size_t>(width) * height;

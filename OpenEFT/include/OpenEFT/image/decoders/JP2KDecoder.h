@@ -1,9 +1,11 @@
 #pragma once
 #include <OpenEFT/image/Types.h>
-#include <openjpeg-2.4/openjpeg.h>
 #include <cstring>
 #include <vector>
 
+extern "C" {
+    #include <openjp2/openjpeg.h>
+}
 namespace OpenEFT {
 
     // ---- Memory stream for OpenJPEG ----
@@ -59,7 +61,7 @@ namespace OpenEFT {
     }
 
     // ---- Main decoder ----
-    inline bool DecodeJP2K(const uint8_t* data, size_t size, Image& out) {
+    inline static bool DecodeJP2K(const uint8_t* data, size_t size, Image& out) {
         const uint8_t* start = FindJP2KStart(data, size);
         if (!start) {
             out.info.error = "JP2K magic not found";

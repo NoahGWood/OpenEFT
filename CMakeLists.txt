@@ -15,4 +15,11 @@ add_subdirectory(vendor/NNIST)
 # OpenEFT apparently ALSO depends on libtiff because we need to support
 # facisimile image extraction...
 add_subdirectory(vendor/libtiff)
+# And OpenEFT requires OpenJPEG for JP2K support
+# Disable OpenJPEG's internal testing and apps to keep the build lean
+set(BUILD_CODEC OFF CACHE BOOL "" FORCE)
+set(BUILD_THIRDPARTY OFF CACHE BOOL "Build third-party libs" FORCE)
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "NEVER ENABLE THIS" FORCE)
+add_subdirectory(vendor/openjpeg)
 add_subdirectory(OpenEFT)

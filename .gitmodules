@@ -16,3 +16,9 @@
 [submodule "vendor/libtiff"]
 	path = vendor/libtiff
 	url = https://github.com/libsdl-org/libtiff
+[submodule "vendor/NBIS"]
+	path = vendor/NBIS
+	url = https://github.com/NoahGWood/NBIS
+[submodule "vendor/openjpeg"]
+	path = vendor/openjpeg
+	url = https://github.com/uclouvain/openjpeg.git

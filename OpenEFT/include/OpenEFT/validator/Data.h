@@ -3,6 +3,7 @@
 #include <string>
 #include <string_view>
 #include <nnist/nnist.h>
+#include <OpenEFT/WindowsDefuse.h>
 
 namespace OpenEFT {
     enum class SEVERITY : uint8_t {

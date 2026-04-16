@@ -1,4 +1,7 @@
 #include <OpenEFT/OpenEFT.h>
+#include <OpenEFT/rules/RuleMacros.h>
+#include <OpenEFT/rules/Rules.h>
+#include <OpenEFT/rules/RuleSerDes.h>
 #include <OpenEFT/validator/AN2DocumentView.h>
 #include <OpenEFT/validator/Helpers.h>
 #include <OpenEFT/validator/ValidatorManager.h>

@@ -6,6 +6,18 @@
 #include <memory>
 #include <unordered_map>
 
+// Windows compat BS
+#ifdef __WIN32
+namespace std {
+    template <>
+    struct hash<std::filesystem::path> {
+        size_t operator()(const std::filesystem::path& p) const noexcept {
+            return std::hash<std::string>()(p.string());
+        }
+    };
+}
+#endif
+
 namespace OpenEFT {
     struct Selection{
         nnist::Record* record = nullptr;
